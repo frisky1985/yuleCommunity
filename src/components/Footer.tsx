@@ -2,16 +2,16 @@ import { Code2, GitBranch, MessageCircle, Mail, MapPin } from 'lucide-react';
 
 const footerLinks = {
   平台: [
-    { label: '开源代码', href: '#' },
-    { label: '工具链', href: '#' },
+    { label: '开源代码', href: '/opensource' },
+    { label: '工具链', href: '/toolchain' },
     { label: '开发板', href: '#' },
     { label: '插件市场', href: '#' },
   ],
   学习: [
-    { label: 'AutoSAR 教程', href: '#' },
-    { label: '视频课程', href: '#' },
-    { label: '技术博客', href: '#' },
-    { label: '问答社区', href: '#' },
+    { label: 'AutoSAR 教程', href: '/learning' },
+    { label: '视频课程', href: '/learning' },
+    { label: '技术博客', href: '/blog' },
+    { label: '文档中心', href: '/docs' },
   ],
   合作: [
     { label: '芯片厂商合作', href: '#' },

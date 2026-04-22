@@ -26,6 +26,8 @@ export function Navbar() {
     { label: '开源代码', to: '/opensource' },
     { label: '工具链', to: '/toolchain' },
     { label: '学习成长', to: '/learning' },
+    { label: '技术博客', to: '/blog' },
+    { label: '文档中心', to: '/docs' },
     { label: '社区', to: '/community' },
   ];
 
@@ -79,6 +81,16 @@ export function Navbar() {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
+            <Link
+              to="/profile"
+              className={`text-sm font-medium transition-colors px-3 py-2 ${
+                location.pathname === '/profile'
+                  ? 'text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              个人中心
+            </Link>
             <button className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2">
               登录
             </button>
@@ -125,6 +137,17 @@ export function Navbar() {
               </Link>
             ))}
             <div className="pt-2 flex flex-col gap-2 px-4">
+              <Link
+                to="/profile"
+                className={`text-sm font-medium py-2 transition-colors ${
+                  location.pathname === '/profile'
+                    ? 'text-foreground'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                个人中心
+              </Link>
               <button className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-2 text-left">
                 登录
               </button>
