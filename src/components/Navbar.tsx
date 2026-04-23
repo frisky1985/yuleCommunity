@@ -35,6 +35,7 @@ export function Navbar() {
     { label: '问答', to: '/qa' },
     { label: '活动', to: '/events' },
     { label: '开发板', to: '/hardware' },
+    { label: '下载中心', to: '/downloads' },
   ];
 
   return (

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { generateId } from '../data/communityData';
+import { CodeBlock } from '../components/CodeBlock';
 
 const categories = ['全部', 'MCAL', 'ECUAL', 'Service', '工具链', '功能安全', '架构设计'];
 
@@ -204,6 +205,37 @@ export const articlesData = [
     content: 'MISRA C:2012 是汽车嵌入式软件开发中最广泛使用的编码规范，遵循 MISRA 规则可以显著提高代码的安全性和可维护性。',
   },
 ];
+
+function renderRichContent(content: string) {
+  const parts: React.ReactNode[] = [];
+  const regex = /```(\w*)\n([\s\S]*?)\n```/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(content)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(
+        <div key={`text-${lastIndex}`} className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
+          {content.slice(lastIndex, match.index)}
+        </div>
+      );
+    }
+    const language = match[1] || 'c';
+    const code = match[2];
+    parts.push(<CodeBlock key={`code-${match.index}`} code={code} language={language} />);
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < content.length) {
+    parts.push(
+      <div key={`text-${lastIndex}`} className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
+        {content.slice(lastIndex)}
+      </div>
+    );
+  }
+
+  return parts;
+}
 
 const weeklyTop = [
   { title: 'AutoSAR BSW 分层架构深度解析：从 MCAL 到 RTE 的完整数据流', views: 3420 },
@@ -656,7 +688,7 @@ export function BlogPage() {
               </div>
 
               {/* Content */}
-              <div className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{activeArticle.content}</div>
+              <div>{renderRichContent(activeArticle.content)}</div>
 
               {/* Comments */}
               <div className="border-t border-border pt-4">
@@ -677,7 +709,7 @@ export function BlogPage() {
                           <span className="text-sm font-medium">{comment.author}</span>
                           <span className="text-xs text-muted-foreground ml-auto">{formatTime(comment.createdAt)}</span>
                         </div>
-                        <p className="text-sm text-foreground whitespace-pre-wrap">{comment.content}</p>
+                        <div className="text-sm text-foreground">{renderRichContent(comment.content)}</div>
                         <button
                           onClick={() => handleLikeComment(comment.id)}
                           className={`flex items-center gap-1 mt-2 text-xs transition-colors ${

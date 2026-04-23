@@ -16,6 +16,38 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useUserSystem } from '../hooks/useUserSystem';
 import { useNotifications } from '../hooks/useNotifications';
 import { initialForumPosts, generateId, type ForumPost, type ForumReply } from '../data/communityData';
+import { CodeBlock } from '../components/CodeBlock';
+
+function renderRichContent(content: string) {
+  const parts: React.ReactNode[] = [];
+  const regex = /```(\w*)\n([\s\S]*?)\n```/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(content)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(
+        <div key={`text-${lastIndex}`} className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
+          {content.slice(lastIndex, match.index)}
+        </div>
+      );
+    }
+    const language = match[1] || 'c';
+    const code = match[2];
+    parts.push(<CodeBlock key={`code-${match.index}`} code={code} language={language} />);
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < content.length) {
+    parts.push(
+      <div key={`text-${lastIndex}`} className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
+        {content.slice(lastIndex)}
+      </div>
+    );
+  }
+
+  return parts;
+}
 
 const sortOptions = [
   { label: '最新发布', value: 'newest' },
@@ -331,7 +363,7 @@ export function ForumPage() {
                     <span className="px-1.5 py-0.5 bg-muted rounded text-[10px] text-muted-foreground">{activePost.role}</span>
                     <span className="text-xs text-muted-foreground ml-auto">{formatTime(activePost.createdAt)}</span>
                   </div>
-                  <div className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{activePost.content}</div>
+                  <div>{renderRichContent(activePost.content)}</div>
                   <div className="flex items-center gap-2 mt-3">
                     {activePost.tags.map((tag) => (
                       <span key={tag} className="px-2 py-0.5 bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] rounded-full text-[10px]">
@@ -379,7 +411,7 @@ export function ForumPage() {
                             <span className="px-1.5 py-0.5 bg-muted rounded text-[10px] text-muted-foreground">{reply.role}</span>
                             <span className="text-xs text-muted-foreground ml-auto">{formatTime(reply.createdAt)}</span>
                           </div>
-                          <p className="text-sm text-foreground whitespace-pre-wrap">{reply.content}</p>
+                          <div className="text-sm text-foreground">{renderRichContent(reply.content)}</div>
                           <button
                             onClick={() => handleLikeReply(activePost.id, reply.id)}
                             className={`flex items-center gap-1 mt-2 text-xs transition-colors ${
