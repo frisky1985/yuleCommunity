@@ -95,9 +95,16 @@ export function ThemeProvider({ children, defaultTheme = 'system' }: ThemeProvid
   // Prevent flash of wrong theme
   if (!mounted) {
     return (
-      <div style={{ visibility: 'hidden' }}>
-        {children}
-      </div>
+      <ThemeContext.Provider value={{
+        theme: defaultTheme,
+        resolvedTheme: 'light',
+        setTheme: () => {},
+        toggleTheme: () => {}
+      }}>
+        <div style={{ visibility: 'hidden' }}>
+          {children}
+        </div>
+      </ThemeContext.Provider>
     );
   }
 
