@@ -18,11 +18,13 @@ import {
   ThumbsUp,
   MessageSquare,
 } from 'lucide-react';
+import { UserPoints } from '../components/UserPoints';
 
 const tabs = [
   { id: 'contributions', label: '我的贡献', icon: GitBranch },
   { id: 'learning', label: '学习进度', icon: BookOpen },
   { id: 'favorites', label: '收藏内容', icon: Heart },
+  { id: 'points', label: '积分等级', icon: Star },
 ];
 
 const userProfile = {
@@ -83,8 +85,6 @@ const favorites = [
 export function ProfilePage() {
   const [activeTab, setActiveTab] = useState('contributions');
 
-  const progressPercent = Math.round((userProfile.points / userProfile.nextLevel) * 100);
-
   return (
     <div className="min-h-screen pt-16">
       {/* Hero */}
@@ -112,22 +112,9 @@ export function ProfilePage() {
                 <span className="flex items-center gap-1">
                   <Calendar className="w-3.5 h-3.5" /> 加入于 {userProfile.joinDate}
                 </span>
-                <span className="flex items-center gap-1">
-                  <Star className="w-3.5 h-3.5 text-amber-500" /> {userProfile.points} 积分
-                </span>
               </div>
-              {/* Level Progress */}
               <div className="mt-4 max-w-md mx-auto md:mx-0">
-                <div className="flex items-center justify-between text-xs mb-1">
-                  <span className="text-muted-foreground">升级进度</span>
-                  <span className="font-medium">{userProfile.points} / {userProfile.nextLevel}</span>
-                </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] rounded-full transition-all"
-                    style={{ width: `${progressPercent}%` }}
-                  />
-                </div>
+                <UserPoints />
               </div>
             </div>
             {/* Actions */}
@@ -380,6 +367,13 @@ export function ProfilePage() {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Points */}
+          {activeTab === 'points' && (
+            <div className="max-w-2xl">
+              <UserPoints showHistory={true} />
             </div>
           )}
         </div>

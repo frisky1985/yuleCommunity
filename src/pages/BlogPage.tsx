@@ -32,7 +32,7 @@ interface BlogComment {
   createdAt: string;
 }
 
-const articlesData = [
+export const articlesData = [
   {
     id: 'blog-1',
     title: 'AutoSAR BSW 分层架构深度解析：从 MCAL 到 RTE 的完整数据流',

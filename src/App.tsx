@@ -12,6 +12,7 @@ import { DocsPage } from './pages/DocsPage';
 import { ForumPage } from './pages/ForumPage';
 import { QAPage } from './pages/QAPage';
 import { EventsPage } from './pages/EventsPage';
+import { HardwarePage } from './pages/HardwarePage';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/forum" element={<ForumPage />} />
           <Route path="/qa" element={<QAPage />} />
           <Route path="/events" element={<EventsPage />} />
+          <Route path="/hardware" element={<HardwarePage />} />
         </Routes>
       </main>
       <Footer />

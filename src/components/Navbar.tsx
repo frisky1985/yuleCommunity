@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Code2, Menu, X } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
+import { GlobalSearch } from './GlobalSearch';
+import { NotificationCenter } from './NotificationCenter';
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -32,6 +34,7 @@ export function Navbar() {
     { label: '论坛', to: '/forum' },
     { label: '问答', to: '/qa' },
     { label: '活动', to: '/events' },
+    { label: '开发板', to: '/hardware' },
   ];
 
   return (
@@ -84,6 +87,8 @@ export function Navbar() {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
+            <GlobalSearch />
+            <NotificationCenter />
             <ThemeToggle />
             <Link
               to="/profile"
@@ -101,6 +106,12 @@ export function Navbar() {
             <button className="text-sm font-medium bg-[hsl(var(--primary))] text-primary-foreground hover:bg-[hsl(var(--primary-glow))] transition-colors px-4 py-2 rounded-lg">
               免费加入
             </button>
+          </div>
+
+          {/* Mobile Actions */}
+          <div className="flex md:hidden items-center gap-1">
+            <GlobalSearch />
+            <NotificationCenter />
           </div>
 
           {/* Mobile Menu Button */}

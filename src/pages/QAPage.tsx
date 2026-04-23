@@ -17,6 +17,8 @@ import {
   ChevronUp,
 } from 'lucide-react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useUserSystem } from '../hooks/useUserSystem';
+import { useNotifications } from '../hooks/useNotifications';
 import { initialQuestions, generateId, type Question, type Answer } from '../data/communityData';
 
 const sortOptions = [
@@ -44,6 +46,8 @@ export function QAPage() {
   const [newBounty, setNewBounty] = useState(10);
   const [answerContent, setAnswerContent] = useState('');
   const currentUser = '我';
+  const { addPoints } = useUserSystem();
+  const { addNotification } = useNotifications();
 
   const filteredQuestions = questions
     .filter((q) => {
@@ -81,6 +85,8 @@ export function QAPage() {
   };
 
   const handleAcceptAnswer = (questionId: string, answerId: string) => {
+    const question = questions.find((q) => q.id === questionId);
+    const answer = question?.answers.find((a) => a.id === answerId);
     setQuestions((prev) =>
       prev.map((q) => {
         if (q.id !== questionId) return q;
@@ -94,10 +100,20 @@ export function QAPage() {
         };
       })
     );
+    if (answer && answer.author === currentUser) {
+      addPoints('accepted');
+      addNotification({
+        type: 'points_change',
+        title: '回答被采纳',
+        message: `你的回答被采纳，获得 50 积分`,
+        link: '/qa',
+      });
+    }
   };
 
   const handleAddAnswer = (questionId: string) => {
     if (!answerContent.trim()) return;
+    const question = questions.find((q) => q.id === questionId);
     const newAnswer: Answer = {
       id: generateId('ans'),
       content: answerContent.trim(),
@@ -113,6 +129,15 @@ export function QAPage() {
       prev.map((q) => (q.id === questionId ? { ...q, answers: [...q.answers, newAnswer] } : q))
     );
     setAnswerContent('');
+    addPoints('answer');
+    if (question && question.author === currentUser) {
+      addNotification({
+        type: 'answer',
+        title: '有人回答了你的问题',
+        message: `你的问题《${question.title}》收到了新回答`,
+        link: '/qa',
+      });
+    }
   };
 
   const handleCreateQuestion = () => {
@@ -141,6 +166,7 @@ export function QAPage() {
     setNewTags('');
     setNewBounty(10);
     setShowNewQuestion(false);
+    addPoints('post', '发布问题');
   };
 
   const formatTime = (iso: string) => {

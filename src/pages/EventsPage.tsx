@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Calendar,
   Clock,
@@ -12,6 +12,8 @@ import {
   Search,
 } from 'lucide-react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useUserSystem } from '../hooks/useUserSystem';
+import { useNotifications } from '../hooks/useNotifications';
 import { initialEvents, generateId, type CommunityEvent } from '../data/communityData';
 
 const typeFilters = [
@@ -46,6 +48,9 @@ export function EventsPage() {
     tags: '',
   });
   const currentUser = '我';
+  const { addPoints } = useUserSystem();
+  const { addNotification } = useNotifications();
+  const notifiedEventsRef = useRef<Set<string>>(new Set());
 
   const filteredEvents = events.filter((evt) => {
     const matchSearch =
@@ -57,17 +62,28 @@ export function EventsPage() {
   });
 
   const handleRegister = (eventId: string) => {
+    const evt = events.find((e) => e.id === eventId);
+    const alreadyRegistered = evt?.attendees.includes(currentUser);
     setEvents((prev) =>
-      prev.map((evt) => {
-        if (evt.id !== eventId) return evt;
-        const alreadyRegistered = evt.attendees.includes(currentUser);
-        if (alreadyRegistered) {
-          return { ...evt, attendees: evt.attendees.filter((a) => a !== currentUser) };
+      prev.map((e) => {
+        if (e.id !== eventId) return e;
+        const registered = e.attendees.includes(currentUser);
+        if (registered) {
+          return { ...e, attendees: e.attendees.filter((a) => a !== currentUser) };
         }
-        if (evt.attendees.length >= evt.maxAttendees) return evt;
-        return { ...evt, attendees: [...evt.attendees, currentUser] };
+        if (e.attendees.length >= e.maxAttendees) return e;
+        return { ...e, attendees: [...e.attendees, currentUser] };
       })
     );
+    if (evt && !alreadyRegistered && evt.attendees.length < evt.maxAttendees && evt.status !== 'ended') {
+      addPoints('event', `报名活动：${evt.title}`);
+      addNotification({
+        type: 'event_start',
+        title: '活动报名成功',
+        message: `你已报名《${evt.title}》，记得准时参加`,
+        link: '/events',
+      });
+    }
   };
 
   const handleCreateEvent = () => {
@@ -106,6 +122,24 @@ export function EventsPage() {
     });
     setShowNewEvent(false);
   };
+
+  useEffect(() => {
+    events.forEach((evt) => {
+      if (evt.status !== 'upcoming' || notifiedEventsRef.current.has(evt.id)) return;
+      const eventDate = new Date(evt.date);
+      const now = new Date();
+      const diffDays = (eventDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
+      if (diffDays >= 0 && diffDays <= 3) {
+        addNotification({
+          type: 'event_start',
+          title: '活动即将开始',
+          message: `《${evt.title}》将在 ${evt.date} 开始，记得参加`,
+          link: '/events',
+        });
+        notifiedEventsRef.current.add(evt.id);
+      }
+    });
+  }, [events, addNotification]);
 
   const getStatusBadge = (status: string) => {
     switch (status) {

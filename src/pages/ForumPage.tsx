@@ -13,6 +13,8 @@ import {
   Filter,
 } from 'lucide-react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useUserSystem } from '../hooks/useUserSystem';
+import { useNotifications } from '../hooks/useNotifications';
 import { initialForumPosts, generateId, type ForumPost, type ForumReply } from '../data/communityData';
 
 const sortOptions = [
@@ -36,6 +38,8 @@ export function ForumPage() {
   const [newPostTags, setNewPostTags] = useState('');
   const [replyContent, setReplyContent] = useState('');
   const currentUser = '我';
+  const { addPoints } = useUserSystem();
+  const { addNotification } = useNotifications();
 
   const activePost = posts.find((p) => p.id === activePostId);
 
@@ -91,6 +95,7 @@ export function ForumPage() {
 
   const handleAddReply = (postId: string) => {
     if (!replyContent.trim()) return;
+    const post = posts.find((p) => p.id === postId);
     const newReply: ForumReply = {
       id: generateId('fr'),
       content: replyContent.trim(),
@@ -102,9 +107,18 @@ export function ForumPage() {
       createdAt: new Date().toISOString(),
     };
     setPosts((prev) =>
-      prev.map((post) => (post.id === postId ? { ...post, replies: [...post.replies, newReply] } : post))
+      prev.map((p) => (p.id === postId ? { ...p, replies: [...p.replies, newReply] } : p))
     );
     setReplyContent('');
+    addPoints('reply');
+    if (post && post.author === currentUser) {
+      addNotification({
+        type: 'reply',
+        title: '有人回复了你的帖子',
+        message: `你的帖子《${post.title}》收到了新回复`,
+        link: '/forum',
+      });
+    }
   };
 
   const handleCreatePost = () => {
@@ -133,6 +147,7 @@ export function ForumPage() {
     setNewPostContent('');
     setNewPostTags('');
     setShowNewPost(false);
+    addPoints('post');
   };
 
   const formatTime = (iso: string) => {
