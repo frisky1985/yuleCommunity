@@ -9,6 +9,9 @@ import { CommunityPage } from './pages/CommunityPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { BlogPage } from './pages/BlogPage';
 import { DocsPage } from './pages/DocsPage';
+import { ForumPage } from './pages/ForumPage';
+import { QAPage } from './pages/QAPage';
+import { EventsPage } from './pages/EventsPage';
 
 function App() {
   return (
@@ -24,6 +27,9 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/docs" element={<DocsPage />} />
+          <Route path="/forum" element={<ForumPage />} />
+          <Route path="/qa" element={<QAPage />} />
+          <Route path="/events" element={<EventsPage />} />
         </Routes>
       </main>
       <Footer />

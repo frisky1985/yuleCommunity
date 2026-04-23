@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   MessageCircle,
   Calendar,
@@ -13,6 +14,8 @@ import {
   MessageSquare,
   Star,
   Award,
+  HelpCircle,
+  Video,
 } from 'lucide-react';
 
 const forumTopics = [
@@ -287,6 +290,59 @@ export function CommunityPage() {
               <div className="text-2xl font-bold text-[hsl(var(--accent))]">50+</div>
               <div className="text-sm text-muted-foreground">开放任务</div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Links */}
+      <section className="py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Link
+              to="/forum"
+              className="group bg-card border border-border rounded-xl p-6 hover:border-[hsl(var(--accent))]/30 hover:shadow-elegant transition-all"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
+                  <MessageSquare className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold group-hover:text-[hsl(var(--accent))] transition-colors">技术论坛</h3>
+                  <p className="text-sm text-muted-foreground">发帖讨论、分享经验、求助答疑</p>
+                </div>
+                <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-[hsl(var(--accent))] transition-colors" />
+              </div>
+            </Link>
+            <Link
+              to="/qa"
+              className="group bg-card border border-border rounded-xl p-6 hover:border-[hsl(var(--accent))]/30 hover:shadow-elegant transition-all"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center flex-shrink-0">
+                  <HelpCircle className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold group-hover:text-[hsl(var(--accent))] transition-colors">技术问答</h3>
+                  <p className="text-sm text-muted-foreground">悬赏提问、专家解答、积累知识</p>
+                </div>
+                <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-[hsl(var(--accent))] transition-colors" />
+              </div>
+            </Link>
+            <Link
+              to="/events"
+              className="group bg-card border border-border rounded-xl p-6 hover:border-[hsl(var(--accent))]/30 hover:shadow-elegant transition-all"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center flex-shrink-0">
+                  <Video className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold group-hover:text-[hsl(var(--accent))] transition-colors">社区活动</h3>
+                  <p className="text-sm text-muted-foreground">线上沙龙、线下研讨、实战训练营</p>
+                </div>
+                <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-[hsl(var(--accent))] transition-colors" />
+              </div>
+            </Link>
           </div>
         </div>
       </section>

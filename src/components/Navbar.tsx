@@ -28,7 +28,9 @@ export function Navbar() {
     { label: '学习成长', to: '/learning' },
     { label: '技术博客', to: '/blog' },
     { label: '文档中心', to: '/docs' },
-    { label: '社区', to: '/community' },
+    { label: '论坛', to: '/forum' },
+    { label: '问答', to: '/qa' },
+    { label: '活动', to: '/events' },
   ];
 
   return (
@@ -52,7 +54,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-6">
             {navLinks.map((link) => (
               <NavLink
                 key={link.to}
