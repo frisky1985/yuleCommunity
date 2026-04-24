@@ -17,7 +17,13 @@ import {
   Award,
   HelpCircle,
   Video,
+  PieChart,
+  Activity,
 } from 'lucide-react';
+import {
+  CommunityContentDistribution,
+  CommunityActivityTrend,
+} from '../components/admin/CommunityStatsCharts';
 
 const forumTopics = [
   {
@@ -294,6 +300,32 @@ export function CommunityPage() {
             <div>
               <div className="text-2xl font-bold text-[hsl(var(--accent))]">50+</div>
               <div className="text-sm text-muted-foreground">开放任务</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Public Stats Charts */}
+      <section className="py-10 border-y border-border bg-card/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-2 mb-6">
+            <Activity className="w-5 h-5 text-[hsl(var(--accent))]" />
+            <h2 className="text-xl font-bold">社区数据概览</h2>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-card border border-border rounded-xl p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <PieChart className="w-4 h-4 text-[hsl(var(--accent))]" />
+                <h3 className="font-semibold">内容类型分布</h3>
+              </div>
+              <CommunityContentDistribution />
+            </div>
+            <div className="bg-card border border-border rounded-xl p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Activity className="w-4 h-4 text-[hsl(var(--accent))]" />
+                <h3 className="font-semibold">近14天活跃度</h3>
+              </div>
+              <CommunityActivityTrend />
             </div>
           </div>
         </div>

@@ -9,6 +9,9 @@ import {
   CheckCircle2,
   AlertTriangle,
   HardDrive,
+  PieChart,
+  BarChart3,
+  Activity,
 } from 'lucide-react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { getLevelInfo } from '../hooks/useUserSystem';
@@ -20,6 +23,10 @@ import {
   type Question,
   type CommunityEvent,
 } from '../data/communityData';
+import { UserGrowthChart } from '../components/admin/UserGrowthChart';
+import { ContentDistributionChart } from '../components/admin/ContentDistributionChart';
+import { PointsSourceChart } from '../components/admin/PointsSourceChart';
+import { ActivityTrendChart } from '../components/admin/ActivityTrendChart';
 
 interface RecentActivity {
   id: string;
@@ -169,6 +176,45 @@ export function AdminDashboard() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* User Growth - spans 2 columns */}
+        <div className="lg:col-span-2 bg-card border border-border rounded-xl p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <TrendingUp className="w-4 h-4 text-[hsl(var(--accent))]" />
+            <h3 className="font-semibold">用户增长趋势（近30天）</h3>
+          </div>
+          <UserGrowthChart />
+        </div>
+
+        {/* Content Distribution */}
+        <div className="bg-card border border-border rounded-xl p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <PieChart className="w-4 h-4 text-[hsl(var(--accent))]" />
+            <h3 className="font-semibold">内容分布</h3>
+          </div>
+          <ContentDistributionChart />
+        </div>
+
+        {/* Points Source */}
+        <div className="bg-card border border-border rounded-xl p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <BarChart3 className="w-4 h-4 text-[hsl(var(--accent))]" />
+            <h3 className="font-semibold">积分来源</h3>
+          </div>
+          <PointsSourceChart />
+        </div>
+
+        {/* Activity Trend - spans 2 columns */}
+        <div className="lg:col-span-2 bg-card border border-border rounded-xl p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <Activity className="w-4 h-4 text-[hsl(var(--accent))]" />
+            <h3 className="font-semibold">社区活跃度（近14天）</h3>
+          </div>
+          <ActivityTrendChart />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

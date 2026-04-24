@@ -20,6 +20,7 @@ import {
   MessageSquare,
 } from 'lucide-react';
 import { UserPoints } from '../components/UserPoints';
+import { PointsHistoryChart } from '../components/admin/PointsHistoryChart';
 
 const tabs = [
   { id: 'contributions', label: '我的贡献', icon: GitBranch },
@@ -377,8 +378,12 @@ export function ProfilePage() {
 
           {/* Points */}
           {activeTab === 'points' && (
-            <div className="max-w-2xl">
+            <div className="max-w-2xl space-y-6">
               <UserPoints showHistory={true} />
+              <div className="bg-card border border-border rounded-xl p-6">
+                <h3 className="text-lg font-semibold mb-4">积分变动趋势（近14天）</h3>
+                <PointsHistoryChart />
+              </div>
             </div>
           )}
         </div>
