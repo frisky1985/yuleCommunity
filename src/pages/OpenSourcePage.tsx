@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import {
   Star,
   GitFork,
@@ -106,6 +107,10 @@ export function OpenSourcePage() {
 
   return (
     <div className="min-h-screen pt-16">
+      <Helmet>
+        <title>开源代码 - YuleTech | AutoSAR BSW 开源协议栈</title>
+        <meta name="description" content="基于 AutoSAR Classic Platform 4.x 标准，为 NXP i.MX8M Mini 处理器构建完整的 BSW 栈。从底层驱动到应用组件，全部开源，永久免费。" />
+      </Helmet>
       {/* Hero */}
       <section className="relative py-20 overflow-hidden bg-gradient-to-b from-[hsl(var(--primary))]/5 to-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

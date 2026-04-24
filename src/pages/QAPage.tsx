@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import {
   HelpCircle,
   CheckCircle2,
@@ -185,6 +186,10 @@ export function QAPage() {
 
   return (
     <div className="min-h-screen bg-background pt-16">
+      <Helmet>
+        <title>技术问答 - YuleTech | AutoSAR 悬赏问答</title>
+        <meta name="description" content="悬赏提问，专家解答，共建 AutoSAR 知识库。解决 MCAL、ECUAL、Service 层开发中的具体技术难题。" />
+      </Helmet>
       {/* Header */}
       <div className="bg-gradient-to-br from-muted/50 to-background border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

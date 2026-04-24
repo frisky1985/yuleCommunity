@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import {
   FileText,
   Search,
@@ -330,6 +331,10 @@ export function BlogPage() {
 
   return (
     <div className="min-h-screen pt-16">
+      <Helmet>
+        <title>技术博客 - YuleTech | AutoSAR BSW 技术文章</title>
+        <meta name="description" content="由 YuleTech 技术团队和社区专家撰写的深度技术文章，涵盖 AutoSAR BSW 各层级的开发实践、架构设计与性能优化经验。" />
+      </Helmet>
       {/* Hero */}
       <section className="relative py-20 overflow-hidden bg-gradient-to-b from-[hsl(var(--primary))]/5 to-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

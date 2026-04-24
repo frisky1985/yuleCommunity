@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Helmet } from 'react-helmet-async';
 import {
   Calendar,
   Clock,
@@ -168,6 +169,10 @@ export function EventsPage() {
 
   return (
     <div className="min-h-screen bg-background pt-16">
+      <Helmet>
+        <title>社区活动 - YuleTech | 线上研讨会与线下Meetup</title>
+        <meta name="description" content="参加 YuleTech 线上技术沙龙、线下研讨会和实战训练营。与行业专家面对面交流，拓展技术视野。" />
+      </Helmet>
       {/* Header */}
       <div className="bg-gradient-to-br from-muted/50 to-background border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import {
   BookOpen,
   Play,
@@ -199,6 +200,10 @@ export function LearningPage() {
 
   return (
     <div className="min-h-screen pt-16">
+      <Helmet>
+        <title>学习成长 - YuleTech | AutoSAR 教程与认证</title>
+        <meta name="description" content="系统化的 AutoSAR 学习路径，从入门到专家。视频课程、实战项目、专家问答，帮助你快速成长为汽车基础软件专家。" />
+      </Helmet>
       {/* Hero */}
       <section className="relative py-20 overflow-hidden bg-gradient-to-b from-[hsl(var(--primary))]/5 to-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

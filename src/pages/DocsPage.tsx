@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import {
   BookOpen,
   Search,
@@ -113,6 +114,10 @@ export function DocsPage() {
 
   return (
     <div className="min-h-screen pt-16">
+      <Helmet>
+        <title>文档中心 - YuleTech | AutoSAR 规范与API文档</title>
+        <meta name="description" content="完整的 AutoSAR BSW 模块 API 文档、配置指南和开发手册。从 MCAL 驱动到 RTE 接口，帮助你快速上手项目开发。" />
+      </Helmet>
       {/* Hero */}
       <section className="relative py-20 overflow-hidden bg-gradient-to-b from-[hsl(var(--primary))]/5 to-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

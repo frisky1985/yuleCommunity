@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Search, Wrench, FileText, BookOpen, Code, Download, HardDrive } from 'lucide-react';
 
 type DownloadCategory = '全部' | '工具链' | '手册' | '笔记' | '代码';
@@ -131,6 +132,10 @@ export function DownloadPage() {
 
   return (
     <div className="min-h-screen pt-16">
+      <Helmet>
+        <title>下载中心 - YuleTech | 工具链、手册、示例代码</title>
+        <meta name="description" content="获取 YuleTech AutoSAR BSW 开发所需的工具链、数据手册、应用笔记和示例代码。一站式资源下载平台。" />
+      </Helmet>
       {/* Hero */}
       <section className="relative py-20 overflow-hidden bg-gradient-to-b from-[hsl(var(--primary))]/5 to-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

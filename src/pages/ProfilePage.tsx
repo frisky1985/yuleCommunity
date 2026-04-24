@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import {
   User,
   Award,
@@ -87,6 +88,10 @@ export function ProfilePage() {
 
   return (
     <div className="min-h-screen pt-16">
+      <Helmet>
+        <title>个人中心 - YuleTech | 积分等级与通知</title>
+        <meta name="description" content="查看你的贡献记录、学习进度、收藏内容和积分等级。管理个人资料，追踪在 YuleTech 社区的成长轨迹。" />
+      </Helmet>
       {/* Hero */}
       <section className="relative py-16 overflow-hidden bg-gradient-to-b from-[hsl(var(--primary))]/5 to-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

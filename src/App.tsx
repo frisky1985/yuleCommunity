@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { OfflineIndicator } from './components/OfflineIndicator';
 import { HomePage } from './pages/HomePage';
 import { OpenSourcePage } from './pages/OpenSourcePage';
 import { ToolchainPage } from './pages/ToolchainPage';
@@ -18,6 +19,7 @@ import { DownloadPage } from './pages/DownloadPage';
 function App() {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <OfflineIndicator />
       <Navbar />
       <main>
         <Routes>

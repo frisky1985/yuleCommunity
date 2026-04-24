@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import {
   MessageSquare,
   ThumbsUp,
@@ -198,6 +199,10 @@ export function ForumPage() {
 
   return (
     <div className="min-h-screen bg-background pt-16">
+      <Helmet>
+        <title>技术论坛 - YuleTech | AutoSAR 讨论区</title>
+        <meta name="description" content="讨论 AutoSAR BSW 开发中的技术问题，分享量产经验。发帖讨论、分享经验、求助答疑，与社区工程师共同成长。" />
+      </Helmet>
       {/* Header */}
       <div className="bg-gradient-to-br from-muted/50 to-background border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

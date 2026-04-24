@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import {
   Wrench,
   Download,
@@ -184,6 +185,10 @@ export function ToolchainPage() {
 
   return (
     <div className="min-h-screen pt-16">
+      <Helmet>
+        <title>开发工具链 - YuleTech | AutoSAR 配置与编译工具</title>
+        <meta name="description" content="从可视化配置到编译构建，从调试诊断到测试验证，YuleTech 提供完整的 AutoSAR BSW 开发工具链。" />
+      </Helmet>
       {/* Hero */}
       <section className="relative py-20 overflow-hidden bg-gradient-to-b from-[hsl(var(--primary))]/5 to-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

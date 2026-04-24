@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import {
   Cpu,
   MemoryStick,
@@ -35,6 +36,10 @@ const tutorials = [
 export function HardwarePage() {
   return (
     <div className="min-h-screen pt-16">
+      <Helmet>
+        <title>开发板 - YuleTech | i.MX8M Mini 硬件平台</title>
+        <meta name="description" content="专为 AutoSAR BSW 开发优化的 i.MX8M Mini 开发板，预装 YuleTech 开源基础软件栈，提供从驱动开发到系统集成的完整硬件支持。" />
+      </Helmet>
       {/* Hero */}
       <section className="relative py-16 overflow-hidden bg-gradient-to-b from-[hsl(var(--primary))]/5 to-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

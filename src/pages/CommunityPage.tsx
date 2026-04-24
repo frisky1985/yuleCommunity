@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import {
   MessageCircle,
   Calendar,
@@ -240,6 +241,10 @@ export function CommunityPage() {
 
   return (
     <div className="min-h-screen pt-16">
+      <Helmet>
+        <title>社区互动 - YuleTech | 论坛、问答、活动</title>
+        <meta name="description" content="加入 YuleTech 社区，与 2,800+ 汽车软件工程师一起交流学习、协作开发。技术论坛、活动沙龙、工程师圈子、众包任务。" />
+      </Helmet>
       {/* Hero */}
       <section className="relative py-20 overflow-hidden bg-gradient-to-b from-[hsl(var(--primary))]/5 to-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
