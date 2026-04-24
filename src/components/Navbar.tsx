@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Code2, Menu, X } from 'lucide-react';
+import { Code2, Menu, X, Shield } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { GlobalSearch } from './GlobalSearch';
 import { NotificationCenter } from './NotificationCenter';
+import { useAdminAuth } from '../hooks/useAdminAuth';
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { isAdmin } = useAdminAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -91,6 +93,15 @@ export function Navbar() {
             <GlobalSearch />
             <NotificationCenter />
             <ThemeToggle />
+            {isAdmin && (
+              <Link
+                to="/admin/dashboard"
+                className="p-2 text-muted-foreground hover:text-[hsl(var(--accent))] transition-colors rounded-lg hover:bg-muted"
+                title="管理后台"
+              >
+                <Shield className="w-4 h-4" />
+              </Link>
+            )}
             <Link
               to="/profile"
               className={`text-sm font-medium transition-colors px-3 py-2 ${
@@ -113,6 +124,15 @@ export function Navbar() {
           <div className="flex md:hidden items-center gap-1">
             <GlobalSearch />
             <NotificationCenter />
+            {isAdmin && (
+              <Link
+                to="/admin/dashboard"
+                className="p-2 text-muted-foreground hover:text-[hsl(var(--accent))] transition-colors"
+                title="管理后台"
+              >
+                <Shield className="w-4 h-4" />
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}

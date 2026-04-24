@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import {
   MessageSquare,
@@ -12,11 +12,12 @@ import {
   Plus,
   Search,
   Filter,
+  Pin,
 } from 'lucide-react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useUserSystem } from '../hooks/useUserSystem';
 import { useNotifications } from '../hooks/useNotifications';
-import { initialForumPosts, generateId, type ForumPost, type ForumReply } from '../data/communityData';
+import { initialForumPosts, generateId, migrateForumPosts, type ForumPost, type ForumReply } from '../data/communityData';
 import { CodeBlock } from '../components/CodeBlock';
 
 function renderRichContent(content: string) {
@@ -76,6 +77,12 @@ export function ForumPage() {
 
   const activePost = posts.find((p) => p.id === activePostId);
 
+  // Migrate old data on mount
+  useEffect(() => {
+    setPosts((prev) => migrateForumPosts(prev));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const filteredPosts = posts
     .filter((post) => {
       const matchSearch =
@@ -85,6 +92,9 @@ export function ForumPage() {
       return matchSearch && matchTag;
     })
     .sort((a, b) => {
+      // Pinned posts always on top
+      if (a.isPinned && !b.isPinned) return -1;
+      if (!a.isPinned && b.isPinned) return 1;
       if (sortBy === 'newest') return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       if (sortBy === 'replies') return b.replies.length - a.replies.length;
       if (sortBy === 'likes') return b.likes - a.likes;
@@ -290,6 +300,7 @@ export function ForumPage() {
                     <h3 className="font-semibold text-foreground group-hover:text-[hsl(var(--accent))] transition-colors line-clamp-1">
                       {post.title}
                     </h3>
+                    {post.isPinned && <Pin className="w-4 h-4 text-[hsl(var(--accent))] flex-shrink-0" />}
                     {post.hot && <Flame className="w-4 h-4 text-orange-500 flex-shrink-0" />}
                   </div>
                   <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{post.content}</p>

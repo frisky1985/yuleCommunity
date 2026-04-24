@@ -23,6 +23,7 @@ export interface ForumPost {
   views: number;
   createdAt: string;
   hot: boolean;
+  isPinned?: boolean;
 }
 
 export interface Answer {
@@ -104,6 +105,7 @@ export const initialForumPosts: ForumPost[] = [
     views: 342,
     createdAt: '2026-04-22T09:00:00',
     hot: true,
+    isPinned: false,
   },
   {
     id: 'fp-2',
@@ -130,6 +132,7 @@ export const initialForumPosts: ForumPost[] = [
     views: 856,
     createdAt: '2026-04-21T14:00:00',
     hot: true,
+    isPinned: false,
   },
   {
     id: 'fp-3',
@@ -145,6 +148,7 @@ export const initialForumPosts: ForumPost[] = [
     views: 156,
     createdAt: '2026-04-20T10:00:00',
     hot: false,
+    isPinned: false,
   },
   {
     id: 'fp-4',
@@ -191,6 +195,7 @@ export const initialForumPosts: ForumPost[] = [
     views: 2340,
     createdAt: '2026-04-19T08:00:00',
     hot: true,
+    isPinned: false,
   },
   {
     id: 'fp-5',
@@ -206,6 +211,7 @@ export const initialForumPosts: ForumPost[] = [
     views: 445,
     createdAt: '2026-04-18T15:00:00',
     hot: false,
+    isPinned: false,
   },
 ];
 
@@ -354,4 +360,11 @@ export const initialEvents: CommunityEvent[] = [
 
 export function generateId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
+export function migrateForumPosts(posts: ForumPost[]): ForumPost[] {
+  return posts.map((post) => ({
+    ...post,
+    isPinned: post.isPinned ?? false,
+  }));
 }
