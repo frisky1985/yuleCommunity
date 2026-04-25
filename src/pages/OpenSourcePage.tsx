@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import {
@@ -16,11 +16,35 @@ import {
   Search,
   ArrowRight,
   ChevronRight,
+  RefreshCw,
+  AlertCircle,
+  Code2,
 } from 'lucide-react';
+import { useGitHubRepos } from '../hooks/useGitHubRepos';
 
 const layerFilters = ['全部', 'MCAL', 'ECUAL', 'Service', 'RTE + ASW'];
 
-const modules = [
+interface StaticModuleItem {
+  name: string;
+  status: string;
+  version: string;
+  stars: number;
+  forks: number;
+  docs: boolean;
+  desc: string;
+}
+
+interface StaticModuleGroup {
+  category: string;
+  layer: string;
+  icon: React.ElementType;
+  color: string;
+  badgeColor: string;
+  desc: string;
+  items: StaticModuleItem[];
+}
+
+const staticModules: StaticModuleGroup[] = [
   {
     category: 'MCAL',
     layer: 'MCAL',
@@ -94,6 +118,18 @@ const modules = [
 export function OpenSourcePage() {
   const [activeFilter, setActiveFilter] = useState('全部');
   const [searchQuery, setSearchQuery] = useState('');
+  const { stats, loading, error, refresh, findRepo } = useGitHubRepos();
+
+  // Merge static data with GitHub API data
+  const modules = useMemo(() => {
+    return staticModules.map((group) => ({
+      ...group,
+      items: group.items.map((item) => ({
+        ...item,
+        repo: findRepo(item.name),
+      })),
+    }));
+  }, [findRepo]);
 
   const filteredModules = modules
     .filter((m) => activeFilter === '全部' || m.layer === activeFilter)
@@ -106,6 +142,28 @@ export function OpenSourcePage() {
       ),
     }))
     .filter((m) => m.items.length > 0);
+
+  // Compute totals from merged data
+  const totalStars = useMemo(() => {
+    return modules.reduce(
+      (sum, g) => sum + g.items.reduce((s, i) => s + (i.repo?.stargazers_count ?? i.stars), 0),
+      0
+    );
+  }, [modules]);
+
+  const totalForks = useMemo(() => {
+    return modules.reduce(
+      (sum, g) => sum + g.items.reduce((s, i) => s + (i.repo?.forks_count ?? i.forks), 0),
+      0
+    );
+  }, [modules]);
+
+  const matchedReposCount = useMemo(() => {
+    return modules.reduce(
+      (sum, g) => sum + g.items.filter((i) => i.repo !== undefined).length,
+      0
+    );
+  }, [modules]);
 
   return (
     <div className="min-h-screen pt-16">
@@ -130,11 +188,16 @@ export function OpenSourcePage() {
               从底层驱动到应用组件，全部开源，永久免费。
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button className="group flex items-center gap-2 px-6 py-3 bg-[hsl(var(--primary))] text-primary-foreground rounded-xl font-semibold hover:bg-[hsl(var(--primary-glow))] transition-all">
-                <GitFork className="w-4 h-4" />
-                Fork 全部代码
+              <a
+                href="https://github.com/frisky1985/yuleCommunity"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-2 px-6 py-3 bg-[hsl(var(--primary))] text-primary-foreground rounded-xl font-semibold hover:bg-[hsl(var(--primary-glow))] transition-all"
+              >
+                <Code2 className="w-4 h-4" />
+                在 GitHub 上查看
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </a>
               <button className="flex items-center gap-2 px-6 py-3 bg-muted text-foreground rounded-xl font-semibold hover:bg-muted/80 transition-all border border-border">
                 <BookOpen className="w-4 h-4" />
                 贡献指南
@@ -157,13 +220,59 @@ export function OpenSourcePage() {
               <div className="text-sm text-muted-foreground">已完成</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-[hsl(var(--accent))]">5</div>
-              <div className="text-sm text-muted-foreground">开发中</div>
+              <div className="flex items-center justify-center gap-1.5">
+                <div className="text-2xl font-bold text-[hsl(var(--accent))]">{totalStars}</div>
+                {stats && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-medium">
+                    实时
+                  </span>
+                )}
+              </div>
+              <div className="text-sm text-muted-foreground">总 Stars</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-[hsl(var(--accent))]">9</div>
-              <div className="text-sm text-muted-foreground">规划中</div>
+              <div className="flex items-center justify-center gap-1.5">
+                <div className="text-2xl font-bold text-[hsl(var(--accent))]">{totalForks}</div>
+                {stats && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-medium">
+                    实时
+                  </span>
+                )}
+              </div>
+              <div className="text-sm text-muted-foreground">总 Forks</div>
             </div>
+          </div>
+
+          {/* GitHub sync status */}
+          <div className="mt-4 flex items-center justify-center gap-3">
+            {loading && (
+              <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <RefreshCw className="w-3 h-3 animate-spin" />
+                正在同步 GitHub 数据...
+              </span>
+            )}
+            {error && (
+              <span className="flex items-center gap-1.5 text-xs text-amber-500">
+                <AlertCircle className="w-3 h-3" />
+                GitHub 数据同步失败，显示缓存数据
+              </span>
+            )}
+            {stats && !loading && (
+              <div className="flex items-center gap-3">
+                <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Code2 className="w-3 h-3" />
+                  已同步 {matchedReposCount}/32 个模块
+                </span>
+                <button
+                  onClick={refresh}
+                  className="flex items-center gap-1 text-xs text-[hsl(var(--accent))] hover:underline"
+                  title="刷新 GitHub 数据"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                  刷新
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -220,69 +329,85 @@ export function OpenSourcePage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {mod.items.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={`/opensource/${item.name}`}
-                    className="group bg-card border border-border rounded-xl p-5 hover:border-[hsl(var(--accent))]/30 transition-all hover:shadow-elegant block"
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono font-semibold text-lg">{item.name}</span>
-                        {item.status === '已完成' ? (
-                          <span className="flex items-center gap-1 text-xs font-medium text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                            <CheckCircle2 className="w-3 h-3" /> 已完成
-                          </span>
-                        ) : item.status === '开发中' ? (
-                          <span className="flex items-center gap-1 text-xs font-medium text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full">
-                            <Clock className="w-3 h-3" /> 开发中
-                          </span>
-                        ) : (
-                          <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                            <Clock className="w-3 h-3" /> 规划中
-                          </span>
-                        )}
+                {mod.items.map((item) => {
+                  const stars = item.repo?.stargazers_count ?? item.stars;
+                  const forks = item.repo?.forks_count ?? item.forks;
+                  const hasRepo = item.repo !== undefined;
+
+                  return (
+                    <Link
+                      key={item.name}
+                      to={`/opensource/${item.name}`}
+                      className="group bg-card border border-border rounded-xl p-5 hover:border-[hsl(var(--accent))]/30 transition-all hover:shadow-elegant block"
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <span className="font-mono font-semibold text-lg">{item.name}</span>
+                          {item.status === '已完成' ? (
+                            <span className="flex items-center gap-1 text-xs font-medium text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                              <CheckCircle2 className="w-3 h-3" /> 已完成
+                            </span>
+                          ) : item.status === '开发中' ? (
+                            <span className="flex items-center gap-1 text-xs font-medium text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full">
+                              <Clock className="w-3 h-3" /> 开发中
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                              <Clock className="w-3 h-3" /> 规划中
+                            </span>
+                          )}
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
                       </div>
-                      <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-4">{item.desc}</p>
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-4 text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Star className="w-3.5 h-3.5" /> {item.stars}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <GitFork className="w-3.5 h-3.5" /> {item.forks}
-                        </span>
-                        {item.version !== '-' && (
-                          <span className="font-mono text-xs">{item.version}</span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {item.docs && (
+                      <p className="text-sm text-muted-foreground mb-4">{item.desc}</p>
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-4 text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Star className="w-3.5 h-3.5" /> {stars}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <GitFork className="w-3.5 h-3.5" /> {forks}
+                          </span>
+                          {item.version !== '-' && (
+                            <span className="font-mono text-xs">{item.version}</span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {hasRepo && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-medium">
+                              GitHub
+                            </span>
+                          )}
+                          {item.docs && (
+                            <span
+                              className="p-1.5 rounded-md text-muted-foreground"
+                              onClick={(e) => e.preventDefault()}
+                            >
+                              <BookOpen className="w-4 h-4" />
+                            </span>
+                          )}
                           <span
                             className="p-1.5 rounded-md text-muted-foreground"
                             onClick={(e) => e.preventDefault()}
                           >
-                            <BookOpen className="w-4 h-4" />
+                            <Download className="w-4 h-4" />
                           </span>
-                        )}
-                        <span
-                          className="p-1.5 rounded-md text-muted-foreground"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <Download className="w-4 h-4" />
-                        </span>
-                        <span
-                          className="p-1.5 rounded-md text-muted-foreground"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                        </span>
+                          {item.repo && (
+                            <a
+                              href={item.repo.html_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-1.5 rounded-md text-muted-foreground hover:text-[hsl(var(--accent))] transition-colors"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                            </a>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           ))}
