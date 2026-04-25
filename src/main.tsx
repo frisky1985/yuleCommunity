@@ -18,16 +18,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   </React.StrictMode>,
 )
 
-// Register service worker for PWA
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/yuleCommunity/sw.js')
-      .then((registration) => {
-        console.log('SW registered:', registration.scope)
-      })
-      .catch((error) => {
-        console.log('SW registration failed:', error)
-      })
-  })
-}
+// Service worker is automatically registered by vite-plugin-pwa via registerSW.js
+// injected into index.html during build. No manual registration needed.
