@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import {
   Star,
   GitFork,
@@ -14,6 +15,7 @@ import {
   Radio,
   Search,
   ArrowRight,
+  ChevronRight,
 } from 'lucide-react';
 
 const layerFilters = ['全部', 'MCAL', 'ECUAL', 'Service', 'RTE + ASW'];
@@ -219,9 +221,10 @@ export function OpenSourcePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {mod.items.map((item) => (
-                  <div
+                  <Link
                     key={item.name}
-                    className="group bg-card border border-border rounded-xl p-5 hover:border-[hsl(var(--accent))]/30 transition-all hover:shadow-elegant"
+                    to={`/opensource/${item.name}`}
+                    className="group bg-card border border-border rounded-xl p-5 hover:border-[hsl(var(--accent))]/30 transition-all hover:shadow-elegant block"
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
@@ -240,6 +243,7 @@ export function OpenSourcePage() {
                           </span>
                         )}
                       </div>
+                      <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
                     </div>
                     <p className="text-sm text-muted-foreground mb-4">{item.desc}</p>
                     <div className="flex items-center justify-between text-sm">
@@ -256,19 +260,28 @@ export function OpenSourcePage() {
                       </div>
                       <div className="flex items-center gap-2">
                         {item.docs && (
-                          <button className="p-1.5 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-[hsl(var(--accent))]">
+                          <span
+                            className="p-1.5 rounded-md text-muted-foreground"
+                            onClick={(e) => e.preventDefault()}
+                          >
                             <BookOpen className="w-4 h-4" />
-                          </button>
+                          </span>
                         )}
-                        <button className="p-1.5 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-[hsl(var(--accent))]">
+                        <span
+                          className="p-1.5 rounded-md text-muted-foreground"
+                          onClick={(e) => e.preventDefault()}
+                        >
                           <Download className="w-4 h-4" />
-                        </button>
-                        <button className="p-1.5 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-[hsl(var(--accent))]">
+                        </span>
+                        <span
+                          className="p-1.5 rounded-md text-muted-foreground"
+                          onClick={(e) => e.preventDefault()}
+                        >
                           <ExternalLink className="w-4 h-4" />
-                        </button>
+                        </span>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>

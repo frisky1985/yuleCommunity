@@ -24,6 +24,7 @@ const AdminDashboard = lazy(() => import('./pages/AdminDashboard').then(m => ({ 
 const AdminUsers = lazy(() => import('./pages/AdminUsers').then(m => ({ default: m.AdminUsers })));
 const AdminContent = lazy(() => import('./pages/AdminContent').then(m => ({ default: m.AdminContent })));
 const AdminSettings = lazy(() => import('./pages/AdminSettings').then(m => ({ default: m.AdminSettings })));
+const ModuleDetailPage = lazy(() => import('./pages/ModuleDetailPage').then(m => ({ default: m.ModuleDetailPage })));
 
 function App() {
   return (
@@ -77,6 +78,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/opensource" element={<OpenSourcePage />} />
+                  <Route path="/opensource/:moduleId" element={<ModuleDetailPage />} />
                   <Route path="/toolchain" element={<ToolchainPage />} />
                   <Route path="/learning" element={<LearningPage />} />
                   <Route path="/community" element={<CommunityPage />} />
