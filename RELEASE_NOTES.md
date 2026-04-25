@@ -1,3 +1,25 @@
+# YuleTech Community v0.2.0
+
+## 概述
+
+v0.2.0 是一个稳定性修复版本，主要解决页面显示异常、构建故障和路由边界情况，提升多端访问体验。
+
+## 修复内容
+
+### 页面显示与导航
+- **修复导航栏响应式断点** - 修复 768px-1024px 屏幕宽度下导航菜单和汉堡按钮同时隐藏导致的"导航消失"问题
+- **添加 404 兜底页面** - 为未知路由添加友好的 404 提示页面，避免访问不存在的路径时显示空白
+
+### 性能与稳定性
+- **移除双重 Service Worker 注册** - 消除 `main.tsx` 手动注册与 vite-plugin-pwa 自动注入之间的冲突，避免缓存异常和加载问题
+- **修复 GitHub Actions 构建失败** - 将 Vite 从 8.x 降级至 7.x，解决与 `vite-plugin-pwa@1.2.0` 的 peer dependency 冲突导致的 `npm ci` 失败
+
+## 部署
+
+已部署至 GitHub Pages：https://frisky1985.github.io/yuleCommunity/
+
+---
+
 # YuleTech Community v0.1.0
 
 ## 概述
