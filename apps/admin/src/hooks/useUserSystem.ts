@@ -131,4 +131,4 @@ export function useUserSystem() {
   };
 }
 
-export { DEFAULT_ACTION_POINTS, DEFAULT_LEVEL_THRESHOLDS };
+export { DEFAULT_ACTION_POINTS };

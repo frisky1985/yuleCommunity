@@ -27,10 +27,10 @@ export function ContentDistributionChart() {
 
   const data = useMemo(() => {
     return [
-      { name: '论坛帖子', value: posts.length, color: COLORS[0] },
-      { name: '问答问题', value: questions.length, color: COLORS[1] },
-      { name: '社区活动', value: events.length, color: COLORS[2] },
-      { name: '博客文章', value: articlesData.length, color: COLORS[3] },
+      { name: 'Forum Posts', value: posts.length, color: COLORS[0] },
+      { name: 'Q&A Questions', value: questions.length, color: COLORS[1] },
+      { name: 'Events', value: events.length, color: COLORS[2] },
+      { name: 'Articles', value: articlesData.length, color: COLORS[3] },
     ];
   }, [posts.length, questions.length, events.length]);
 
@@ -60,11 +60,9 @@ export function ContentDistributionChart() {
             color: 'hsl(var(--foreground))',
           }}
           labelStyle={{ color: 'hsl(var(--foreground))' }}
-          formatter={(value: unknown) => [`${value} 个`, '数量`]}
+          formatter={(value: unknown) => [`${value} items`, 'Count']}
         />
-        <Legend
-          wrapperStyle={{ color: 'hsl(var(--foreground))' }}
-        />
+        <Legend wrapperStyle={{ color: 'hsl(var(--foreground))' }} />
       </PieChart>
     </ResponsiveContainer>
   );

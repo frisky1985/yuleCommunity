@@ -27,7 +27,6 @@ export function UserGrowthChart() {
     const today = new Date();
     const days: { date: string; label: string; total: number; newUsers: number }[] = [];
 
-    // Try to derive real signup data from points history timestamps
     const historyItems = state?.history || [];
     const dailyNewUsers = new Map<string, number>();
 
@@ -37,8 +36,6 @@ export function UserGrowthChart() {
     });
 
     const hasRealData = dailyNewUsers.size > 0;
-
-    // Base user count (mock existing users)
     let baseUsers = 24;
     let cumulative = baseUsers;
 
@@ -52,7 +49,6 @@ export function UserGrowthChart() {
       if (hasRealData) {
         newUsers = dailyNewUsers.get(key) || 0;
       } else {
-        // Simulate data: 1-5 new users per day, with some variance
         const seed = d.getDate() + d.getMonth() * 31;
         newUsers = Math.floor((Math.sin(seed) + 1.5) * 2) + 1;
         if (newUsers < 0) newUsers = 1;
@@ -89,15 +85,13 @@ export function UserGrowthChart() {
             color: 'hsl(var(--foreground))',
           }}
           labelStyle={{ color: 'hsl(var(--foreground))' }}
-          formatter={(value: unknown) => [`${value} 人`, '数量`]}
+          formatter={(value: unknown) => [`${value} users`, 'Count']}
         />
-        <Legend
-          wrapperStyle={{ color: 'hsl(var(--foreground))' }}
-        />
+        <Legend wrapperStyle={{ color: 'hsl(var(--foreground))' }} />
         <Line
           type="monotone"
           dataKey="total"
-          name="总用户数"
+          name="Total Users"
           stroke="#3b82f6"
           strokeWidth={2}
           dot={false}
@@ -106,7 +100,7 @@ export function UserGrowthChart() {
         <Line
           type="monotone"
           dataKey="newUsers"
-          name="新增用户"
+          name="New Users"
           stroke="#10b981"
           strokeWidth={2}
           dot={false}

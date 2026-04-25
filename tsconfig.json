@@ -1,7 +1,28 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./apps/*/src/*"],
+      "@yule/shared-ui": ["./packages/shared-ui/src"],
+      "@yule/shared-types": ["./packages/shared-types/src"],
+      "@yule/shared-utils": ["./packages/shared-utils/src"]
+    }
+  },
+  "include": ["apps/*/src/**/*", "packages/*/src/**/*"],
+  "exclude": ["node_modules", "dist", "archive", "backup"]
 }

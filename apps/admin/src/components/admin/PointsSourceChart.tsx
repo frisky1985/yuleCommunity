@@ -9,54 +9,33 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
-import type { PointsHistoryItem, PointsAction } from '../../hooks/useUserSystem';
-
-const ACTION_LABELS: Record<PointsAction, string> = {
-  post: '发帖积分',
-  reply: '回帖积分',
-  answer: '回答积分',
-  accepted: '采纳积分',
-  event: '活动积分',
-};
+import type { PointsHistoryItem, UserSystemState } from '../../hooks/useUserSystem';
 
 export function PointsSourceChart() {
-  const [state] = useLocalStorage<{ points: number; history: PointsHistoryItem[] }>(
-    'yuletech-user-system',
-    { points: 0, history: [] }
-  );
+  const [state] = useLocalStorage<UserSystemState>('yuletech-user-system', { points: 0, history: [] });
 
   const data = useMemo(() => {
-    const history = state?.history || [];
+    const historyItems = state?.history || [];
+    const sourceCount = new Map<string, number>();
 
-    if (history.length === 0) {
-      // Demo data when no history exists
-      return [
-        { name: '发帖积分', value: 120 },
-        { name: '回帖积分', value: 85 },
-        { name: '回答积分', value: 150 },
-        { name: '采纳积分', value: 200 },
-        { name: '活动积分', value: 60 },
-      ];
-    }
-
-    const totals: Record<PointsAction, number> = {
-      post: 0,
-      reply: 0,
-      answer: 0,
-      accepted: 0,
-      event: 0,
-    };
-
-    history.forEach((item) => {
-      if (item.action in totals) {
-        totals[item.action] += item.points;
-      }
+    historyItems.forEach((item: PointsHistoryItem) => {
+      const source = item.action || 'other';
+      sourceCount.set(source, (sourceCount.get(source) || 0) + 1);
     });
 
-    return (Object.keys(totals) as PointsAction[]).map((action) => ({
-      name: ACTION_LABELS[action],
-      value: totals[action],
-    }));
+    const hasRealData = sourceCount.size > 0;
+
+    if (hasRealData) {
+      return Array.from(sourceCount.entries()).map(([name, value]) => ({ name, value }));
+    }
+
+    return [
+      { name: '论坛互动', value: 15 },
+      { name: '问答回答', value: 12 },
+      { name: '活动参与', value: 8 },
+      { name: '内容贡献', value: 6 },
+      { name: '其他', value: 4 },
+    ];
   }, [state]);
 
   return (
@@ -82,7 +61,7 @@ export function PointsSourceChart() {
             color: 'hsl(var(--foreground))',
           }}
           labelStyle={{ color: 'hsl(var(--foreground))' }}
-          formatter={(value: unknown) => [`${value} 积分`, '累计`]}
+          formatter={(value: unknown) => [`${value} points`, 'Total']}
         />
         <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
       </BarChart>
