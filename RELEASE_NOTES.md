@@ -1,3 +1,38 @@
+# YuleTech Community v0.5.0
+
+## 概述
+
+v0.5.0 大幅增强首页"一站式汽车基础软件 开发生态"板块的展示内容，四个核心平台卡片从单一的标题+描述变为包含丰富数据预览的信息面板。
+
+## 新增内容
+
+### 开源代码平台卡片
+- GitHub Stars/Forks 实时统计预览
+- MCAL/ECUAL/Service/RTE+ASW 四层架构完成度可视化
+- 热门模块标签（Mcu、Can、CanIf、PduR、Rte）
+
+### 开发工具链卡片
+- 4 个核心工具预览：BSW Configurator、RTE Generator、Build Scripts、Trace Debugger
+- 支持芯片平台标签（i.MX8M Mini、RH850、AURIX TC3xx、S32K3）
+
+### 学习成长平台卡片
+- 3 条学习路径预览：AutoSAR 入门、MCAL 驱动开发、通信栈实战
+- 资源统计：42 视频 / 68 文章 / 15 项目
+
+### 硬件开发板卡片
+- 2 款开发板规格预览（YuleTech i.MX8M / YuleTech RH850）
+- 3 大芯片厂商平台标签（NXP、Renesas、Infineon）
+
+## 修复
+
+- 同 v0.4.0
+
+## 部署
+
+已部署至 GitHub Pages：https://frisky1985.github.io/yuleCommunity/
+
+---
+
 # YuleTech Community v0.4.0
 
 ## 概述
