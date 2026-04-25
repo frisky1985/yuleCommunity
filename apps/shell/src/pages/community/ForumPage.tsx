@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MessageSquare, Eye } from 'lucide-react';
+import { MessageSquare, Eye, Plus, Clock, Tag } from 'lucide-react';
 
 export function ForumPage() {
   const [activeCategory, setActiveCategory] = useState('all');

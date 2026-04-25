@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { Code2, GitFork, ChevronRight, Layers } from 'lucide-react';
 
 export function OpenSourcePage() {
-  const [activeTab, setActiveTab] = useState('overview');
+  // 保留 state 以备后续使用
+  const [, _setActiveTab] = useState('overview');
 
   const layers = [
     { id: 'mcal', name: 'MCAL', nameZh: '微控制器驱动层', color: '#3b82f6' },

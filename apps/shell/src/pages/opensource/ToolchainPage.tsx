@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Wrench, Download, Settings, Code2, ChevronRight } from 'lucide-react';
+import { Wrench, Download, Settings, ChevronRight } from 'lucide-react';
 
 export function ToolchainPage() {
-  const [activeTab, setActiveTab] = useState('overview');
+  // 保留 state 以备后续使用
+  const [, _setActiveTab] = useState('overview');
 
   const tools = [
     {
