@@ -5,8 +5,27 @@ import { Footer } from './components/Footer';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { PageLoader } from './components/PageLoader';
 
-// Shell 内部页面
+// 首页
 import { HomePage } from './pages/HomePage';
+
+// 开源页面
+import { OpenSourcePage } from './pages/opensource/OpenSourcePage';
+import { ToolchainPage } from './pages/opensource/ToolchainPage';
+
+// 学习页面
+import { LearningPage } from './pages/learning/LearningPage';
+import { DocsPage } from './pages/learning/DocsPage';
+import { BlogPage } from './pages/learning/BlogPage';
+
+// 社区页面
+import { CommunityPage } from './pages/community/CommunityPage';
+import { ForumPage } from './pages/community/ForumPage';
+import { QAPage } from './pages/community/QAPage';
+import { EventsPage } from './pages/community/EventsPage';
+
+// 管理后台
+import { AdminDashboard } from './pages/admin/AdminDashboard';
+import { AdminLoginPage } from './pages/admin/AdminLoginPage';
 
 function App() {
   return (
@@ -16,18 +35,35 @@ function App() {
       <main className="pt-16">
         <Suspense fallback={<PageLoader />}>
           <Routes>
+            {/* 首页 */}
             <Route path="/" element={<HomePage />} />
-            {/* 远程模块路由 - 暂时使用占位符 */}
-            <Route path="/opensource/*" element={<div className="p-8 text-center">开源模块加载中...</div>} />
-            <Route path="/toolchain" element={<div className="p-8 text-center">工具链模块加载中...</div>} />
-            <Route path="/community/*" element={<div className="p-8 text-center">社区模块加载中...</div>} />
-            <Route path="/forum/*" element={<div className="p-8 text-center">论坛模块加载中...</div>} />
-            <Route path="/qa/*" element={<div className="p-8 text-center">问答模块加载中...</div>} />
-            <Route path="/events/*" element={<div className="p-8 text-center">活动模块加载中...</div>} />
-            <Route path="/learning/*" element={<div className="p-8 text-center">学习模块加载中...</div>} />
-            <Route path="/docs/*" element={<div className="p-8 text-center">文档模块加载中...</div>} />
-            <Route path="/blog/*" element={<div className="p-8 text-center">博客模块加载中...</div>} />
-            <Route path="/admin/*" element={<div className="p-8 text-center">管理后台模块加载中...</div>} />
+            
+            {/* 开源代码 */}
+            <Route path="/opensource" element={<OpenSourcePage />} />
+            <Route path="/toolchain" element={<ToolchainPage />} />
+            
+            {/* 学习成长 */}
+            <Route path="/learning" element={<LearningPage />} />
+            <Route path="/docs" element={<DocsPage />} />
+            <Route path="/blog" element={<BlogPage />} />
+            
+            {/* 社区 */}
+            <Route path="/community" element={<CommunityPage />} />
+            <Route path="/forum" element={<ForumPage />} />
+            <Route path="/qa" element={<QAPage />} />
+            <Route path="/events" element={<EventsPage />} />
+            
+            {/* 管理后台 */}
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+            
+            {/* 404 */}
+            <Route path="*" element={
+              <div className="flex flex-col items-center justify-center min-h-[60vh]">
+                <h1 className="text-4xl font-bold mb-4">404</h1>
+                <p className="text-muted-foreground">页面不存在</p>
+              </div>
+            } />
           </Routes>
         </Suspense>
       </main>
