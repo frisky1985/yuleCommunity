@@ -1,3 +1,29 @@
+# YuleTech Community v0.4.0
+
+## 概述
+
+v0.4.0 集成 GitHub API，开源代码页的 Stars/Forks 等数据现在可以动态从 GitHub 实时拉取，替代了原有的静态假数据。
+
+## 新增功能
+
+### GitHub API 集成
+- **实时 Stars/Forks 统计** - 开源代码页的总 Stars 和总 Forks 自动从 GitHub API 同步
+- **模块仓库自动匹配** - 根据模块名称自动匹配 GitHub 仓库（支持多种命名规则）
+- **直达仓库链接** - 匹配成功的模块卡片右上角显示外部链接，一键跳转到对应 GitHub 仓库
+- **数据缓存机制** - 使用 sessionStorage 缓存 API 结果（5分钟 TTL），减少请求次数
+- **优雅降级** - API 调用失败或超限时自动回退到静态数据，不影响页面展示
+- **手动刷新** - 提供刷新按钮，可手动触发数据重新同步
+
+## 修复
+
+- 同 v0.3.0
+
+## 部署
+
+已部署至 GitHub Pages：https://frisky1985.github.io/yuleCommunity/
+
+---
+
 # YuleTech Community v0.3.0
 
 ## 概述
