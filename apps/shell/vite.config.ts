@@ -10,10 +10,10 @@ export default defineConfig({
     federation({
       name: 'shell',
       remotes: {
-        opensource: 'http://localhost:3001/assets/remoteEntry.js',
-        community: 'http://localhost:3002/assets/remoteEntry.js',
-        learning: 'http://localhost:3003/assets/remoteEntry.js',
-        admin: 'http://localhost:3004/assets/remoteEntry.js',
+        opensource: 'https://frisky1985.github.io/yuleCommunity/assets/opensource-remoteEntry.js',
+        community: 'https://frisky1985.github.io/yuleCommunity/assets/community-remoteEntry.js',
+        learning: 'https://frisky1985.github.io/yuleCommunity/assets/learning-remoteEntry.js',
+        admin: 'https://frisky1985.github.io/yuleCommunity/assets/admin-remoteEntry.js',
       },
       shared: ['react', 'react-dom', 'react-router-dom', 'lucide-react']
     })

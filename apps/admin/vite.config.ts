@@ -4,11 +4,12 @@ import federation from '@originjs/vite-plugin-federation';
 import path from 'path';
 
 export default defineConfig({
+  base: '/yuleCommunity/',
   plugins: [
     react(),
     federation({
       name: 'admin',
-      filename: 'remoteEntry.js',
+      filename: 'admin-remoteEntry.js',
       exposes: {
         './routes': './src/routes',
       },

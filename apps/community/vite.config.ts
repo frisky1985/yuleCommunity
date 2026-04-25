@@ -9,7 +9,7 @@ export default defineConfig({
     react(),
     federation({
       name: 'community',
-      filename: 'remoteEntry.js',
+      filename: 'community-remoteEntry.js',
       exposes: {
         './CommunityPage': './src/pages/CommunityPage',
         './ForumPage': './src/pages/ForumPage',

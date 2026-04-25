@@ -9,7 +9,7 @@ export default defineConfig({
     react(),
     federation({
       name: 'opensource',
-      filename: 'remoteEntry.js',
+      filename: 'opensource-remoteEntry.js',
       exposes: {
         './OpenSourcePage': './src/pages/OpenSourcePage.tsx',
         './ToolchainPage': './src/pages/ToolchainPage.tsx',

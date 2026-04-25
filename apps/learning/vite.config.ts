@@ -9,7 +9,7 @@ export default defineConfig({
     react(),
     federation({
       name: 'learning',
-      filename: 'remoteEntry.js',
+      filename: 'learning-remoteEntry.js',
       exposes: {
         './LearningPage': './src/pages/LearningPage.tsx',
         './DocsPage': './src/pages/DocsPage.tsx',
