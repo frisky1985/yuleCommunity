@@ -8,7 +8,6 @@ import {
   MessageSquare,
   TrendingUp,
   ArrowRight,
-  User,
   Flame,
 } from 'lucide-react';
 

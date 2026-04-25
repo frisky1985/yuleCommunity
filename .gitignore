@@ -22,3 +22,16 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Monorepo
+.turbo
+archive
+backup
+
+# Build outputs
+*.js.map
+apps/*/*.js
+apps/*/src/**/*.js
+packages/*/*.js
+packages/*/src/**/*.js
+!packages/*/dist/**

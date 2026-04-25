@@ -25,13 +25,62 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
-      - name: Build
-        run: npm run build
+      - name: Build all packages
+        run: pnpm build
+
+      - name: Collect build outputs
+        run: |
+          mkdir -p combined-dist
+          # Copy shell app (host) to root
+          cp -r apps/shell/dist/* combined-dist/
+          # Copy remotes to subdirectories
+          mkdir -p combined-dist/opensource
+          cp -r apps/opensource/dist/* combined-dist/opensource/
+          mkdir -p combined-dist/community
+          cp -r apps/community/dist/* combined-dist/community/
+          mkdir -p combined-dist/learning
+          cp -r apps/learning/dist/* combined-dist/learning/
+          mkdir -p combined-dist/admin
+          cp -r apps/admin/dist/* combined-dist/admin/
+          # Copy public assets
+          if [ -d "public" ]; then
+            cp -r public/* combined-dist/
+          fi
+
+      - name: Update remoteEntry paths
+        run: |
+          # Update Module Federation remote entry URLs for production
+          sed -i 's|http://localhost:3001|./opensource|g' combined-dist/assets/index-*.js
+          sed -i 's|http://localhost:3002|./community|g' combined-dist/assets/index-*.js
+          sed -i 's|http://localhost:3003|./learning|g' combined-dist/assets/index-*.js
+          sed -i 's|http://localhost:3004|./admin|g' combined-dist/assets/index-*.js
+          sed -i 's|http://localhost:3001|.|g' combined-dist/opensource/remoteEntry.js
+          sed -i 's|http://localhost:3002|.|g' combined-dist/community/remoteEntry.js
+          sed -i 's|http://localhost:3003|.|g' combined-dist/learning/remoteEntry.js
+          sed -i 's|http://localhost:3004|.|g' combined-dist/admin/remoteEntry.js
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -39,7 +88,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: ./combined-dist
 
   deploy:
     needs: build

@@ -3,9 +3,13 @@ import { LearningPage } from './pages/LearningPage';
 import { DocsPage } from './pages/DocsPage';
 import { BlogPage } from './pages/BlogPage';
 
-const routes: RouteObject[] = [
+export const routes: RouteObject[] = [
   {
     path: '/learning',
+    element: <LearningPage />,
+  },
+  {
+    path: '/learning/*',
     element: <LearningPage />,
   },
   {
@@ -13,7 +17,15 @@ const routes: RouteObject[] = [
     element: <DocsPage />,
   },
   {
+    path: '/docs/*',
+    element: <DocsPage />,
+  },
+  {
     path: '/blog',
+    element: <BlogPage />,
+  },
+  {
+    path: '/blog/*',
     element: <BlogPage />,
   },
 ];

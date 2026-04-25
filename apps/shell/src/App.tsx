@@ -1,31 +1,17 @@
-import { Suspense, lazy } from 'react';
+import { Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { PageLoader } from './components/PageLoader';
-import { AdminLayout } from './components/AdminLayout';
-
-// 动态加载远程模块
-const OpenSourceRoutes = lazy(() => import('opensource/routes').catch(() => ({ default: () => <div>Loading OpenSource...</div> })));
-const CommunityRoutes = lazy(() => import('community/routes').catch(() => ({ default: () => <div>Loading Community...</div> })));
-const LearningRoutes = lazy(() => import('learning/routes').catch(() => ({ default: () => <div>Loading Learning...</div> })));
-const AdminRoutes = lazy(() => import('admin/routes').catch(() => ({ default: () => <div>Loading Admin...</div> })));
 
 // Shell 内部页面
-const HomePage = lazy(() => import('./pages/HomePage'));
+import { HomePage } from './pages/HomePage';
 
 function App() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Routes>
-        {/* Admin routes - 独立布局 */}
-        <Route path="/admin/*" element={
-          <Suspense fallback={<PageLoader />}>
-            <AdminRoutes />
-          </Suspense>
-        } />
-
         {/* Public routes */}
         <Route path="*" element={
           <>
@@ -35,17 +21,17 @@ function App() {
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   <Route path="/" element={<HomePage />} />
-                  
-                  {/* 远程模块路由 */}
-                  <Route path="/opensource/*" element={<OpenSourceRoutes />} />
-                  <Route path="/toolchain/*" element={<OpenSourceRoutes />} />
-                  <Route path="/community/*" element={<CommunityRoutes />} />
-                  <Route path="/forum/*" element={<CommunityRoutes />} />
-                  <Route path="/qa/*" element={<CommunityRoutes />} />
-                  <Route path="/events/*" element={<CommunityRoutes />} />
-                  <Route path="/learning/*" element={<LearningRoutes />} />
-                  <Route path="/docs/*" element={<LearningRoutes />} />
-                  <Route path="/blog/*" element={<LearningRoutes />} />
+                  {/* 远程模块路由 - 暂时使用占位符 */}
+                  <Route path="/opensource/*" element={<div className="p-8 text-center">开源模块加载中...</div>} />
+                  <Route path="/toolchain" element={<div className="p-8 text-center">工具链模块加载中...</div>} />
+                  <Route path="/community/*" element={<div className="p-8 text-center">社区模块加载中...</div>} />
+                  <Route path="/forum/*" element={<div className="p-8 text-center">论坛模块加载中...</div>} />
+                  <Route path="/qa/*" element={<div className="p-8 text-center">问答模块加载中...</div>} />
+                  <Route path="/events/*" element={<div className="p-8 text-center">活动模块加载中...</div>} />
+                  <Route path="/learning/*" element={<div className="p-8 text-center">学习模块加载中...</div>} />
+                  <Route path="/docs/*" element={<div className="p-8 text-center">文档模块加载中...</div>} />
+                  <Route path="/blog/*" element={<div className="p-8 text-center">博客模块加载中...</div>} />
+                  <Route path="/admin/*" element={<div className="p-8 text-center">管理后台模块加载中...</div>} />
                 </Routes>
               </Suspense>
             </main>

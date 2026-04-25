@@ -10,7 +10,15 @@ export const routes: RouteObject[] = [
     element: <CommunityPage />,
   },
   {
+    path: '/community/*',
+    element: <CommunityPage />,
+  },
+  {
     path: '/forum',
+    element: <ForumPage />,
+  },
+  {
+    path: '/forum/*',
     element: <ForumPage />,
   },
   {
@@ -18,7 +26,15 @@ export const routes: RouteObject[] = [
     element: <QAPage />,
   },
   {
+    path: '/qa/*',
+    element: <QAPage />,
+  },
+  {
     path: '/events',
+    element: <EventsPage />,
+  },
+  {
+    path: '/events/*',
     element: <EventsPage />,
   },
 ];
