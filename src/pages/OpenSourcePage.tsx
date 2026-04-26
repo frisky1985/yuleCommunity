@@ -417,7 +417,7 @@ export function OpenSourcePage() {
       </section>
 
       {/* Test Coverage Dashboard */}
-      <section className="py-16 border-t border-border">
+      <section className="py-16 bg-muted/30 border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-2xl font-bold mb-3">测试验证与覆盖率</h2>

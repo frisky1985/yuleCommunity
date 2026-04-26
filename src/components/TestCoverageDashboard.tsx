@@ -131,10 +131,10 @@ export function TestCoverageDashboard() {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-border overflow-hidden">
+    <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
       {/* 顶部统计卡片 */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 p-6 border-b border-border bg-muted/30">
-        <div className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="bg-card rounded-lg p-4 shadow-sm border border-border">
           <div className="flex items-center gap-2 text-muted-foreground text-sm mb-1">
             <FileCode className="w-4 h-4" />
             总用例数
@@ -142,7 +142,7 @@ export function TestCoverageDashboard() {
           <div className="text-2xl font-bold">{stats.total}</div>
         </div>
         
-        <div className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="bg-card rounded-lg p-4 shadow-sm border border-border">
           <div className="flex items-center gap-2 text-green-600 text-sm mb-1">
             <CheckCircle2 className="w-4 h-4" />
             通过
@@ -151,7 +151,7 @@ export function TestCoverageDashboard() {
           <div className="text-xs text-muted-foreground">{((stats.passed / stats.total) * 100).toFixed(1)}%</div>
         </div>
         
-        <div className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="bg-card rounded-lg p-4 shadow-sm border border-border">
           <div className="flex items-center gap-2 text-red-600 text-sm mb-1">
             <XCircle className="w-4 h-4" />
             失败
@@ -160,7 +160,7 @@ export function TestCoverageDashboard() {
           <div className="text-xs text-muted-foreground">{((stats.failed / stats.total) * 100).toFixed(1)}%</div>
         </div>
         
-        <div className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="bg-card rounded-lg p-4 shadow-sm border border-border">
           <div className="flex items-center gap-2 text-blue-600 text-sm mb-1">
             <Activity className="w-4 h-4" />
             运行中
@@ -168,7 +168,7 @@ export function TestCoverageDashboard() {
           <div className="text-2xl font-bold text-blue-600">{stats.running}</div>
         </div>
         
-        <div className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="bg-card rounded-lg p-4 shadow-sm border border-border">
           <div className="flex items-center gap-2 text-yellow-600 text-sm mb-1">
             <Clock className="w-4 h-4" />
             待执行
@@ -176,7 +176,7 @@ export function TestCoverageDashboard() {
           <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
         </div>
         
-        <div className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="bg-card rounded-lg p-4 shadow-sm border border-border">
           <div className="flex items-center gap-2 text-purple-600 text-sm mb-1">
             <Shield className="w-4 h-4" />
             平均覆盖率
@@ -275,7 +275,7 @@ export function TestCoverageDashboard() {
                 {mockTestCases
                   .filter(t => t.status === 'failed')
                   .map(test => (
-                    <div key={test.id} className="flex items-center gap-3 bg-white rounded p-3">
+                    <div key={test.id} className="flex items-center gap-3 bg-card rounded p-3 border border-border">
                       <XCircle className="w-5 h-5 text-red-500" />
                       <div className="flex-1">
                         <div className="font-medium">{test.name}</div>
