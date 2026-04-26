@@ -1,15 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, X, FileText, MessageSquare, HelpCircle, Calendar } from 'lucide-react';
+import { Search, X, FileText, MessageSquare, HelpCircle, Calendar, Code } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { initialForumPosts, initialQuestions, initialEvents } from '../data/communityData';
 import { articlesData } from '../pages/BlogPage';
+import { searchCode } from '../data/codeSearch';
 import type { ForumPost, Question, CommunityEvent } from '../data/communityData';
 
 type SearchResult = {
   id: string;
   title: string;
   excerpt: string;
-  type: 'forum' | 'qa' | 'blog' | 'event';
+  type: 'forum' | 'qa' | 'blog' | 'event' | 'code';
   link: string;
 };
 
@@ -44,6 +45,21 @@ export function GlobalSearch() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Cmd/Ctrl + K 快捷键
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsOpen((prev) => !prev);
+      }
+      if (e.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
 
   const results: SearchResult[] = [];
   const q = query.trim().toLowerCase();
@@ -104,6 +120,18 @@ export function GlobalSearch() {
         });
       }
     });
+
+    // 代码搜索
+    const codeResults = searchCode(q);
+    codeResults.forEach((item) => {
+      results.push({
+        id: `code-${item.id}`,
+        title: item.signature || item.name,
+        excerpt: item.description,
+        type: 'code',
+        link: `/opensource/${item.module.toLowerCase()}`,
+      });
+    });
   }
 
   const handleSelect = (link: string) => {
@@ -118,6 +146,7 @@ export function GlobalSearch() {
       case 'qa': return '问答';
       case 'blog': return '博客';
       case 'event': return '活动';
+      case 'code': return '代码';
       default: return type;
     }
   };
@@ -140,7 +169,7 @@ export function GlobalSearch() {
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="搜索帖子、问答、文章、活动..."
+                placeholder="搜索帖子、问答、文章、活动、代码..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--accent))]/30"
@@ -169,6 +198,7 @@ export function GlobalSearch() {
                   {result.type === 'qa' && <HelpCircle className="w-3.5 h-3.5 text-amber-500" />}
                   {result.type === 'blog' && <FileText className="w-3.5 h-3.5 text-cyan-500" />}
                   {result.type === 'event' && <Calendar className="w-3.5 h-3.5 text-green-500" />}
+                  {result.type === 'code' && <Code className="w-3.5 h-3.5 text-purple-500" />}
                   <span className="text-xs font-medium text-muted-foreground uppercase">
                     {typeLabel(result.type)}
                   </span>

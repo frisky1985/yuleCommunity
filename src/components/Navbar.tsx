@@ -3,7 +3,6 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Code2, Menu, X, Shield } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { GlobalSearch } from './GlobalSearch';
-import { CodeSearch } from './CodeSearch';
 import { NotificationCenter } from './NotificationCenter';
 import { useAdminAuth } from '../hooks/useAdminAuth';
 
@@ -91,7 +90,6 @@ export function Navbar() {
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
-            <CodeSearch />
             <GlobalSearch />
             <NotificationCenter />
             <ThemeToggle />
