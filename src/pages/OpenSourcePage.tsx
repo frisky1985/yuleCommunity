@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useGitHubRepos } from '../hooks/useGitHubRepos';
 import { DependencyGraph } from '../components/DependencyGraph';
+import { TestCoverageDashboard } from '../components/TestCoverageDashboard';
 
 const layerFilters = ['全部', 'MCAL', 'ECUAL', 'Service', 'RTE + ASW'];
 
@@ -412,6 +413,20 @@ export function OpenSourcePage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Test Coverage Dashboard */}
+      <section className="py-16 border-t border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-bold mb-3">测试验证与覆盖率</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              YuleTech BSW 模块的全面测试报告，包含单元测试、集成测试、HIL 测试和代码覆盖率分析。
+              确保每个模块达到车载软件质量标准。
+            </p>
+          </div>
+          <TestCoverageDashboard />
         </div>
       </section>
 
