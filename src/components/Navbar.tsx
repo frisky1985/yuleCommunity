@@ -68,7 +68,7 @@ export function Navbar() {
                 key={link.to}
                 to={link.to}
                 className={({ isActive }) =>
-                  `text-sm font-medium transition-colors relative group ${
+                  `text-sm font-medium transition-colors relative group whitespace-nowrap shrink-0 ${
                     isActive
                       ? 'text-foreground'
                       : 'text-muted-foreground hover:text-foreground'
@@ -106,7 +106,7 @@ export function Navbar() {
             )}
             <Link
               to="/profile"
-              className={`text-sm font-medium transition-colors px-3 py-2 ${
+              className={`text-sm font-medium transition-colors px-3 py-2 whitespace-nowrap shrink-0 ${
                 location.pathname === '/profile'
                   ? 'text-foreground'
                   : 'text-muted-foreground hover:text-foreground'
@@ -114,10 +114,10 @@ export function Navbar() {
             >
               个人中心
             </Link>
-            <button className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2">
+            <button className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 whitespace-nowrap shrink-0">
               登录
             </button>
-            <button className="text-sm font-medium bg-[hsl(var(--primary))] text-primary-foreground hover:bg-[hsl(var(--primary-glow))] transition-colors px-4 py-2 rounded-lg">
+            <button className="text-sm font-medium bg-[hsl(var(--primary))] text-primary-foreground hover:bg-[hsl(var(--primary-glow))] transition-colors px-4 py-2 rounded-lg whitespace-nowrap shrink-0">
               免费加入
             </button>
           </div>
