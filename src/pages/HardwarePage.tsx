@@ -14,6 +14,7 @@ import {
   Layers,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { PinConfigurator } from '../components/PinConfigurator';
 
 const specs = [
   { label: '处理器', value: 'NXP i.MX8M Mini Quad Core', icon: Cpu },
@@ -148,6 +149,23 @@ export function HardwarePage() {
               </Card>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Pin Configurator */}
+      <section className="py-12 border-t border-border bg-muted/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold mb-3 flex items-center justify-center gap-2">
+              <Layers className="w-6 h-6 text-[hsl(var(--accent))]" />
+              引脚配置工具
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              可视化配置 i.MX8M Mini 开发板引脚功能，支持 GPIO、CAN、SPI、UART、I2C、PWM、ADC 等多种功能映射，
+              一键生成符合 AutoSAR 标准的 Port 配置代码。
+            </p>
+          </div>
+          <PinConfigurator />
         </div>
       </section>
 
