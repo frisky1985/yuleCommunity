@@ -4,6 +4,7 @@ import { LayoutGrid, Minimize2 } from 'lucide-react';
 import { Hero } from '../components/Hero';
 import { Features } from '../components/Features';
 import { DailyCodeWidget } from '../components/DailyCodeWidget';
+import { GitHubDashboard } from '../components/GitHubDashboard';
 import { Stats } from '../components/Stats';
 import { OpenSource } from '../components/OpenSource';
 import { Community } from '../components/Community';
@@ -73,6 +74,7 @@ export function HomePage() {
       
       {!isMinimalMode && (
         <>
+          <GitHubDashboard />
           <DailyCodeWidget />
           <Stats />
           <OpenSource />
