@@ -171,7 +171,7 @@ export function OpenSourcePage() {
     <div className="min-h-screen pt-16">
       <Helmet>
         <title>开源代码 - YuleTech | AutoSAR BSW 开源协议栈</title>
-        <meta name="description" content="基于 AutoSAR Classic Platform 4.x 标准，为 NXP i.MX8M Mini 处理器构建完整的 BSW 栈。从底层驱动到应用组件，全部开源，永久免费。" />
+        <meta name="description" content="基于 AutoSAR Classic Platform 4.x 标准，为全球主流芯片公司的处理器构建完整的 BSW 栈。从底层驱动到应用组件，全部开源，永久免费。" />
       </Helmet>
       {/* Hero */}
       <section className="relative py-20 overflow-hidden bg-gradient-to-b from-[hsl(var(--primary))]/5 to-transparent">
@@ -186,7 +186,7 @@ export function OpenSourcePage() {
               <span className="text-gradient-accent"> 开源代码</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
-              基于 AutoSAR Classic Platform 4.x 标准，为 NXP i.MX8M Mini 处理器构建完整的 BSW 栈。
+              基于 AutoSAR Classic Platform 4.x 标准，为全球主流芯片公司的处理器构建完整的 BSW 栈。
               从底层驱动到应用组件，全部开源，永久免费。
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
