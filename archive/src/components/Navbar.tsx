@@ -3,7 +3,6 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Code2, Menu, X, Shield } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { GlobalSearch } from './GlobalSearch';
-import { CodeSearch } from './CodeSearch';
 import { NotificationCenter } from './NotificationCenter';
 import { useAdminAuth } from '../hooks/useAdminAuth';
 
@@ -90,8 +89,7 @@ export function Navbar() {
           </div>
 
           {/* CTA Buttons */}
-          <div className="hidden lg:flex items-center gap-3">
-            <CodeSearch />
+          <div className="hidden md:flex items-center gap-3">
             <GlobalSearch />
             <NotificationCenter />
             <ThemeToggle />
@@ -123,7 +121,7 @@ export function Navbar() {
           </div>
 
           {/* Mobile Actions */}
-          <div className="flex lg:hidden items-center gap-1">
+          <div className="flex md:hidden items-center gap-1">
             <GlobalSearch />
             <NotificationCenter />
             {isAdmin && (
@@ -139,7 +137,7 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2 text-muted-foreground hover:text-foreground"
+            className="md:hidden p-2 text-muted-foreground hover:text-foreground"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -148,7 +146,7 @@ export function Navbar() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden pb-4 space-y-2">
+          <div className="md:hidden pb-4 space-y-2">
             <Link
               to="/"
               className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
