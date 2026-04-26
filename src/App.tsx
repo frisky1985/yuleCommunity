@@ -28,6 +28,7 @@ const AdminUsers = lazy(() => import('./pages/AdminUsers').then(m => ({ default:
 const AdminContent = lazy(() => import('./pages/AdminContent').then(m => ({ default: m.AdminContent })));
 const AdminSettings = lazy(() => import('./pages/AdminSettings').then(m => ({ default: m.AdminSettings })));
 const ModuleDetailPage = lazy(() => import('./pages/ModuleDetailPage').then(m => ({ default: m.ModuleDetailPage })));
+const ModuleComparePage = lazy(() => import('./pages/ModuleComparePage').then(m => ({ default: m.ModuleComparePage })));
 
 function App() {
   const { showHelp, setShowHelp } = useHotkeys();
@@ -85,6 +86,7 @@ function App() {
                   <Route index element={<HomePage />} />
                   <Route path="opensource" element={<OpenSourcePage />} />
                   <Route path="opensource/:moduleId" element={<ModuleDetailPage />} />
+                  <Route path="compare" element={<ModuleComparePage />} />
                   <Route path="toolchain" element={<ToolchainPage />} />
                   <Route path="learning" element={<LearningPage />} />
                   <Route path="community" element={<CommunityPage />} />

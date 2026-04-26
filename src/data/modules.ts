@@ -1202,3 +1202,6 @@ export function getModuleDetail(name: string): ModuleDetail | undefined {
 export function getAllModuleNames(): string[] {
   return Object.keys(allModules);
 }
+
+// Export all modules as array for comparison feature
+export const allModulesList: ModuleDetail[] = Object.values(allModules);

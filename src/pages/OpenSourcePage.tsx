@@ -19,10 +19,13 @@ import {
   RefreshCw,
   AlertCircle,
   Code2,
+  Scale,
 } from 'lucide-react';
 import { useGitHubRepos } from '../hooks/useGitHubRepos';
 import { DependencyGraph } from '../components/DependencyGraph';
 import { TestCoverageDashboard } from '../components/TestCoverageDashboard';
+import { useModuleCompare } from '../hooks/useModuleCompare';
+import { ModuleCompareBar } from '../components/ModuleCompareBar';
 
 const layerFilters = ['全部', 'MCAL', 'ECUAL', 'Service', 'RTE + ASW'];
 
@@ -121,6 +124,7 @@ export function OpenSourcePage() {
   const [activeFilter, setActiveFilter] = useState('全部');
   const [searchQuery, setSearchQuery] = useState('');
   const { stats, loading, error, refresh, findRepo } = useGitHubRepos();
+  const { selectedModules, toggleModule, removeModule, clearAll, isSelected, canAddMore, maxItems } = useModuleCompare();
 
   // Merge static data with GitHub API data
   const modules = useMemo(() => {
@@ -335,79 +339,115 @@ export function OpenSourcePage() {
                   const stars = item.repo?.stargazers_count ?? item.stars;
                   const forks = item.repo?.forks_count ?? item.forks;
                   const hasRepo = item.repo !== undefined;
+                  const isItemSelected = isSelected(item.name.toLowerCase());
+
+                  const handleCompareToggle = (e: React.MouseEvent) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleModule({
+                      id: item.name.toLowerCase(),
+                      name: item.name,
+                      layer: mod.layer,
+                      status: item.status,
+                      version: item.version,
+                      stars,
+                      forks,
+                      desc: item.desc,
+                    });
+                  };
 
                   return (
-                    <Link
+                    <div
                       key={item.name}
-                      to={`/opensource/${item.name}`}
-                      className="group bg-card border border-border rounded-xl p-5 hover:border-[hsl(var(--accent))]/30 transition-all hover:shadow-elegant block"
+                      className={`group relative bg-card border rounded-xl p-5 hover:border-[hsl(var(--accent))]/30 transition-all hover:shadow-elegant ${
+                        isItemSelected ? 'border-primary ring-1 ring-primary' : 'border-border'
+                      }`}
                     >
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          <span className="font-mono font-semibold text-lg">{item.name}</span>
-                          {item.status === '已完成' ? (
-                            <span className="flex items-center gap-1 text-xs font-medium text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                              <CheckCircle2 className="w-3 h-3" /> 已完成
-                            </span>
-                          ) : item.status === '开发中' ? (
-                            <span className="flex items-center gap-1 text-xs font-medium text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full">
-                              <Clock className="w-3 h-3" /> 开发中
-                            </span>
-                          ) : (
-                            <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                              <Clock className="w-3 h-3" /> 规划中
-                            </span>
-                          )}
+                      {/* Compare Checkbox */}
+                      <button
+                        onClick={handleCompareToggle}
+                        className={`absolute top-3 right-3 z-10 w-6 h-6 rounded border flex items-center justify-center transition-colors ${
+                          isItemSelected
+                            ? 'bg-primary border-primary text-primary-foreground'
+                            : 'border-border bg-card hover:border-primary/50'
+                        } ${!canAddMore && !isItemSelected ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        disabled={!canAddMore && !isItemSelected}
+                        title={isItemSelected ? '取消对比' : '添加到对比'}
+                      >
+                        {isItemSelected && <Scale className="w-3.5 h-3.5" />}
+                      </button>
+
+                      <Link
+                        to={`/opensource/${item.name}`}
+                        className="block"
+                      >
+                        <div className="flex items-start justify-between mb-3 pr-8">
+                          <div className="flex items-center gap-3">
+                            <span className="font-mono font-semibold text-lg">{item.name}</span>
+                            {item.status === '已完成' ? (
+                              <span className="flex items-center gap-1 text-xs font-medium text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                                <CheckCircle2 className="w-3 h-3" /> 已完成
+                              </span>
+                            ) : item.status === '开发中' ? (
+                              <span className="flex items-center gap-1 text-xs font-medium text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full">
+                                <Clock className="w-3 h-3" /> 开发中
+                              </span>
+                            ) : (
+                              <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                                <Clock className="w-3 h-3" /> 规划中
+                              </span>
+                            )}
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
                         </div>
-                        <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-4">{item.desc}</p>
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center gap-4 text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Star className="w-3.5 h-3.5" /> {stars}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <GitFork className="w-3.5 h-3.5" /> {forks}
-                          </span>
-                          {item.version !== '-' && (
-                            <span className="font-mono text-xs">{item.version}</span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {hasRepo && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-medium">
-                              GitHub
+                        <p className="text-sm text-muted-foreground mb-4">{item.desc}</p>
+                        <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center gap-4 text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <Star className="w-3.5 h-3.5" /> {stars}
                             </span>
-                          )}
-                          {item.docs && (
+                            <span className="flex items-center gap-1">
+                              <GitFork className="w-3.5 h-3.5" /> {forks}
+                            </span>
+                            {item.version !== '-' && (
+                              <span className="font-mono text-xs">{item.version}</span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {hasRepo && (
+                              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-medium">
+                                GitHub
+                              </span>
+                            )}
+                            {item.docs && (
+                              <span
+                                className="p-1.5 rounded-md text-muted-foreground"
+                                onClick={(e) => e.preventDefault()}
+                              >
+                                <BookOpen className="w-4 h-4" />
+                              </span>
+                            )}
                             <span
                               className="p-1.5 rounded-md text-muted-foreground"
                               onClick={(e) => e.preventDefault()}
                             >
-                              <BookOpen className="w-4 h-4" />
+                              <Download className="w-4 h-4" />
                             </span>
-                          )}
-                          <span
-                            className="p-1.5 rounded-md text-muted-foreground"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            <Download className="w-4 h-4" />
-                          </span>
-                          {item.repo && (
-                            <a
-                              href={item.repo.html_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-1.5 rounded-md text-muted-foreground hover:text-[hsl(var(--accent))] transition-colors"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <ExternalLink className="w-4 h-4" />
-                            </a>
-                          )}
+                            {item.repo && (
+                              <a
+                                href={item.repo.html_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-1.5 rounded-md text-muted-foreground hover:text-[hsl(var(--accent))] transition-colors"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <ExternalLink className="w-4 h-4" />
+                              </a>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </Link>
+                      </Link>
+                    </div>
                   );
                 })}
               </div>
@@ -463,6 +503,14 @@ export function OpenSourcePage() {
           </div>
         </div>
       </section>
+
+      {/* Compare Bar */}
+      <ModuleCompareBar
+        modules={selectedModules}
+        onRemove={removeModule}
+        onClear={clearAll}
+        maxItems={maxItems}
+      />
     </div>
   );
 }
