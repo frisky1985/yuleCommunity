@@ -15,6 +15,7 @@ import {
   Monitor,
 } from 'lucide-react';
 import { ConfigGenerator } from '../components/ConfigGenerator';
+import { BSWConfigurator } from '../components/BSWConfigurator';
 
 const categories = ['全部', '配置工具', '编译脚本', '调试工具', '测试验证'];
 
@@ -330,6 +331,20 @@ export function ToolchainPage() {
 
       {/* Config Generator */}
       <ConfigGenerator />
+
+      {/* BSW Configurator */}
+      <section className="py-16 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-bold mb-3">BSW 可视化配置器</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              通过拖拽方式快速配置 AutoSAR BSW 模块，支持 MCAL、ECUAL、Service 和 RTE 层的参数配置，
+              实时预览并导出标准配置文件。
+            </p>
+          </div>
+          <BSWConfigurator />
+        </div>
+      </section>
 
       {/* Integration CTA */}
       <section className="py-20 bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))]">
