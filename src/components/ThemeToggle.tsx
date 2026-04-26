@@ -11,6 +11,7 @@ const themes: { value: Theme; label: string; icon: typeof Sun }[] = [
 export function ThemeToggle() {
   const { theme, resolvedTheme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -30,10 +31,16 @@ export function ThemeToggle() {
 
   // Simple toggle for quick switch (cycles through themes)
   const handleQuickToggle = () => {
+    if (isAnimating) return;
+    
+    setIsAnimating(true);
     const order: Theme[] = ['light', 'dark', 'system'];
     const currentIndex = order.indexOf(theme);
     const nextIndex = (currentIndex + 1) % order.length;
     setTheme(order[nextIndex]);
+    
+    // Reset animation after transition
+    setTimeout(() => setIsAnimating(false), 500);
   };
 
   return (
@@ -49,7 +56,11 @@ export function ThemeToggle() {
         title={`当前主题: ${themes.find(t => t.value === theme)?.label} (右键选择)`}
         aria-label="切换主题"
       >
-        <Icon className="w-5 h-5" />
+        <Icon 
+          className={`w-5 h-5 transition-all duration-500 ease-out ${
+            isAnimating ? 'rotate-180 scale-75' : 'rotate-0 scale-100'
+          }`} 
+        />
         {resolvedTheme === 'dark' && (
           <span className="sr-only">深色模式</span>
         )}
