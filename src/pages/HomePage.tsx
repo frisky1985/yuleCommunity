@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Hero } from '../components/Hero';
 import { Features } from '../components/Features';
+import { DailyCodeWidget } from '../components/DailyCodeWidget';
 import { Stats } from '../components/Stats';
 import { OpenSource } from '../components/OpenSource';
 import { Community } from '../components/Community';
@@ -15,6 +16,7 @@ export function HomePage() {
       </Helmet>
       <Hero />
       <Features />
+      <DailyCodeWidget />
       <Stats />
       <OpenSource />
       <Community />
