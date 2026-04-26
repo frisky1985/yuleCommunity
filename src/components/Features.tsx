@@ -5,6 +5,7 @@ import {
   Cpu,
   ChevronRight,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import {
   ImageMarquee,
   MockCodeEditor,
@@ -20,13 +21,14 @@ import {
   MockPinout,
   MockSpecTable,
 } from './ImageMarquee';
+import { OptimizedImage } from './OptimizedImage';
 
 const features = [
   {
     icon: Code2,
     title: '开源代码平台',
     description: '提供完整的 AutoSAR BSW 开源实现，包括 MCAL、ECUAL、Service 和 RTE 层，支持多种芯片平台。',
-    image: './images/feature-code.png',
+    image: './images/feature-code',
     stats: '32 个模块',
     color: 'from-blue-500/20 to-cyan-500/20',
     link: '/opensource',
@@ -42,7 +44,7 @@ const features = [
     icon: Wrench,
     title: '开发工具链',
     description: '可视化配置工具、代码生成器、编译脚本和调试工具，大幅降低汽车软件开发门槛。',
-    image: './images/feature-toolchain.png',
+    image: './images/feature-toolchain',
     stats: '免费使用',
     color: 'from-cyan-500/20 to-teal-500/20',
     link: '/toolchain',
@@ -58,7 +60,7 @@ const features = [
     icon: BookOpen,
     title: '学习成长平台',
     description: '系统化的 AutoSAR 规范解读、视频课程、实战项目和专家问答，帮助工程师快速成长。',
-    image: './images/feature-learning.png',
+    image: './images/feature-learning',
     stats: '100+ 课程',
     color: 'from-teal-500/20 to-emerald-500/20',
     link: '/learning',
@@ -74,7 +76,7 @@ const features = [
     icon: Cpu,
     title: '硬件开发板',
     description: '开源硬件解决方案和评估开发板，支持 NXP、瑞萨、英飞凌等主流芯片，开箱即用。',
-    image: './images/feature-hardware.png',
+    image: './images/feature-hardware',
     stats: '试用申请',
     color: 'from-emerald-500/20 to-green-500/20',
     link: '/hardware',
@@ -93,7 +95,13 @@ export function Features() {
     <section id="opensource" className="py-24 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
           <span className="inline-block px-4 py-1.5 rounded-full bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] text-sm font-medium mb-4">
             核心平台
           </span>
@@ -104,18 +112,23 @@ export function Features() {
           <p className="text-muted-foreground max-w-2xl mx-auto">
             从开源代码到开发工具，从学习到实战，构建完整的汽车软件工程师成长体系
           </p>
-        </div>
+        </motion.div>
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {features.map((feature) => (
-            <div
+          {features.map((feature, index) => (
+            <motion.div
               key={feature.title}
-              className="group relative bg-card border border-border rounded-2xl overflow-hidden hover:shadow-elegant transition-all duration-500 flex flex-col"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ y: -8, transition: { duration: 0.2 } }}
+              className="group relative bg-card border border-border rounded-2xl overflow-hidden hover:shadow-elegant transition-shadow duration-500 flex flex-col"
             >
               {/* Image */}
               <div className="relative h-48 overflow-hidden shrink-0">
-                <img
+                <OptimizedImage
                   src={feature.image}
                   alt={feature.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -153,7 +166,7 @@ export function Features() {
                   <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                 </a>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
