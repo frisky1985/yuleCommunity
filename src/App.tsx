@@ -5,6 +5,7 @@ import { Footer } from './components/Footer';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { PageLoader } from './components/PageLoader';
 import { AdminLayout } from './components/AdminLayout';
+import { InteractiveCLI } from './components/InteractiveCLI';
 
 const HomePage = lazy(() => import('./pages/HomePage').then(m => ({ default: m.HomePage })));
 const OpenSourcePage = lazy(() => import('./pages/OpenSourcePage').then(m => ({ default: m.OpenSourcePage })));
@@ -76,34 +77,36 @@ function App() {
             <main>
               <Suspense fallback={<PageLoader />}>
                 <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/opensource" element={<OpenSourcePage />} />
-                  <Route path="/opensource/:moduleId" element={<ModuleDetailPage />} />
-                  <Route path="/toolchain" element={<ToolchainPage />} />
-                  <Route path="/learning" element={<LearningPage />} />
-                  <Route path="/community" element={<CommunityPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/blog" element={<BlogPage />} />
-                  <Route path="/docs" element={<DocsPage />} />
-                  <Route path="/forum" element={<ForumPage />} />
-                  <Route path="/qa" element={<QAPage />} />
-                  <Route path="/events" element={<EventsPage />} />
-                  <Route path="/hardware" element={<HardwarePage />} />
-                  <Route path="/downloads" element={<DownloadPage />} />
+                  <Route index element={<HomePage />} />
+                  <Route path="opensource" element={<OpenSourcePage />} />
+                  <Route path="opensource/:moduleId" element={<ModuleDetailPage />} />
+                  <Route path="toolchain" element={<ToolchainPage />} />
+                  <Route path="learning" element={<LearningPage />} />
+                  <Route path="community" element={<CommunityPage />} />
+                  <Route path="profile" element={<ProfilePage />} />
+                  <Route path="blog" element={<BlogPage />} />
+                  <Route path="docs" element={<DocsPage />} />
+                  <Route path="forum" element={<ForumPage />} />
+                  <Route path="qa" element={<QAPage />} />
+                  <Route path="events" element={<EventsPage />} />
+                  <Route path="hardware" element={<HardwarePage />} />
+                  <Route path="downloads" element={<DownloadPage />} />
                   <Route path="*" element={
-                    <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
-                      <h1 className="text-6xl font-bold text-gradient-accent mb-4">404</h1>
-                      <h2 className="text-2xl font-semibold mb-2">页面未找到</h2>
-                      <p className="text-muted-foreground mb-6">抱歉，您访问的页面不存在。</p>
-                      <a href="#/" className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors">
-                        返回首页
-                      </a>
+                    <div className="min-h-screen flex items-center justify-center">
+                      <div className="text-center">
+                        <h1 className="text-4xl font-bold mb-4">404</h1>
+                        <p className="text-muted-foreground mb-6">页面不存在</p>
+                        <a href="#/" className="text-[hsl(var(--primary))] hover:underline">
+                          返回首页
+                        </a>
+                      </div>
                     </div>
                   } />
                 </Routes>
               </Suspense>
             </main>
             <Footer />
+            <InteractiveCLI />
           </>
         } />
       </Routes>
