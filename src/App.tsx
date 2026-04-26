@@ -32,6 +32,10 @@ const ModuleComparePage = lazy(() => import('./pages/ModuleComparePage').then(m 
 const CodeSandboxPage = lazy(() => import('./pages/CodeSandboxPage').then(m => ({ default: m.CodeSandboxPage })));
 const LearningPathsPage = lazy(() => import('./pages/LearningPathsPage').then(m => ({ default: m.LearningPathsPage })));
 const QualityPage = lazy(() => import('./pages/QualityPage').then(m => ({ default: m.QualityPage })));
+const OrganizationPage = lazy(() => import('./pages/OrganizationPage').then(m => ({ default: m.OrganizationPage })));
+const WorkspacePage = lazy(() => import('./pages/WorkspacePage').then(m => ({ default: m.WorkspacePage })));
+const SSOPage = lazy(() => import('./pages/SSOPage').then(m => ({ default: m.SSOPage })));
+const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage').then(m => ({ default: m.AnalyticsPage })));
 
 function App() {
   const { showHelp, setShowHelp } = useHotkeys();
@@ -93,6 +97,10 @@ function App() {
                   <Route path="sandbox" element={<CodeSandboxPage />} />
                   <Route path="learning-paths" element={<LearningPathsPage />} />
                   <Route path="quality" element={<QualityPage />} />
+                  <Route path="organization" element={<OrganizationPage />} />
+                  <Route path="workspace" element={<WorkspacePage />} />
+                  <Route path="sso" element={<SSOPage />} />
+                  <Route path="analytics" element={<AnalyticsPage />} />
                   <Route path="toolchain" element={<ToolchainPage />} />
                   <Route path="learning" element={<LearningPage />} />
                   <Route path="community" element={<CommunityPage />} />
