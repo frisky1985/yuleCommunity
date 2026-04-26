@@ -1,3 +1,174 @@
+# YuleTech Community v0.8.0
+
+## 概述
+
+v0.8.0 是导航栏体验优化版本，合并搜索入口、修复文字换行问题，并更新开源代码页芯片描述，使导航更加简洁统一。
+
+## 新增功能
+
+### 统一搜索入口
+- **删除 CodeSearch 独立按钮** - 移除导航栏中占位的"搜索代码..."文字按钮，解决文字换行问题
+- **GlobalSearch 整合代码搜索** - 全局搜索现在可同时搜索帖子、问答、文章、活动以及代码片段
+- **保留 Cmd/Ctrl + K 快捷键** - 快速唤起搜索面板
+
+## 修复
+
+### 导航栏文字换行
+- **NavLink 添加 `whitespace-nowrap shrink-0`** - 所有桌面端导航链接强制单行显示，不再出现字符级换行
+- **CTA 按钮同样处理** - "个人中心"、"登录"、"免费加入"按钮也添加防换行属性
+
+## 优化
+
+- **开源代码页描述更新** - 将"NXP i.MX8M Mini 处理器"改为"全球主流芯片公司的处理器"
+
+## 部署
+
+已部署至 GitHub Pages：https://frisky1985.github.io/yuleCommunity/
+
+---
+
+# YuleTech Community v0.7.8
+
+## 概述
+
+v0.7.8 新增测试覆盖率仪表盘，为开发者提供模块测试质量的可视化概览。
+
+## 新增功能
+
+### 测试覆盖率仪表盘
+- **覆盖率总览** - 显示整体代码覆盖率、测试通过率等关键指标
+- **模块级覆盖详情** - 每个 AutoSAR BSW 模块的测试覆盖情况可视化
+- **趋势图表** - 使用面积图展示覆盖率变化趋势
+
+## 修复
+
+- 导航栏布局间距微调
+
+## 部署
+
+已部署至 GitHub Pages：https://frisky1985.github.io/yuleCommunity/
+
+---
+
+# YuleTech Community v0.7.7
+
+## 概述
+
+v0.7.7 添加模块依赖关系图可视化组件，直观展示 BSW 模块间的层级与调用关系。
+
+## 新增功能
+
+### 模块依赖关系图
+- **交互式关系图** - 可缩放、拖拽查看 32+ 模块的依赖网络
+- **分层着色** - MCAL/ECUAL/Service/RTE 四层用不同颜色区分
+- **点击查看详情** - 点击节点直接跳转到对应模块详情页
+
+## 部署
+
+已部署至 GitHub Pages：https://frisky1985.github.io/yuleCommunity/
+
+---
+
+# YuleTech Community v0.7.6
+
+## 概述
+
+v0.7.6 新增 README 生成器，帮助开发者快速为 BSW 模块生成规范的项目文档。
+
+## 新增功能
+
+### README 生成器
+- **模板化生成** - 根据模块信息自动生成包含 API 参考、使用示例、配置说明的标准 README
+- **实时预览** - Markdown 实时渲染预览
+- **一键复制** - 支持复制到剪贴板
+
+## 部署
+
+已部署至 GitHub Pages：https://frisky1985.github.io/yuleCommunity/
+
+---
+
+# YuleTech Community v0.7.5
+
+## 概述
+
+v0.7.5 添加交互式命令行导航组件，模拟终端体验，提升开发者操作感。
+
+## 新增功能
+
+### 交互式 CLI 导航
+- **终端风格界面** - 模拟命令行操作体验
+- **命令补全提示** - 常用命令自动提示
+- **历史记录** - 支持上下箭头浏览历史命令
+
+## 部署
+
+已部署至 GitHub Pages：https://frisky1985.github.io/yuleCommunity/
+
+---
+
+# YuleTech Community v0.7.4
+
+## 概述
+
+v0.7.4 新增开发板引脚配置器，可视化配置 GPIO 和外设引脚映射。
+
+## 新增功能
+
+### 开发板引脚配置器
+- **引脚图可视化** - 图形化展示开发板引脚布局
+- **拖拽配置** - 交互式配置引脚功能
+- **导出配置** - 生成 C 语言初始化代码
+
+## 部署
+
+已部署至 GitHub Pages：https://frisky1985.github.io/yuleCommunity/
+
+---
+
+# YuleTech Community v0.7.3
+
+## 概述
+
+v0.7.3 添加 BSW 可视化配置器，通过图形界面配置 AutoSAR BSW 模块参数。
+
+## 新增功能
+
+### BSW 可视化配置器
+- **表单化配置** - 将复杂的配置参数转化为可视化表单
+- **参数验证** - 实时验证配置值合法性
+- **配置导出** - 生成标准 AutoSAR ARXML 格式配置
+
+## 部署
+
+已部署至 GitHub Pages：https://frisky1985.github.io/yuleCommunity/
+
+---
+
+# YuleTech Community v0.7.2
+
+## 概述
+
+v0.7.2 集成代码搜索与预览功能，支持在开源代码库中快速查找函数、变量和模块定义。
+
+## 新增功能
+
+### 代码搜索与预览
+- **全文代码搜索** - 支持函数名、变量名、模块名模糊搜索
+- **语法高亮预览** - 集成 Prism.js，支持 C 语言语法高亮
+- **行号定位** - 显示代码片段所在文件路径和行号
+- **模块跳转** - 一键跳转到对应模块详情页
+
+## 修复
+
+- 修复 CodeSearch TypeScript 编译错误
+
+## 部署
+
+已部署至 GitHub Pages：https://frisky1985.github.io/yuleCommunity/
+
+---
+
 # YuleTech Community v0.6.0
 
 ## 概述
