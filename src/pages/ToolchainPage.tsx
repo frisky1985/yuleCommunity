@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { ConfigGenerator } from '../components/ConfigGenerator';
 import { BSWConfigurator } from '../components/BSWConfigurator';
+import { ReadmeGenerator } from '../components/ReadmeGenerator';
 
 const categories = ['全部', '配置工具', '编译脚本', '调试工具', '测试验证'];
 
@@ -343,6 +344,20 @@ export function ToolchainPage() {
             </p>
           </div>
           <BSWConfigurator />
+        </div>
+      </section>
+
+      {/* README Generator */}
+      <section className="py-16 border-t border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-bold mb-3">README 生成器</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              专为汽车软件开发优化的 README 模板生成器，支持 AutoSAR 模块、开源项目和企业级模板，
+              快速生成专业的项目文档。
+            </p>
+          </div>
+          <ReadmeGenerator />
         </div>
       </section>
 
