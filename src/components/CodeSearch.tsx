@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, X, Code2, FileText, Hash, ChevronRight } from 'lucide-react';
+import { Search, X, FileText, ChevronRight } from 'lucide-react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { 
   searchCode, 
-  getModuleList, 
   getTypeIcon, 
   getTypeName,
+  codeSearchData,
   type SearchResult 
 } from '../data/codeSearch';
 import { useTheme } from '../contexts/ThemeContext';

@@ -448,7 +448,7 @@ export function searchCode(query: string): SearchResult[] {
   if (!query.trim()) return [];
   
   const lowerQuery = query.toLowerCase();
-  const results: SearchResult[] = [];
+  const results: Array<SearchResult & { score: number }> = [];
   
   for (const item of codeSearchData) {
     // 匹配名称
@@ -477,9 +477,10 @@ export function searchCode(query: string): SearchResult[] {
   }
   
   // 按分数排序
-  return results
-    .sort((a, b) => (b as any).score - (a as any).score)
-    .slice(0, 10); // 最多返回 10 个结果
+  results.sort((a, b) => b.score - a.score);
+  
+  // 返回不包含score的结果
+  return results.map(({ score, ...item }) => item).slice(0, 10);
 }
 
 /**
