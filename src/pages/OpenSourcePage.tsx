@@ -21,6 +21,7 @@ import {
   Code2,
 } from 'lucide-react';
 import { useGitHubRepos } from '../hooks/useGitHubRepos';
+import { DependencyGraph } from '../components/DependencyGraph';
 
 const layerFilters = ['全部', 'MCAL', 'ECUAL', 'Service', 'RTE + ASW'];
 
@@ -411,6 +412,20 @@ export function OpenSourcePage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Dependency Graph */}
+      <section className="py-16 bg-muted/30 border-t border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-bold mb-3">模块依赖关系图</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              可视化展示 YuleTech BSW 各模块间的依赖关系，从 MCAL 底层驱动到 ASW 应用软件的完整调用链。
+              点击节点查看详细信息，使用左侧控制面板筛选不同层级。
+            </p>
+          </div>
+          <DependencyGraph />
         </div>
       </section>
 
