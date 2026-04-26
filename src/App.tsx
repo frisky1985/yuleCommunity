@@ -6,6 +6,8 @@ import { OfflineIndicator } from './components/OfflineIndicator';
 import { PageLoader } from './components/PageLoader';
 import { AdminLayout } from './components/AdminLayout';
 import { InteractiveCLI } from './components/InteractiveCLI';
+import { useHotkeys } from './hooks/useHotkeys';
+import { HotkeyHelp } from './components/HotkeyHelp';
 
 const HomePage = lazy(() => import('./pages/HomePage').then(m => ({ default: m.HomePage })));
 const OpenSourcePage = lazy(() => import('./pages/OpenSourcePage').then(m => ({ default: m.OpenSourcePage })));
@@ -28,8 +30,11 @@ const AdminSettings = lazy(() => import('./pages/AdminSettings').then(m => ({ de
 const ModuleDetailPage = lazy(() => import('./pages/ModuleDetailPage').then(m => ({ default: m.ModuleDetailPage })));
 
 function App() {
+  const { showHelp, setShowHelp } = useHotkeys();
+
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <HotkeyHelp isOpen={showHelp} onClose={() => setShowHelp(false)} />
       <Routes>
         {/* Admin routes */}
         <Route path="/admin/login" element={
