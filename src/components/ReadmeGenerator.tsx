@@ -89,7 +89,7 @@ export function ReadmeGenerator() {
   const [selectedTemplate, setSelectedTemplate] = useState<ReadmeTemplate>(TEMPLATES[0]);
   const [config, setConfig] = useState<GeneratorConfig>({
     projectName: 'yuletech-can',
-    description: 'AutoSAR CAN 驱动模块实现，支持 CAN 2.0B 和 CAN-FD，适用于 i.MX8M Mini 平台',
+    description: 'AutoSAR CAN 驱动模块实现，支持 CAN 2.0B 和 CAN-FD',
     version: '1.0.0',
     author: 'YuleTech',
     license: 'mit',
@@ -266,7 +266,7 @@ export function ReadmeGenerator() {
   };
 
   // 更新配置
-  const updateConfig = (key: keyof GeneratorConfig, value: any) => {
+  const updateConfig = (key: keyof GeneratorConfig, value: string | number | boolean | string[]) => {
     setConfig(prev => ({ ...prev, [key]: value }));
   };
 

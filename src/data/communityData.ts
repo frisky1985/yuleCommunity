@@ -72,7 +72,7 @@ export interface CommunityEvent {
 export const initialForumPosts: ForumPost[] = [
   {
     id: 'fp-1',
-    title: 'i.MX8M Mini 上 CAN FD 的波特率配置问题',
+    title: 'CAN FD 的波特率配置问题',
     content: '最近在配置 CAN FD 的时候遇到了一些问题，数据段的波特率无法达到预期值。已经尝试了多种配置组合，但总是报 BOff 错误。有没有大佬遇到过类似的问题？\n\n当前配置：\n- 仲裁段 500Kbps\n- 数据段 2Mbps\n- 采样点 80%\n\n寄存器配置如下...',
     author: '张明',
     avatar: 'ZM',
@@ -83,7 +83,7 @@ export const initialForumPosts: ForumPost[] = [
     replies: [
       {
         id: 'fr-1-1',
-        content: '这个问题通常是时钟源配置不对导致的。i.MX8M Mini 的 FlexCAN 模块需要 40MHz 的时钟源，如果用的是 24MHz 晶振，需要先配置 PLL。建议检查一下 CCM 的 CAN_CLK_ROOT 配置。',
+        content: '这个问题通常是时钟源配置不对导致的。FlexCAN 模块需要 40MHz 的时钟源，如果用的是 24MHz 晶振，需要先配置 PLL。建议检查一下 CCM 的 CAN_CLK_ROOT 配置。',
         author: '李架构',
         avatar: '李架',
         role: '首席架构师',
@@ -153,7 +153,7 @@ export const initialForumPosts: ForumPost[] = [
   {
     id: 'fp-4',
     title: '分享：我们团队基于 YuleTech BSW 的量产经验',
-    content: '经过 18 个月的开发和验证，我们基于 YuleTech AutoSAR BSW 的座舱域控制器终于量产了！\n\n项目概况：\n- 平台：NXP i.MX8M Mini\n- BSW 版本：YuleTech OpenSpec v2.1\n- 应用：数字仪表 + 中控娱乐\n- 产量：10K/月\n\n踩过的坑和解决方案分享给大家...',
+    content: '经过 18 个月的开发和验证，我们基于 YuleTech AutoSAR BSW 的座舱域控制器终于量产了！\n\n项目概况：\n- 平台：ARM Cortex-A53\n- BSW 版本：YuleTech OpenSpec v2.1\n- 应用：数字仪表 + 中控娱乐\n- 产量：10K/月\n\n踩过的坑和解决方案分享给大家...',
     author: '陈工',
     avatar: 'CG',
     role: '技术负责人',
@@ -328,12 +328,12 @@ export const initialEvents: CommunityEvent[] = [
   },
   {
     id: 'evt-3',
-    title: 'i.MX8M Mini 驱动开发实战训练营',
+    title: '驱动开发实战训练营',
     type: 'online',
     date: '2026-05-20',
     time: '19:00 - 21:00',
     location: 'B站直播',
-    description: '为期 5 天的在线训练营，手把手教你从零开始开发 i.MX8M Mini 的 MCAL 驱动。涵盖 Mcu、Port、Dio、Can、Spi 五大核心驱动。',
+    description: '为期 5 天的在线训练营，手把手教你从零开始开发 MCAL 驱动。涵盖 Mcu、Port、Dio、Can、Spi 五大核心驱动。',
     speaker: '张明',
     speakerRole: 'YuleTech 嵌入式工程师',
     maxAttendees: 500,

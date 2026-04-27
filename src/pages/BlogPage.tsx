@@ -54,8 +54,8 @@ export const articlesData = [
   },
   {
     id: 'blog-2',
-    title: 'i.MX8M Mini CAN FD 驱动开发实战：从寄存器到 AutoSAR 接口',
-    desc: '手把手讲解如何在 i.MX8M Mini 上实现 CAN FD 驱动，从 FlexCAN 寄存器配置到 AutoSAR Can 模块的完整对接流程。',
+    title: 'CAN FD 驱动开发实战：从寄存器到 AutoSAR 接口',
+    desc: '手把手讲解如何实现 CAN FD 驱动，从 FlexCAN 寄存器配置到 AutoSAR Can 模块的完整对接流程。',
     author: '张明',
     avatar: '张明',
     role: '嵌入式工程师',
@@ -67,7 +67,7 @@ export const articlesData = [
     tags: ['MCAL', 'CAN', 'i.MX8M'],
     category: 'MCAL',
     hot: true,
-    content: 'i.MX8M Mini 集成了 FlexCAN 模块，支持经典 CAN 和 CAN FD 两种模式。本文将详细介绍从寄存器配置到 AutoSAR Can 模块接口的完整实现。',
+    content: '本平台集成了 FlexCAN 模块，支持经典 CAN 和 CAN FD 两种模式。本文将详细介绍从寄存器配置到 AutoSAR Can 模块接口的完整实现。',
   },
   {
     id: 'blog-3',
@@ -241,7 +241,7 @@ function renderRichContent(content: string) {
 const weeklyTop = [
   { title: 'AutoSAR BSW 分层架构深度解析：从 MCAL 到 RTE 的完整数据流', views: 3420 },
   { title: 'ISO 26262 功能安全在 AutoSAR BSW 中的实现要点', views: 2100 },
-  { title: 'i.MX8M Mini CAN FD 驱动开发实战：从寄存器到 AutoSAR 接口', views: 1860 },
+  { title: 'CAN FD 驱动开发实战：从寄存器到 AutoSAR 接口', views: 1860 },
   { title: 'AutoSAR RTE 层接口生成原理与代码分析', views: 1650 },
   { title: 'CanIf 模块配置最佳实践：信号路由与 PDU 映射', views: 1540 },
 ];

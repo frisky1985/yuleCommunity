@@ -31,7 +31,7 @@ const modules = [
   },
 ];
 
-function CpuIcon(props: any) {
+function CpuIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="4" y="4" width="16" height="16" rx="2" />
@@ -101,7 +101,7 @@ export function OpenSource() {
               </div>
 
               <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">基于 i.MX8M Mini / AutoSAR 4.x</span>
+                <span className="text-xs text-muted-foreground">基于 AutoSAR 4.x</span>
                 <button className="text-xs font-medium text-[hsl(var(--accent))] hover:text-[hsl(var(--accent-glow))] transition-colors flex items-center gap-1">
                   查看源码 <ExternalLink className="w-3 h-3" />
                 </button>

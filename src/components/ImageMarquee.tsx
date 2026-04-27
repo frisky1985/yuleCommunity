@@ -65,7 +65,7 @@ export function MockGithubRepo() {
         </div>
         <span className="text-[9px] font-semibold truncate">frisky1985/yuletech-mcu</span>
       </div>
-      <div className="text-[8px] text-muted-foreground mb-2 line-clamp-2">AutoSAR Mcu driver for i.MX8M Mini platform</div>
+      <div className="text-[8px] text-muted-foreground mb-2 line-clamp-2">AutoSAR Mcu driver</div>
       <div className="flex items-center gap-3 text-[8px] text-muted-foreground">
         <span className="flex items-center gap-0.5">★ 48</span>
         <span className="flex items-center gap-0.5">⑂ 12</span>
@@ -286,7 +286,7 @@ export function MockSpecTable() {
       <div className="text-[8px] font-semibold mb-1.5">开发板规格</div>
       <div className="space-y-1">
         {[
-          { label: '处理器', value: 'i.MX8M Mini' },
+          { label: '处理器', value: 'ARM Cortex-A53' },
           { label: '核心', value: '4x A53 + M4' },
           { label: '内存', value: '2GB LPDDR4' },
           { label: '存储', value: '16GB eMMC' },

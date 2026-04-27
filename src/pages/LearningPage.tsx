@@ -36,7 +36,7 @@ const courses = [
       },
       {
         title: 'MCAL 驱动开发实战指南',
-        desc: '深入讲解 MCAL 层驱动开发原理，基于 i.MX8M Mini 芯片的寄存器配置和代码实现。',
+        desc: '深入讲解 MCAL 层驱动开发原理，基于目标芯片的寄存器配置和代码实现。',
         level: '进阶',
         duration: '18 课时',
         students: 920,
@@ -99,7 +99,7 @@ const courses = [
     color: 'text-teal-500 bg-teal-500/10',
     items: [
       {
-        title: 'i.MX8M Mini 开发板入门项目',
+        title: '开发板入门项目',
         desc: '基于 YuleTech 开源开发板，完成 GPIO 控制、CAN 收发和 ADC 采集的完整项目。',
         level: '入门',
         duration: '10 课时',

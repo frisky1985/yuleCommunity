@@ -39,47 +39,47 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children, defaultTheme = 'system' }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<Theme>(defaultTheme);
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
+  const [theme, setThemeState] = useState<Theme>(() => {
+    // 初始化时同步读取存储的主题
+    const stored = getStoredTheme();
+    return stored || defaultTheme;
+  });
   const [mounted, setMounted] = useState(false);
 
-  // Initialize theme from storage
+  // 计算解析后的主题
+  const resolvedTheme = theme === 'system' ? getSystemTheme() : theme;
+
+  // 标记已挂载
   useEffect(() => {
-    const stored = getStoredTheme();
-    if (stored) {
-      setThemeState(stored);
-    }
     setMounted(true);
   }, []);
 
-  // Update resolved theme when theme changes
+  // 更新文档主题类
   useEffect(() => {
-    const resolved = theme === 'system' ? getSystemTheme() : theme;
-    setResolvedTheme(resolved);
-
-    // Update document class
+    if (!mounted) return;
+    
     const root = document.documentElement;
     root.classList.remove('light', 'dark');
-    root.classList.add(resolved);
-    root.setAttribute('data-theme', resolved);
-  }, [theme]);
+    root.classList.add(resolvedTheme);
+    root.setAttribute('data-theme', resolvedTheme);
+  }, [resolvedTheme, mounted]);
 
-  // Listen to system theme changes
+  // 监听系统主题变化
   useEffect(() => {
-    if (theme !== 'system') return;
+    if (theme !== 'system' || !mounted) return;
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handler = (e: MediaQueryListEvent) => {
-      const newTheme = e.matches ? 'dark' : 'light';
-      setResolvedTheme(newTheme);
-      document.documentElement.classList.remove('light', 'dark');
-      document.documentElement.classList.add(newTheme);
-      document.documentElement.setAttribute('data-theme', newTheme);
+      const newResolvedTheme = e.matches ? 'dark' : 'light';
+      const root = document.documentElement;
+      root.classList.remove('light', 'dark');
+      root.classList.add(newResolvedTheme);
+      root.setAttribute('data-theme', newResolvedTheme);
     };
 
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
-  }, [theme]);
+  }, [theme, mounted]);
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import type { ReactNode } from 'react';
 
 interface AnimatedPageProps {
@@ -29,6 +29,12 @@ const pageVariants = {
 };
 
 export function AnimatedPage({ children, className = '' }: AnimatedPageProps) {
+  const shouldReduceMotion = useReducedMotion();
+  
+  if (shouldReduceMotion) {
+    return <div className={className}>{children}</div>;
+  }
+  
   return (
     <motion.div
       variants={pageVariants}

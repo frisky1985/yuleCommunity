@@ -33,7 +33,7 @@ interface ConfigParam {
   type: 'boolean' | 'number' | 'select' | 'text';
   label: string;
   description: string;
-  defaultValue: any;
+  defaultValue: string | number | boolean;
   options?: string[];
   min?: number;
   max?: number;
@@ -142,7 +142,7 @@ export function BSWConfigurator() {
   };
 
   // 更新配置
-  const updateConfig = (moduleId: string, paramName: string, value: any) => {
+  const updateConfig = (moduleId: string, paramName: string, value: string | number | boolean) => {
     setConfigs(prev => ({
       ...prev,
       [moduleId]: {

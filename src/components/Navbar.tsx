@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Code2, Menu, X, Shield } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
@@ -20,11 +20,18 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // 路由变化时滚动到顶部 (移除 setState)
   useEffect(() => {
-    // Close mobile menu when route changes
-    setIsMobileMenuOpen(false);
-    // Scroll to top on route change
     window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  // 路由变化时关闭移动菜单 (使用 ref 追踪)
+  const prevPathname = useRef(location.pathname);
+  useEffect(() => {
+    if (prevPathname.current !== location.pathname) {
+      setIsMobileMenuOpen(false);
+      prevPathname.current = location.pathname;
+    }
   }, [location.pathname]);
 
   const navLinks = [

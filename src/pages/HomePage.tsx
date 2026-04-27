@@ -14,14 +14,13 @@ import { CTA } from '../components/CTA';
 const MINIMAL_MODE_KEY = 'yule-minimal-mode';
 
 export function HomePage() {
-  const [isMinimalMode, setIsMinimalMode] = useState(false);
+  const [isMinimalMode, setIsMinimalMode] = useState(() => {
+    const saved = localStorage.getItem(MINIMAL_MODE_KEY);
+    return saved === 'true';
+  });
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem(MINIMAL_MODE_KEY);
-    if (saved) {
-      setIsMinimalMode(saved === 'true');
-    }
     setIsLoaded(true);
   }, []);
 

@@ -17,7 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { PinConfigurator } from '../components/PinConfigurator';
 
 const specs = [
-  { label: '处理器', value: 'NXP i.MX8M Mini Quad Core', icon: Cpu },
+  { label: '处理器', value: 'ARM Cortex-A53 Quad Core', icon: Cpu },
   { label: 'CPU 架构', value: 'ARM Cortex-A53 @ 1.8GHz × 4', icon: Microchip },
   { label: '内存', value: '2GB LPDDR4', icon: MemoryStick },
   { label: '存储', value: '16GB eMMC + microSD 扩展', icon: HardDrive },
@@ -28,18 +28,18 @@ const specs = [
 ];
 
 const tutorials = [
-  { title: 'i.MX8M Mini 快速入门指南', desc: '从开箱到点亮第一个 LED 的完整教程', link: '#' },
+  { title: '开发板快速入门指南', desc: '从开箱到点亮第一个 LED 的完整教程', link: '#' },
   { title: 'MCAL 驱动移植教程', desc: '基于 YuleTech BSW 的 MCAL 层移植实战', link: '#' },
   { title: 'Linux BSP 构建指南', desc: '使用 Yocto 构建定制化 Linux 镜像', link: '#' },
-  { title: 'AutoSAR OS 配置与启动', desc: '在 i.MX8M Mini 上配置并启动 FreeRTOS 映射', link: '#' },
+  { title: 'AutoSAR OS 配置与启动', desc: '配置并启动 FreeRTOS 映射', link: '#' },
 ];
 
 export function HardwarePage() {
   return (
     <div className="min-h-screen pt-16">
       <Helmet>
-        <title>开发板 - YuleTech | i.MX8M Mini 硬件平台</title>
-        <meta name="description" content="专为 AutoSAR BSW 开发优化的 i.MX8M Mini 开发板，预装 YuleTech 开源基础软件栈，提供从驱动开发到系统集成的完整硬件支持。" />
+        <title>开发板 - YuleTech | 硬件平台</title>
+        <meta name="description" content="专为 AutoSAR BSW 开发优化的开发板，预装 YuleTech 开源基础软件栈，提供从驱动开发到系统集成的完整硬件支持。" />
       </Helmet>
       {/* Hero */}
       <section className="relative py-16 overflow-hidden bg-gradient-to-b from-[hsl(var(--primary))]/5 to-transparent">
@@ -50,11 +50,11 @@ export function HardwarePage() {
               软硬件一体开源方案
             </span>
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6">
-              i.MX8M Mini
+              YuleTech
               <span className="text-gradient-accent"> 开发板</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
-              专为 AutoSAR BSW 开发优化的 i.MX8M Mini 开发板，预装 YuleTech 开源基础软件栈，
+              专为 AutoSAR BSW 开发优化的开发板，预装 YuleTech 开源基础软件栈，
               提供从驱动开发到系统集成的完整硬件支持。
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -80,7 +80,7 @@ export function HardwarePage() {
               <div className="aspect-video bg-gradient-to-br from-muted via-background to-muted flex items-center justify-center">
                 <div className="text-center">
                   <Cpu className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
-                  <p className="text-muted-foreground text-sm">i.MX8M Mini 开发板预览</p>
+                  <p className="text-muted-foreground text-sm">开发板预览</p>
                   <p className="text-xs text-muted-foreground/60 mt-1">实际产品图片将在后续更新</p>
                 </div>
               </div>
@@ -161,7 +161,7 @@ export function HardwarePage() {
               引脚配置工具
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              可视化配置 i.MX8M Mini 开发板引脚功能，支持 GPIO、CAN、SPI、UART、I2C、PWM、ADC 等多种功能映射，
+              可视化配置开发板引脚功能，支持 GPIO、CAN、SPI、UART、I2C、PWM、ADC 等多种功能映射，
               一键生成符合 AutoSAR 标准的 Port 配置代码。
             </p>
           </div>

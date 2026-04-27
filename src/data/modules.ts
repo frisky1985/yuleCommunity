@@ -42,7 +42,7 @@ const mcalDetails: Record<string, ModuleDetail> = {
     forks: 12,
     shortDesc: '微控制器驱动，负责时钟、复位和功耗管理',
     overview:
-      'Mcu (Microcontroller Driver) 是 MCAL 层的核心模块，负责初始化微控制器的时钟系统、复位管理和低功耗模式切换。基于 NXP i.MX8M Mini 处理器实现，支持动态时钟门控和多种功耗模式。',
+      'Mcu (Microcontroller Driver) 是 MCAL 层的核心模块，负责初始化微控制器的时钟系统、复位管理和低功耗模式切换，支持动态时钟门控和多种功耗模式。',
     features: [
       '时钟系统初始化与动态配置',
       '多种复位源检测与处理',
@@ -94,7 +94,7 @@ void SystemInit(void)
     changelog: [
       { version: 'v1.2.0', date: '2026-04-20', changes: ['新增动态时钟门控支持', '优化 STOP 模式恢复时间'] },
       { version: 'v1.1.0', date: '2026-03-15', changes: ['增加复位原因诊断接口', '修复 PLL 锁定检测偶发失效'] },
-      { version: 'v1.0.0', date: '2026-01-10', changes: ['初始版本发布', '支持 i.MX8M Mini 基础时钟配置'] },
+      { version: 'v1.0.0', date: '2026-01-10', changes: ['初始版本发布', '支持基础时钟配置'] },
     ],
   },
   Port: {
@@ -107,7 +107,7 @@ void SystemInit(void)
     forks: 10,
     shortDesc: '端口驱动，配置引脚功能和方向',
     overview:
-      'Port 驱动负责配置微控制器引脚的功能复用、方向（输入/输出）、驱动能力和上下拉电阻。基于 i.MX8M Mini 的 IOMUXC 模块实现，支持 128 个可配置引脚。',
+      'Port 驱动负责配置微控制器引脚的功能复用、方向（输入/输出）、驱动能力和上下拉电阻，支持 128 个可配置引脚。',
     features: [
       '引脚功能复用配置 (MUX_MODE)',
       '输入/输出方向控制',

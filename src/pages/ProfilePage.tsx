@@ -64,7 +64,7 @@ const contributions = [
   { type: 'article', title: 'AutoSAR CAN 通信栈配置实战指南', status: '已发布', date: '2026-04-05', views: 1200, likes: 56 },
   { type: 'pr', title: '优化 Spi 模块的 DMA 传输效率', project: 'Spi', status: '审核中', date: '2026-04-02', points: 300 },
   { type: 'issue', title: 'Gpt 模块在睡眠唤醒后计数器不递增', project: 'Gpt', status: '已关闭', date: '2026-03-28', points: 100 },
-  { type: 'article', title: 'i.MX8M Mini 看门狗驱动开发笔记', status: '已发布', date: '2026-03-20', views: 890, likes: 42 },
+  { type: 'article', title: '看门狗驱动开发笔记', status: '已发布', date: '2026-03-20', views: 890, likes: 42 },
 ];
 
 const learningProgress = [
@@ -77,7 +77,7 @@ const learningProgress = [
 
 const favorites = [
   { title: 'AutoSAR Com 模块的信号路由配置最佳实践', type: '文章', author: '李华', date: '2026-04-20', tags: ['Service', 'Com'] },
-  { title: 'i.MX8M Mini 上 CAN FD 的波特率配置问题', type: '讨论', author: '张明', date: '2026-04-19', tags: ['MCAL', 'CAN'] },
+  { title: 'CAN FD 的波特率配置问题', type: '讨论', author: '张明', date: '2026-04-19', tags: ['MCAL', 'CAN'] },
   { title: 'MCAL 驱动开发实战指南', type: '课程', author: 'YuleTech', date: '2026-04-18', tags: ['MCAL', '教程'] },
   { title: 'YuleConfig 工具链的 Docker 环境搭建踩坑记录', type: '文章', author: '刘洋', date: '2026-04-17', tags: ['工具链', 'Docker'] },
   { title: '诊断服务 UDS 开发精讲', type: '课程', author: 'YuleTech', date: '2026-04-15', tags: ['UDS', '诊断'] },

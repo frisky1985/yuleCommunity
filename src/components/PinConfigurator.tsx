@@ -35,7 +35,7 @@ interface Pin {
   functions: PinFunction[];
   defaultFunction: PinFunction;
   currentFunction: PinFunction;
-  config?: Record<string, any>;
+  config?: Record<string, string | number | boolean>;
   isConfigurable: boolean;
 }
 
@@ -48,7 +48,7 @@ interface Board {
   pins: Pin[];
 }
 
-// i.MX8M Mini 引脚配置
+// 开发板引脚配置
 const IMX8M_PINS: Pin[] = [
   // 电源和复位
   { id: 'VDD_1', number: 1, name: 'VDD_3V3', functions: ['POWER'], defaultFunction: 'POWER', currentFunction: 'POWER', isConfigurable: false },
@@ -97,8 +97,8 @@ const BOARDS: Board[] = [
   {
     id: 'imx8m-yule',
     name: 'YuleTech i.MX8M',
-    chip: 'i.MX8M Mini',
-    description: 'YuleTech 基于 i.MX8M Mini 的开源开发板，支持 AutoSAR BSW 全功能',
+    chip: 'ARM Cortex-A53',
+    description: 'YuleTech 开源开发板，支持 AutoSAR BSW 全功能',
     pins: IMX8M_PINS
   }
 ];

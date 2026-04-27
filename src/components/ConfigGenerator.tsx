@@ -38,7 +38,7 @@ const mcalModules: McalModule[] = [
     name: 'Mcu (微控制器驱动)',
     icon: Cpu,
     params: [
-      { name: 'sysClockHz', label: '系统时钟频率 (Hz)', type: 'number', defaultValue: 1800000000, desc: 'i.MX8M Mini 主频，默认 1.8GHz' },
+      { name: 'sysClockHz', label: '系统时钟频率 (Hz)', type: 'number', defaultValue: 1800000000, desc: '目标处理器主频，默认 1.8GHz' },
       { name: 'ahbPrescaler', label: 'AHB 分频系数', type: 'select', options: ['1', '2', '4', '8'], defaultValue: '2', desc: 'AHB 总线时钟分频' },
       { name: 'apbPrescaler', label: 'APB 分频系数', type: 'select', options: ['1', '2', '4', '8'], defaultValue: '4', desc: 'APB 外设时钟分频' },
       { name: 'lowPowerEnable', label: '低功耗模式', type: 'boolean', defaultValue: true, desc: '使能低功耗管理模式' },

@@ -33,9 +33,6 @@ export function useAdminAuth() {
   });
 
   useEffect(() => {
-    const stored = getStoredAuth();
-    setIsAdmin(isAuthValid(stored));
-
     const interval = setInterval(() => {
       const current = getStoredAuth();
       if (!isAuthValid(current)) {

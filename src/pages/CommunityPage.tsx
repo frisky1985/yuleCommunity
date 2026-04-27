@@ -27,13 +27,13 @@ import {
 
 const forumTopics = [
   {
-    title: 'i.MX8M Mini 上 CAN FD 的波特率配置问题',
+    title: 'CAN FD 的波特率配置问题',
     author: '张明',
     avatar: 'ZM',
     role: '嵌入式工程师',
     replies: 24,
     likes: 18,
-    tags: ['MCAL', 'CAN', 'i.MX8M'],
+    tags: ['MCAL', 'CAN'],
     time: '2小时前',
     hot: true,
   },
@@ -103,7 +103,7 @@ const events = [
     status: '报名中',
   },
   {
-    title: 'i.MX8M Mini 驱动开发实战工作坊',
+    title: '驱动开发实战工作坊',
     date: '2026-05-18',
     time: '14:00 - 17:00',
     type: '线上',
@@ -140,10 +140,10 @@ const circles = [
     color: 'from-cyan-500 to-teal-500',
   },
   {
-    name: 'i.MX8M Mini 开发者圈',
+    name: '开发者圈',
     members: 620,
     posts: 2100,
-    desc: 'NXP i.MX8M Mini 芯片开发技术交流',
+    desc: '芯片开发技术交流',
     icon: ChipIcon,
     color: 'from-teal-500 to-emerald-500',
   },
@@ -167,7 +167,7 @@ const tasks = [
     tags: ['文档', 'ECUAL'],
   },
   {
-    title: '实现 i.MX8M Mini 的 Adc 模块 DMA 传输支持',
+    title: '实现 Adc 模块 DMA 传输支持',
     reward: '2000 积分',
     difficulty: '困难',
     deadline: '2026-05-15',
@@ -192,7 +192,7 @@ const tasks = [
   },
 ];
 
-function CpuIcon(props: any) {
+function CpuIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="4" y="4" width="16" height="16" rx="2" />
@@ -205,7 +205,7 @@ function CpuIcon(props: any) {
   );
 }
 
-function LayersIcon(props: any) {
+function LayersIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="12 2 2 7 12 12 22 7 12 2" />
@@ -215,7 +215,7 @@ function LayersIcon(props: any) {
   );
 }
 
-function ChipIcon(props: any) {
+function ChipIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M18 12h2" /><path d="M4 12h2" />
@@ -227,7 +227,7 @@ function ChipIcon(props: any) {
   );
 }
 
-function ShieldIcon(props: any) {
+function ShieldIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />

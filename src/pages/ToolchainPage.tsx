@@ -62,7 +62,7 @@ const tools = [
     items: [
       {
         name: 'YuleBuild',
-        desc: '基于 CMake 的跨平台编译系统，内置 i.MX8M Mini 工具链配置，支持多核编译',
+        desc: '基于 CMake 的跨平台编译系统，内置完整工具链配置，支持多核编译',
         version: 'v1.5.0',
         platform: '跨平台',
         free: true,
@@ -139,7 +139,7 @@ const tools = [
       },
       {
         name: 'SIL Simulator',
-        desc: '软件在环仿真平台，模拟 i.MX8M Mini 外设行为，无需硬件即可验证驱动逻辑',
+        desc: '软件在环仿真平台，模拟目标处理器外设行为，无需硬件即可验证驱动逻辑',
         version: 'v0.9.0',
         platform: 'Linux / Windows',
         free: true,
@@ -163,7 +163,7 @@ const highlights = [
   {
     icon: Zap,
     title: '开箱即用',
-    desc: '内置 i.MX8M Mini 完整工具链配置，下载后 5 分钟即可开始开发',
+    desc: '内置完整工具链配置，下载后 5 分钟即可开始开发',
   },
   {
     icon: Shield,

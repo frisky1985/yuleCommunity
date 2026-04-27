@@ -194,7 +194,10 @@ export function TestCoverageDashboard() {
         ].map(tab => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
+            onClick={() => {
+              const tabId = tab.id as 'overview' | 'tests' | 'coverage';
+              setActiveTab(tabId);
+            }}
             className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors ${
               activeTab === tab.id
                 ? 'text-primary border-b-2 border-primary bg-primary/5'

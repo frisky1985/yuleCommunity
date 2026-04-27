@@ -62,7 +62,7 @@ export function ModuleDetailPage() {
     <div className="min-h-screen pt-16">
       <Helmet>
         <title>{mod.name} - {mod.layer} 模块详情 | YuleTech</title>
-        <meta name="description" content={`${mod.shortDesc}。基于 AutoSAR Classic Platform 4.x 标准，为 NXP i.MX8M Mini 处理器实现。`} />
+        <meta name="description" content={`${mod.shortDesc}。基于 AutoSAR Classic Platform 4.x 标准实现。`} />
       </Helmet>
 
       {/* Header */}
