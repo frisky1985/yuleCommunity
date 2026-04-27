@@ -1,0 +1,1 @@
+import{ai as a}from"./CategoricalChart-BaSdM2yV.js";function m(u){var o=a(u),i=3,s=2;if(o!=null){var{r:n,strokeWidth:N}=o,r=Number(n),t=Number(N);return(Number.isNaN(r)||r<0)&&(r=i),(Number.isNaN(t)||t<0)&&(t=s),{r,strokeWidth:t}}return{r:i,strokeWidth:s}}export{m as g};
