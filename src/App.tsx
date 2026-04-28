@@ -15,7 +15,8 @@ const ToolchainPage = lazy(() => import('./pages/ToolchainPage').then(m => ({ de
 const LearningPage = lazy(() => import('./pages/LearningPage').then(m => ({ default: m.LearningPage })));
 const CommunityPage = lazy(() => import('./pages/CommunityPage').then(m => ({ default: m.CommunityPage })));
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
-const BlogPage = lazy(() => import('./pages/BlogPage').then(m => ({ default: m.BlogPage })));
+const BlogListPage = lazy(() => import('./pages/BlogListPage').then(m => ({ default: m.BlogListPage })));
+const BlogDetailPage = lazy(() => import('./pages/BlogDetailPage').then(m => ({ default: m.BlogDetailPage })));
 const DocsPage = lazy(() => import('./pages/DocsPage').then(m => ({ default: m.DocsPage })));
 const ForumPage = lazy(() => import('./pages/ForumPage').then(m => ({ default: m.ForumPage })));
 const QAPage = lazy(() => import('./pages/QAPage').then(m => ({ default: m.QAPage })));
@@ -105,7 +106,8 @@ function App() {
                   <Route path="learning" element={<LearningPage />} />
                   <Route path="community" element={<CommunityPage />} />
                   <Route path="profile" element={<ProfilePage />} />
-                  <Route path="blog" element={<BlogPage />} />
+                  <Route path="blog" element={<BlogListPage />} />
+                  <Route path="blog/:slug" element={<BlogDetailPage />} />
                   <Route path="docs" element={<DocsPage />} />
                   <Route path="forum" element={<ForumPage />} />
                   <Route path="qa" element={<QAPage />} />
