@@ -14,3 +14,6 @@ export { BookmarkButton } from './BookmarkButton';
 
 // 相关文章推荐组件 (从 blog 目录导入)
 export { RelatedArticles } from '../blog/RelatedArticles';
+
+// 懒加载互动组件（带 Intersection Observer 优化）
+export { LazyEngagement, ImmediateEngagement } from './LazyEngagement';

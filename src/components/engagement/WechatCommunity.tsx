@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Users, Copy, Check } from 'lucide-react';
+import { MessageCircle, X, Users, Copy, Check, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 
@@ -35,6 +35,8 @@ export function WechatCommunity({
   const [clicks, setClicks] = useLocalStorage(WECHAT_CLICKS_KEY, 0);
   const [dismissed, setDismissed] = useLocalStorage(WECHAT_DISMISSED_KEY, false);
   const [copied, setCopied] = useState(false);
+  const [qrLoading, setQrLoading] = useState(true);
+  const [qrError, setQrError] = useState(false);
 
   // 延迟显示悬浮按钮
   useEffect(() => {
@@ -190,14 +192,32 @@ export function WechatCommunity({
                   <span>200+ 工程师已入群</span>
                 </div>
 
-                {/* 二维码占位 */}
+                {/* 二维码 */}
                 <div className="relative w-48 h-48 bg-muted rounded-xl flex items-center justify-center overflow-hidden">
-                  <div className="text-center p-4">
-                    <MessageCircle className="w-12 h-12 mx-auto text-[#07C160] mb-2" />
-                    <p className="text-xs text-muted-foreground">
-                      扫描二维码<br/>或复制关键词添加
-                    </p>
-                  </div>
+                  {qrLoading && !qrError && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Loader2 className="w-8 h-8 text-muted-foreground animate-spin" />
+                    </div>
+                  )}
+                  {qrError ? (
+                    <div className="text-center p-4">
+                      <MessageCircle className="w-12 h-12 mx-auto text-[#07C160] mb-2" />
+                      <p className="text-xs text-muted-foreground">
+                        扫描二维码<br/>或复制关键词添加
+                      </p>
+                    </div>
+                  ) : (
+                    <img
+                      src="/images/wechat-qr.png"
+                      alt="微信二维码"
+                      className={`w-full h-full object-contain transition-opacity duration-300 ${qrLoading ? 'opacity-0' : 'opacity-100'}`}
+                      onLoad={() => setQrLoading(false)}
+                      onError={() => {
+                        setQrLoading(false);
+                        setQrError(true);
+                      }}
+                    />
+                  )}
                 </div>
 
                 {/* 关键词提示 */}

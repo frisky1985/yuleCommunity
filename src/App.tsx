@@ -8,7 +8,9 @@ import { AdminLayout } from './components/AdminLayout';
 import { InteractiveCLI } from './components/InteractiveCLI';
 import { useHotkeys } from './hooks/useHotkeys';
 import { HotkeyHelp } from './components/HotkeyHelp';
-import { WechatCommunity, NewsletterSignup } from './components/engagement';
+
+// 使用 LazyEngagement 实现组件级代码分割
+const LazyEngagement = lazy(() => import('./components/engagement/LazyEngagement').then(m => ({ default: m.LazyEngagement })));
 
 const HomePage = lazy(() => import('./pages/HomePage').then(m => ({ default: m.HomePage })));
 const OpenSourcePage = lazy(() => import('./pages/OpenSourcePage').then(m => ({ default: m.OpenSourcePage })));
@@ -134,9 +136,17 @@ function App() {
             <Footer />
             <InteractiveCLI />
             
-            {/* Phase 3: 用户互动组件 */}
-            <WechatCommunity position="bottom-right" delay={8000} />
-            <NewsletterSignup variant="popup" delay={15000} enableExitIntent />
+            {/* Phase 4: 组件级代码分割 - 使用 LazyEngagement 实现懒加载 */}
+            <Suspense fallback={null}>
+              <LazyEngagement 
+                enableWechat={true}
+                enableNewsletter={true}
+                wechatPosition="bottom-right"
+                wechatDelay={8000}
+                newsletterDelay={15000}
+                enableExitIntent={true}
+              />
+            </Suspense>
           </>
         } />
       </Routes>
