@@ -6,7 +6,6 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import {
   Calendar,
@@ -27,6 +26,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { BlogArticle, TocItem } from '@/types/blog';
 import { articleService } from '@/services/blogService';
+import { BlogArticleSEOWrapper } from '@/components/seo';
 
 /**
  * 博客详情页组件
@@ -218,52 +218,21 @@ export function BlogDetailPage() {
     );
   }
 
-  // JSON-LD 结构化数据
-  const articleSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'TechArticle',
-    headline: article.title,
-    description: article.description,
-    author: {
-      '@type': 'Person',
-      name: article.author.name,
-    },
-    datePublished: article.publishDate,
-    dateModified: article.updatedAt || article.publishDate,
-    articleSection: article.category,
-    keywords: article.tags.join(','),
-  };
-
   return (
-    <>
-      <Helmet>
-        <title>{article.seo.title}</title>
-        <meta name="description" content={article.seo.description} />
-        <meta name="keywords" content={article.seo.keywords.join(', ')} />
-
-        {/* Open Graph */}
-        <meta property="og:title" content={article.seo.title} />
-        <meta property="og:description" content={article.seo.description} />
-        <meta property="og:type" content="article" />
-        {article.seo.ogImage && <meta property="og:image" content={article.seo.ogImage} />}
-
-        {/* Article specific */}
-        <meta property="article:author" content={article.author.name} />
-        <meta property="article:published_time" content={article.publishDate} />
-        <meta property="article:section" content={article.category} />
-        {article.tags.map(tag => (
-          <meta key={tag} property="article:tag" content={tag} />
-        ))}
-
-        {/* Canonical URL */}
-        <link rel="canonical" href={`${window.location.origin}/blog/${article.slug}`} />
-
-        {/* JSON-LD */}
-        <script type="application/ld+json">
-          {JSON.stringify(articleSchema)}
-        </script>
-      </Helmet>
-
+    <BlogArticleSEOWrapper
+      title={article.title}
+      description={article.description}
+      slug={article.slug}
+      coverImage={article.coverImage || '/images/hero-bg.png'}
+      author={{
+        name: article.author.name,
+        url: `https://frisky1985.github.io/yuleCommunity/blog?author=${article.author.id}`,
+      }}
+      publishDate={article.publishDate}
+      updatedAt={article.updatedAt}
+      tags={article.tags}
+      category={article.category}
+    >
       {/* 阅读进度条 */}
       <ReadingProgress
         targetSelector="article"
@@ -472,7 +441,7 @@ export function BlogDetailPage() {
           </div>
         </main>
       </div>
-    </>
+    </BlogArticleSEOWrapper>
   );
 }
 

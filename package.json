@@ -5,12 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run generate:sitemap && npm run generate:og && tsc -b && vite build",
+    "build:only": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "generate:sitemap": "npx tsx scripts/generate-sitemap.ts",
+    "generate:og": "npx tsx scripts/generate-og-images.ts"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
