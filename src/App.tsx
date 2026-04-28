@@ -8,6 +8,7 @@ import { AdminLayout } from './components/AdminLayout';
 import { InteractiveCLI } from './components/InteractiveCLI';
 import { useHotkeys } from './hooks/useHotkeys';
 import { HotkeyHelp } from './components/HotkeyHelp';
+import { WechatCommunity, NewsletterSignup } from './components/engagement';
 
 const HomePage = lazy(() => import('./pages/HomePage').then(m => ({ default: m.HomePage })));
 const OpenSourcePage = lazy(() => import('./pages/OpenSourcePage').then(m => ({ default: m.OpenSourcePage })));
@@ -37,6 +38,7 @@ const OrganizationPage = lazy(() => import('./pages/OrganizationPage').then(m =>
 const WorkspacePage = lazy(() => import('./pages/WorkspacePage').then(m => ({ default: m.WorkspacePage })));
 const SSOPage = lazy(() => import('./pages/SSOPage').then(m => ({ default: m.SSOPage })));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage').then(m => ({ default: m.AnalyticsPage })));
+const BookmarksPage = lazy(() => import('./pages/BookmarksPage').then(m => ({ default: m.BookmarksPage })));
 
 function App() {
   const { showHelp, setShowHelp } = useHotkeys();
@@ -108,6 +110,7 @@ function App() {
                   <Route path="profile" element={<ProfilePage />} />
                   <Route path="blog" element={<BlogListPage />} />
                   <Route path="blog/:slug" element={<BlogDetailPage />} />
+                  <Route path="bookmarks" element={<BookmarksPage />} />
                   <Route path="docs" element={<DocsPage />} />
                   <Route path="forum" element={<ForumPage />} />
                   <Route path="qa" element={<QAPage />} />
@@ -130,6 +133,10 @@ function App() {
             </main>
             <Footer />
             <InteractiveCLI />
+            
+            {/* Phase 3: 用户互动组件 */}
+            <WechatCommunity position="bottom-right" delay={8000} />
+            <NewsletterSignup variant="popup" delay={15000} enableExitIntent />
           </>
         } />
       </Routes>

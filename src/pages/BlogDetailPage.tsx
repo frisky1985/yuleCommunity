@@ -27,6 +27,7 @@ import { cn } from '@/lib/utils';
 import type { BlogArticle, TocItem } from '@/types/blog';
 import { articleService } from '@/services/blogService';
 import { BlogArticleSEOWrapper } from '@/components/seo';
+import { BookmarkButton, NewsletterSignup, RelatedArticles } from '@/components/engagement';
 
 /**
  * 博客详情页组件
@@ -278,6 +279,9 @@ export function BlogDetailPage() {
                 >
                   <Share2 className="w-5 h-5" />
                 </Button>
+                
+                {/* 收藏按钮 */}
+                {article && <BookmarkButton article={article} variant="icon" />}
               </div>
             </div>
           </div>
@@ -425,6 +429,20 @@ export function BlogDetailPage() {
                     </div>
                   </div>
                 </div>
+
+                {/* Newsletter 订阅 */}
+                <NewsletterSignup 
+                  variant="article-end" 
+                  articleTitle={article.title}
+                  className="mt-8"
+                />
+
+                {/* 相关文章推荐 */}
+                <RelatedArticles
+                  currentArticle={article}
+                  articles={relatedArticles}
+                  maxCount={4}
+                />
               </div>
 
               {/* 侧边栏 */}

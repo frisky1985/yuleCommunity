@@ -109,6 +109,29 @@ export function Navbar() {
                 <Shield className="w-4 h-4" />
               </Link>
             )}
+            {/* 收藏入口 */}
+            <Link
+              to="/bookmarks"
+              className={`p-2 transition-colors rounded-lg hover:bg-muted ${
+                location.pathname === '/bookmarks'
+                  ? 'text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+              title="我的收藏"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="w-5 h-5" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+              </svg>
+            </Link>
             <Link
               to="/profile"
               className={`text-sm font-medium transition-colors px-3 py-2 whitespace-nowrap shrink-0 ${
@@ -194,6 +217,17 @@ export function Navbar() {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 个人中心
+              </Link>
+              <Link
+                to="/bookmarks"
+                className={`text-sm font-medium py-2 transition-colors ${
+                  location.pathname === '/bookmarks'
+                    ? 'text-foreground'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                我的收藏
               </Link>
               <button className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-2 text-left">
                 登录
