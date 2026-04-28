@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { LayoutGrid, Minimize2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Hero } from '../components/Hero';
@@ -10,6 +9,7 @@ import { Stats } from '../components/Stats';
 import { OpenSource } from '../components/OpenSource';
 import { Community } from '../components/Community';
 import { CTA } from '../components/CTA';
+import { HomeSEOWrapper } from '../components/seo';
 
 const MINIMAL_MODE_KEY = 'yule-minimal-mode';
 
@@ -40,11 +40,7 @@ export function HomePage() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <Helmet>
-        <title>YuleTech - 汽车基础软件开源社区 | AutoSAR BSW</title>
-        <meta name="description" content="YuleTech 是国内领先的汽车基础软件开源社区，提供 AutoSAR BSW 开源代码、开发工具链、学习成长平台和硬件开发板。" />
-      </Helmet>
-
+      <HomeSEOWrapper>
       {/* Minimal Mode Toggle */}
       <motion.div 
         className="fixed bottom-6 right-6 z-50"
@@ -95,6 +91,7 @@ export function HomePage() {
           <CTA />
         </motion.div>
       )}
+      </HomeSEOWrapper>
     </motion.div>
   );
 }
