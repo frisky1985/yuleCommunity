@@ -1,6 +1,7 @@
 /**
  * 博客详情页
  * @description 展示单篇博客文章的详细内容，包含Markdown渲染、目录、相关文章等
+ * 集成阅读进度条和返回顶部功能
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
@@ -20,6 +21,8 @@ import {
 } from 'lucide-react';
 import { MarkdownRenderer } from '@/components/blog/MarkdownRenderer';
 import { BlogDetailSidebar } from '@/components/blog/BlogSidebar';
+import { ReadingProgress } from '@/components/blog/ReadingProgress';
+import { ScrollToTop } from '@/components/ui/ScrollToTop';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { BlogArticle, TocItem } from '@/types/blog';
@@ -237,13 +240,13 @@ export function BlogDetailPage() {
         <title>{article.seo.title}</title>
         <meta name="description" content={article.seo.description} />
         <meta name="keywords" content={article.seo.keywords.join(', ')} />
-        
+
         {/* Open Graph */}
         <meta property="og:title" content={article.seo.title} />
         <meta property="og:description" content={article.seo.description} />
         <meta property="og:type" content="article" />
         {article.seo.ogImage && <meta property="og:image" content={article.seo.ogImage} />}
-        
+
         {/* Article specific */}
         <meta property="article:author" content={article.author.name} />
         <meta property="article:published_time" content={article.publishDate} />
@@ -251,15 +254,30 @@ export function BlogDetailPage() {
         {article.tags.map(tag => (
           <meta key={tag} property="article:tag" content={tag} />
         ))}
-        
+
         {/* Canonical URL */}
         <link rel="canonical" href={`${window.location.origin}/blog/${article.slug}`} />
-        
+
         {/* JSON-LD */}
         <script type="application/ld+json">
           {JSON.stringify(articleSchema)}
         </script>
       </Helmet>
+
+      {/* 阅读进度条 */}
+      <ReadingProgress
+        targetSelector="article"
+        showPercentage
+        percentagePosition="right"
+      />
+
+      {/* 返回顶部按钮 */}
+      <ScrollToTop
+        threshold={500}
+        showProgress
+        position="right"
+        bottomOffset={80}
+      />
 
       <div className="min-h-screen bg-background">
         {/* 顶部导航 */}

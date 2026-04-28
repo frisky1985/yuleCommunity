@@ -7,23 +7,6 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MarkdownRenderer } from '../MarkdownRenderer';
 
-// 测试数据
-const simpleMarkdown = `# 标题一
-
-这是段落文字。
-
-## 标题二
-
-- 列表项1
-- 列表项2
-- 列表项3
-
-1. 编号列表1
-2. 编号列表2
-
-> 这是引用内容
-`;
-
 const markdownWithLinks = `
 ## 链接示例
 

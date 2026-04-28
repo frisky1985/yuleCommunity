@@ -1,16 +1,15 @@
 /**
  * Markdown 渲染器组件
- * @description 支持代码高亮的 Markdown 渲染器
+ * @description 支持代码高亮的 Markdown 渲染器，集成 CodeBlock 和 ImageLightbox
  */
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus, vs } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import remarkGfm from 'remark-gfm';
 import DOMPurify from 'dompurify';
-import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
+import { CodeBlock } from './CodeBlock';
+import { ImageLightbox } from './ImageLightbox';
 import type { TocItem } from '@/types/blog';
 
 export interface MarkdownRendererProps {
@@ -68,8 +67,17 @@ export function MarkdownRenderer({
   onTocGenerated,
   className,
 }: MarkdownRendererProps) {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
+  // 灯箱状态
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const [lightboxAlt, setLightboxAlt] = useState<string | undefined>(undefined);
+
+  // 打开灯箱
+  const openLightbox = useCallback((src: string, alt?: string) => {
+    setLightboxImage(src);
+    setLightboxAlt(alt);
+    setLightboxOpen(true);
+  }, []);
 
   // 生成目录
   useEffect(() => {
@@ -172,7 +180,7 @@ export function MarkdownRenderer({
       </blockquote>
     ),
 
-    // 代码块
+    // 代码块 - 增强版本
     code: ({ className, children }: { className?: string; children?: React.ReactNode }) => {
       const match = /language-(\w+)/.exec(className || '');
       const language = match ? match[1] : '';
@@ -180,30 +188,18 @@ export function MarkdownRenderer({
 
       if (isInline) {
         return (
-          <code
-            className="px-1.5 py-0.5 bg-muted rounded text-sm font-mono text-[hsl(var(--accent))]"
-          >
+          <code className="px-1.5 py-0.5 bg-muted rounded text-sm font-mono text-[hsl(var(--accent))]">
             {children}
           </code>
         );
       }
 
       return (
-        <div className="my-4 rounded-lg overflow-hidden">
-          {language && (
-            <div className="bg-muted-foreground/20 px-4 py-1.5 text-xs text-muted-foreground font-mono flex items-center justify-between">
-              <span>{language}</span>
-            </div>
-          )}
-          <SyntaxHighlighter
-            style={isDark ? vscDarkPlus : vs}
-            language={language || 'text'}
-            PreTag="div"
-            className="!m-0 !rounded-none"
-          >
-            {String(children).replace(/\n$/, '')}
-          </SyntaxHighlighter>
-        </div>
+        <CodeBlock
+          code={String(children).replace(/\n$/, '')}
+          language={language}
+          showLineNumbers
+        />
       );
     },
 
@@ -257,16 +253,38 @@ export function MarkdownRenderer({
       <hr className="my-8 border-border" />
     ),
 
-    // 图片
-    img: ({ src, alt }: { src?: string; alt?: string }) => (
-      <img
-        src={src}
-        alt={alt}
-        className="max-w-full h-auto rounded-lg my-4"
-        loading="lazy"
-      />
-    ),
-  }), [isDark]);
+    // 图片 - 增强版本支持灯箱
+    img: ({ src, alt }: { src?: string; alt?: string }) => {
+      const [isHovered, setIsHovered] = useState(false);
+
+      return (
+        <>
+          <div
+            className="relative inline-block"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <img
+              src={src}
+              alt={alt}
+              className="max-w-full h-auto rounded-lg my-4 cursor-zoom-in transition-all duration-200"
+              loading="lazy"
+              onClick={() => src && openLightbox(src, alt)}
+            />
+            {isHovered && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-lg pointer-events-none transition-opacity duration-200">
+                <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
+                  <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                  </svg>
+                </div>
+              </div>
+            )}
+          </div>
+        </>
+      );
+    },
+  }), []);
 
   // 使用 DOMPurify 清理内容，防止 XSS
   const sanitizedContent = useMemo(() => {
@@ -289,14 +307,24 @@ export function MarkdownRenderer({
   }, [content]);
 
   return (
-    <div className={cn('prose prose-neutral dark:prose-invert max-w-none', className)}>
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        components={components}
-      >
-        {sanitizedContent}
-      </ReactMarkdown>
-    </div>
+    <>
+      <div className={cn('prose prose-neutral dark:prose-invert max-w-none', className)}>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={components}
+        >
+          {sanitizedContent}
+        </ReactMarkdown>
+      </div>
+
+      {/* 图片灯箱 */}
+      <ImageLightbox
+        src={lightboxImage || ''}
+        alt={lightboxAlt}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+      />
+    </>
   );
 }
 

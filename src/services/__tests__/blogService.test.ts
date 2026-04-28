@@ -9,7 +9,8 @@ import {
   tagService,
   commentService,
 } from '../blogService';
-import type { BlogArticle, BlogCategory } from '@/types/blog';
+import { comments } from '@/data/blog/articles';
+import type { BlogCategory } from '@/types/blog';
 
 // 模拟 localStorage
 const localStorageMock = {
@@ -305,8 +306,14 @@ describe('tagService', () => {
 });
 
 describe('commentService', () => {
+  // 保存初始评论数据以便重置
+  const initialComments = JSON.stringify(comments);
+  
   beforeEach(() => {
     vi.clearAllMocks();
+    // 重置 comments 数组到初始状态
+    comments.length = 0;
+    comments.push(...JSON.parse(initialComments));
   });
 
   describe('getComments', () => {
@@ -416,14 +423,15 @@ describe('commentService', () => {
       const comment = await commentService.addComment('1', '测试取消点赞', author);
       const commentId = comment.id;
       // 点赞
-      await commentService.toggleCommentLike(commentId, 'user2');
-      // 确保点赞成功
+      const result1 = await commentService.toggleCommentLike(commentId, 'user1');
+      expect(result1).toBe(true);
+
       let comments = await commentService.getComments('1');
       let likedComment = comments.find(c => c.id === commentId);
       expect(likedComment?.likes).toBe(1);
       
       // 取消点赞
-      await commentService.toggleCommentLike(commentId, 'user2');
+      await commentService.toggleCommentLike(commentId, 'user1');
       
       // 检查点赞数是否变回0
       comments = await commentService.getComments('1');
