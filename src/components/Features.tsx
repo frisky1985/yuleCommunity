@@ -134,6 +134,7 @@ export function Features() {
                   src={feature.image}
                   alt={feature.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  priority={index < 2} // 前两个首屏可见，优先加载
                 />
                 <div className={`absolute inset-0 bg-gradient-to-t ${feature.color} opacity-60`} />
                 <div className="absolute top-4 right-4">

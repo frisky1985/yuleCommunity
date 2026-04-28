@@ -9,6 +9,7 @@ interface OptimizedImageProps {
   height?: number;
   placeholder?: 'blur' | 'color' | 'none';
   priority?: boolean;
+  sizes?: string; // 响应式图片尺寸
 }
 
 export function OptimizedImage({
@@ -19,6 +20,7 @@ export function OptimizedImage({
   height,
   placeholder = 'blur',
   priority = false,
+  sizes = '100vw',
 }: OptimizedImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(priority);
@@ -50,6 +52,16 @@ export function OptimizedImage({
 
   // 生成 WebP 路径
   const webpSrc = src.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+  
+  // 生成响应式 srcset（如果服务器支持多尺寸图片）
+  const generateSrcSet = (baseSrc: string) => {
+    // 检查是否是本地图片路径
+    if (baseSrc.startsWith('http') || baseSrc.startsWith('//')) {
+      return undefined;
+    }
+    // 对于本地图片，返回原图地址
+    return baseSrc;
+  };
 
   return (
     <div
@@ -63,14 +75,21 @@ export function OptimizedImage({
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="absolute inset-0 bg-muted animate-pulse"
-          />
+            className="absolute inset-0 bg-gradient-to-br from-muted to-muted/50"
+          >
+            {/* 模糊动画占位 */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+          </motion.div>
         )}
       </AnimatePresence>
 
       {isInView && (
         <picture>
-          <source srcSet={webpSrc} type="image/webp" />
+          <source 
+            srcSet={generateSrcSet(webpSrc)} 
+            type="image/webp" 
+            sizes={sizes}
+          />
           <img
             src={src}
             alt={alt}
