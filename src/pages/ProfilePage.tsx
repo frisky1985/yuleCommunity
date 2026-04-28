@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import {
   User,
   Award,
@@ -326,9 +327,12 @@ export function ProfilePage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold">收藏内容</h2>
-                <button className="text-sm text-[hsl(var(--accent))] hover:text-[hsl(var(--accent-glow))] font-medium flex items-center gap-1">
-                  管理收藏 <ChevronRight className="w-4 h-4" />
-                </button>
+                <Link 
+                  to="/bookmarks"
+                  className="text-sm text-[hsl(var(--accent))] hover:text-[hsl(var(--accent-glow))] font-medium flex items-center gap-1"
+                >
+                  查看全部 <ChevronRight className="w-4 h-4" />
+                </Link>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {favorites.map((item, i) => (
