@@ -1,11 +1,9 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
-  User,
   Award,
   BookOpen,
-  Heart,
   Star,
   GitBranch,
   FileText,
@@ -22,11 +20,12 @@ import {
 } from 'lucide-react';
 import { UserPoints } from '../components/UserPoints';
 import { PointsHistoryChart } from '../components/admin/PointsHistoryChart';
+import { BookmarksList } from '../components/profile/BookmarksList';
 
 const tabs = [
   { id: 'contributions', label: '我的贡献', icon: GitBranch },
   { id: 'learning', label: '学习进度', icon: BookOpen },
-  { id: 'favorites', label: '收藏内容', icon: Heart },
+  { id: 'bookmarks', label: '我的收藏', icon: Bookmark },
   { id: 'points', label: '积分等级', icon: Star },
 ];
 
@@ -76,17 +75,13 @@ const learningProgress = [
   { title: '汽车功能安全 ISO 26262 基础', progress: 0, total: 12, unit: '课时', completed: false, lastActive: '-' },
 ];
 
-const favorites = [
-  { title: 'AutoSAR Com 模块的信号路由配置最佳实践', type: '文章', author: '李华', date: '2026-04-20', tags: ['Service', 'Com'] },
-  { title: 'CAN FD 的波特率配置问题', type: '讨论', author: '张明', date: '2026-04-19', tags: ['MCAL', 'CAN'] },
-  { title: 'MCAL 驱动开发实战指南', type: '课程', author: 'YuleTech', date: '2026-04-18', tags: ['MCAL', '教程'] },
-  { title: 'YuleConfig 工具链的 Docker 环境搭建踩坑记录', type: '文章', author: '刘洋', date: '2026-04-17', tags: ['工具链', 'Docker'] },
-  { title: '诊断服务 UDS 开发精讲', type: '课程', author: 'YuleTech', date: '2026-04-15', tags: ['UDS', '诊断'] },
-  { title: '分享：我们团队基于 YuleTech BSW 的量产经验', type: '讨论', author: '陈工', date: '2026-04-14', tags: ['经验分享', '量产'] },
-];
-
 export function ProfilePage() {
   const [activeTab, setActiveTab] = useState('contributions');
+  const navigate = useNavigate();
+
+  const handleGoToBlog = useCallback(() => {
+    navigate('/blog');
+  }, [navigate]);
 
   return (
     <div className="min-h-screen pt-16">
@@ -322,62 +317,15 @@ export function ProfilePage() {
             </div>
           )}
 
-          {/* Favorites */}
-          {activeTab === 'favorites' && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold">收藏内容</h2>
-                <Link 
-                  to="/bookmarks"
-                  className="text-sm text-[hsl(var(--accent))] hover:text-[hsl(var(--accent-glow))] font-medium flex items-center gap-1"
-                >
-                  查看全部 <ChevronRight className="w-4 h-4" />
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {favorites.map((item, i) => (
-                  <div
-                    key={i}
-                    className="group bg-card border border-border rounded-xl p-5 hover:border-[hsl(var(--accent))]/30 transition-all hover:shadow-elegant"
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                        item.type === '文章'
-                          ? 'bg-blue-500/10 text-blue-500'
-                          : item.type === '课程'
-                          ? 'bg-teal-500/10 text-teal-500'
-                          : 'bg-amber-500/10 text-amber-500'
-                      }`}>
-                        {item.type}
-                      </span>
-                      <button className="text-muted-foreground hover:text-red-500 transition-colors">
-                        <Bookmark className="w-4 h-4 fill-current" />
-                      </button>
-                    </div>
-                    <h3 className="font-semibold mb-2 group-hover:text-[hsl(var(--accent))] transition-colors">
-                      {item.title}
-                    </h3>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                      <span className="flex items-center gap-1">
-                        <User className="w-3.5 h-3.5" /> {item.author}
-                      </span>
-                      <span>·</span>
-                      <span>{item.date}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {item.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-2 py-0.5 bg-muted rounded-md text-xs text-muted-foreground"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+          {/* Bookmarks */}
+          {activeTab === 'bookmarks' && (
+            <BookmarksList 
+              showHeader={true}
+              emptyAction={{
+                text: '去看看文章',
+                onClick: handleGoToBlog
+              }}
+            />
           )}
 
           {/* Points */}
