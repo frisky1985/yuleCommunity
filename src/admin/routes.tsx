@@ -3,15 +3,17 @@ import { Layout } from './components/Layout';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { Users } from './pages/Users';
+import { UserDetail } from './pages/UserDetail';
 import { Builds } from './pages/Builds';
+import { BuildDetail } from './pages/BuildDetail';
 import { Settings } from './pages/Settings';
 import { useAdminStore } from './stores/adminStore';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated } = useAdminStore.getState();
+  const { isAuthenticated, checkAdminAccess } = useAdminStore.getState();
   
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !checkAdminAccess()) {
     return <Navigate to="/admin/login" replace />;
   }
   
@@ -45,7 +47,7 @@ export const adminRoutes = createBrowserRouter([
       },
       {
         path: 'users/:id',
-        element: <div>User Detail (Coming Soon)</div>,
+        element: <UserDetail />,
       },
       {
         path: 'builds',
@@ -53,7 +55,7 @@ export const adminRoutes = createBrowserRouter([
       },
       {
         path: 'builds/:id',
-        element: <div>Build Detail (Coming Soon)</div>,
+        element: <BuildDetail />,
       },
       {
         path: 'content',

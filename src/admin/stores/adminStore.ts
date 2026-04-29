@@ -1,11 +1,13 @@
 import { create } from 'zustand';
 import { persist, type PersistOptions } from 'zustand/middleware';
+import type { Role, Permission } from '../utils/permissions';
+import { hasPermission, canAccessAdmin } from '../utils/permissions';
 
 export interface AdminUser {
   id: string;
   username: string;
   email: string;
-  role: 'super_admin' | 'admin' | 'operator' | 'viewer';
+  role: Role;
   avatar?: string;
 }
 
@@ -25,6 +27,9 @@ interface AdminState {
   setLoading: (value: boolean) => void;
   toggleSidebar: () => void;
   logout: () => void;
+  // Permission helpers
+  checkPermission: (permission: Permission) => boolean;
+  checkAdminAccess: () => boolean;
 }
 
 type AdminStorePersist = Pick<AdminState, 'token' | 'refreshToken' | 'user' | 'isAuthenticated' | 'sidebarCollapsed'>;
@@ -51,6 +56,15 @@ export const useAdminStore = create<AdminState>()(
         refreshToken: null,
         isAuthenticated: false,
       }),
+      checkPermission: (permission: Permission) => {
+        const { user } = get();
+        if (!user) return false;
+        return hasPermission(user.role, permission);
+      },
+      checkAdminAccess: () => {
+        const { user } = get();
+        return canAccessAdmin(user?.role);
+      },
     }),
     {
       name: 'admin-storage',
