@@ -3,9 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
   User,
-  Mail,
   Calendar,
-  Shield,
   Activity,
   Hammer,
   Bookmark,
@@ -17,7 +15,6 @@ import {
   CheckCircle,
   Trash2,
 } from 'lucide-react';
-import { useAdminStore } from '../stores/adminStore';
 
 interface UserDetail {
   id: string;
@@ -102,7 +99,6 @@ const ROLE_COLORS: Record<string, string> = {
 export const UserDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user: currentUser } = useAdminStore();
   
   const [user, setUser] = useState<UserDetail>(mockUser);
   const [stats, setStats] = useState<UserStats>(mockStats);
