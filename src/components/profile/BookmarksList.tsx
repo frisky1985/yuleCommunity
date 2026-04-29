@@ -12,6 +12,8 @@ import {
   Tag,
   Folder,
   AlertCircle,
+  Cloud,
+  Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useBookmarks } from '@/hooks/useBookmarks';
@@ -34,7 +36,7 @@ export function BookmarksList({
   emptyAction 
 }: BookmarksListProps) {
   const navigate = useNavigate();
-  const { bookmarks, removeBookmark, clearBookmarks, count } = useBookmarks();
+  const { bookmarks, removeBookmark, clearBookmarks, count, isAuthenticated, syncStatus, syncBookmarks } = useBookmarks();
 
   // 打开文章
   const handleArticleClick = useCallback((slug: string) => {
@@ -157,11 +159,36 @@ export function BookmarksList({
         ))}
       </div>
 
-      {/* 提示 */}
-      <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg text-xs text-muted-foreground">
-        <AlertCircle className="w-4 h-4" />
-        <span>收藏数据仅保存在本地浏览器中</span>
-      </div>
+      {/* 同步状态提示 */}
+      {isAuthenticated ? (
+        syncStatus === 'syncing' ? (
+          <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-xs text-blue-600 dark:text-blue-400">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span>正在同步收藏数据...</span>
+          </div>
+        ) : syncStatus === 'error' ? (
+          <div className="flex items-center gap-2 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg text-xs text-yellow-600 dark:text-yellow-400">
+            <AlertCircle className="w-4 h-4" />
+            <span>同步失败，使用本地数据</span>
+            <button 
+              onClick={syncBookmarks}
+              className="underline hover:no-underline ml-2"
+            >
+              重试
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg text-xs text-green-600 dark:text-green-400">
+            <Cloud className="w-4 h-4" />
+            <span>收藏已同步到云端，多设备可访问</span>
+          </div>
+        )
+      ) : (
+        <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg text-xs text-muted-foreground">
+          <AlertCircle className="w-4 h-4" />
+          <span>登录后可将收藏同步到云端，多设备访问</span>
+        </div>
+      )}
     </div>
   );
 }
