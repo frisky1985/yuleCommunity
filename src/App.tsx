@@ -1,17 +1,18 @@
 import { Suspense, lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { PageLoader } from './components/PageLoader';
-import { AdminLayout } from './components/AdminLayout';
 import { InteractiveCLI } from './components/InteractiveCLI';
 import { useHotkeys } from './hooks/useHotkeys';
 import { HotkeyHelp } from './components/HotkeyHelp';
+import { useAdminStore } from './admin/stores/adminStore';
 
 // 使用 LazyEngagement 实现组件级代码分割
 const LazyEngagement = lazy(() => import('./components/engagement/LazyEngagement').then(m => ({ default: m.LazyEngagement })));
 
+// Main app pages
 const HomePage = lazy(() => import('./pages/HomePage').then(m => ({ default: m.HomePage })));
 const OpenSourcePage = lazy(() => import('./pages/OpenSourcePage').then(m => ({ default: m.OpenSourcePage })));
 const ToolchainPage = lazy(() => import('./pages/ToolchainPage').then(m => ({ default: m.ToolchainPage })));
@@ -26,11 +27,6 @@ const QAPage = lazy(() => import('./pages/QAPage').then(m => ({ default: m.QAPag
 const EventsPage = lazy(() => import('./pages/EventsPage').then(m => ({ default: m.EventsPage })));
 const HardwarePage = lazy(() => import('./pages/HardwarePage').then(m => ({ default: m.HardwarePage })));
 const DownloadPage = lazy(() => import('./pages/DownloadPage').then(m => ({ default: m.DownloadPage })));
-const AdminLoginPage = lazy(() => import('./pages/AdminLoginPage').then(m => ({ default: m.AdminLoginPage })));
-const AdminDashboard = lazy(() => import('./pages/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
-const AdminUsers = lazy(() => import('./pages/AdminUsers').then(m => ({ default: m.AdminUsers })));
-const AdminContent = lazy(() => import('./pages/AdminContent').then(m => ({ default: m.AdminContent })));
-const AdminSettings = lazy(() => import('./pages/AdminSettings').then(m => ({ default: m.AdminSettings })));
 const ModuleDetailPage = lazy(() => import('./pages/ModuleDetailPage').then(m => ({ default: m.ModuleDetailPage })));
 const ModuleComparePage = lazy(() => import('./pages/ModuleComparePage').then(m => ({ default: m.ModuleComparePage })));
 const CodeSandboxPage = lazy(() => import('./pages/CodeSandboxPage').then(m => ({ default: m.CodeSandboxPage })));
@@ -42,6 +38,23 @@ const SSOPage = lazy(() => import('./pages/SSOPage').then(m => ({ default: m.SSO
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage').then(m => ({ default: m.AnalyticsPage })));
 const BookmarksPage = lazy(() => import('./pages/BookmarksPage').then(m => ({ default: m.BookmarksPage })));
 
+// Admin pages - New implementation
+const AdminLogin = lazy(() => import('./admin/pages/Login').then(m => ({ default: m.Login })));
+const AdminLayout = lazy(() => import('./admin/components/Layout').then(m => ({ default: m.Layout })));
+const AdminDashboard = lazy(() => import('./admin/pages/Dashboard').then(m => ({ default: m.Dashboard })));
+const AdminUsers = lazy(() => import('./admin/pages/Users').then(m => ({ default: m.Users })));
+const AdminBuilds = lazy(() => import('./admin/pages/Builds').then(m => ({ default: m.Builds })));
+const AdminSettings = lazy(() => import('./admin/pages/Settings').then(m => ({ default: m.Settings })));
+
+// Protected Route for Admin
+const ProtectedAdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated } = useAdminStore.getState();
+  if (!isAuthenticated) {
+    return <Navigate to="/admin/login" replace />;
+  }
+  return <>{children}</>;
+};
+
 function App() {
   const { showHelp, setShowHelp } = useHotkeys();
 
@@ -49,22 +62,20 @@ function App() {
     <div className="min-h-screen bg-background text-foreground">
       <HotkeyHelp isOpen={showHelp} onClose={() => setShowHelp(false)} />
       <Routes>
-        {/* Admin routes */}
+        {/* Admin routes - New implementation */}
         <Route path="/admin/login" element={
           <Suspense fallback={<PageLoader />}>
-            <AdminLoginPage />
+            <AdminLogin />
           </Suspense>
         } />
         <Route path="/admin" element={
           <Suspense fallback={<PageLoader />}>
-            <AdminLayout />
+            <ProtectedAdminRoute>
+              <AdminLayout />
+            </ProtectedAdminRoute>
           </Suspense>
         }>
-          <Route index element={
-            <Suspense fallback={<PageLoader />}>
-              <AdminDashboard />
-            </Suspense>
-          } />
+          <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={
             <Suspense fallback={<PageLoader />}>
               <AdminDashboard />
@@ -75,9 +86,33 @@ function App() {
               <AdminUsers />
             </Suspense>
           } />
+          <Route path="users/:id" element={
+            <Suspense fallback={<PageLoader />}>
+              <div className="p-8 text-center">
+                <h2 className="text-xl font-semibold mb-4">用户详情</h2>
+                <p className="text-slate-500">开发中...</p>
+              </div>
+            </Suspense>
+          } />
+          <Route path="builds" element={
+            <Suspense fallback={<PageLoader />}>
+              <AdminBuilds />
+            </Suspense>
+          } />
+          <Route path="builds/:id" element={
+            <Suspense fallback={<PageLoader />}>
+              <div className="p-8 text-center">
+                <h2 className="text-xl font-semibold mb-4">构建详情</h2>
+                <p className="text-slate-500">开发中...</p>
+              </div>
+            </Suspense>
+          } />
           <Route path="content" element={
             <Suspense fallback={<PageLoader />}>
-              <AdminContent />
+              <div className="p-8 text-center">
+                <h2 className="text-xl font-semibold mb-4">内容管理</h2>
+                <p className="text-slate-500">开发中...</p>
+              </div>
             </Suspense>
           } />
           <Route path="settings" element={
