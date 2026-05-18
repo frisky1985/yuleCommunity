@@ -21,6 +21,7 @@ export function Navbar() {
     const navLinks = [
         { label: '开源代码', to: '/opensource' },
         { label: '工具链', to: '/toolchain' },
+        { label: 'yuleASR 配置', to: '/yuleasr' },
         { label: '学习成长', to: '/learning' },
         { label: '技术博客', to: '/blog' },
         { label: '文档中心', to: '/docs' },

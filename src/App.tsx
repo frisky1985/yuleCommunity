@@ -37,6 +37,8 @@ const WorkspacePage = lazy(() => import('./pages/WorkspacePage').then(m => ({ de
 const SSOPage = lazy(() => import('./pages/SSOPage').then(m => ({ default: m.SSOPage })));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage').then(m => ({ default: m.AnalyticsPage })));
 const BookmarksPage = lazy(() => import('./pages/BookmarksPage').then(m => ({ default: m.BookmarksPage })));
+const YuleASRPage = lazy(() => import('./pages/YuleASRPage').then(m => ({ default: m.YuleASRPage })));
+const YuleASREditorPage = lazy(() => import('./pages/YuleASREditorPage').then(m => ({ default: m.YuleASREditorPage })));
 
 // Admin pages - New implementation
 const AdminLogin = lazy(() => import('./admin/pages/Login').then(m => ({ default: m.Login })));
@@ -154,6 +156,9 @@ function App() {
                   <Route path="events" element={<EventsPage />} />
                   <Route path="hardware" element={<HardwarePage />} />
                   <Route path="downloads" element={<DownloadPage />} />
+                  <Route path="yuleasr" element={<YuleASRPage />} />
+                  <Route path="yuleasr/editor/:configId" element={<YuleASREditorPage />} />
+                  <Route path="yuleasr/editor/:configId/:moduleId" element={<YuleASREditorPage />} />
                   <Route path="*" element={
                     <div className="min-h-screen flex items-center justify-center">
                       <div className="text-center">
