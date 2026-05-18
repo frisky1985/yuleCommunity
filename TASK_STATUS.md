@@ -156,7 +156,7 @@ yuleCommunity-web/
 | 仓库 | 状态 | 备注 |
 |------|------|------|
 | yuleCommunity-web | ✅ 已同步 | 本地与远程一致，commit: 530f808 |
-| yuleCommunity-cloud | ⚠️ 非 Git 仓库 | 需要手动备份/同步 |
+| yuleCommunity-cloud | ✅ 已上传 | https://github.com/frisky1985/yuleCommunity-cloud |
 
 ---
 
