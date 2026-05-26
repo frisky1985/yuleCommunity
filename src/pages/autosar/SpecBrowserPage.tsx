@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { SpecTreeNav } from '../../components/autosar/SpecTreeNav';
 import { ApiCard } from '../../components/autosar/ApiCard';
 import { EmptyApiCard } from '../../components/autosar/EmptyApiCard';
-import { findApiById, findModuleById, SPEC_VERSIONS } from '../../data/autosar/spec-index';
+import { findApiById, findModuleById, getAllModules, SPEC_VERSIONS } from '../../data/autosar/spec-index';
 
 export function SpecBrowserPage() {
   const { module: moduleParam, api: apiParam } = useParams();
@@ -90,6 +90,39 @@ export function SpecBrowserPage() {
 
       {/* Main content: sidebar + detail */}
       <div className="flex h-[calc(100vh-8.5rem)]">
+        {/* Mobile selector - visible only on small screens */}
+        <div className="md:hidden px-4 py-3 border-b border-border bg-muted/5">
+          <div className="flex gap-2">
+            <select
+              className="flex-1 text-sm px-3 py-2 rounded-lg bg-background border border-border"
+              value={selectedModule?.id || ''}
+              onChange={e => {
+                const mod = findModuleById(e.target.value);
+                if (mod && mod.apis.length > 0) {
+                  navigate(`/autosar/spec/${mod.id}/${mod.apis[0].id}`);
+                }
+              }}
+            >
+              <option value="">选择模块</option>
+              {getAllModules().map(mod => (
+                <option key={mod.id} value={mod.id}>{mod.name} ({mod.apis.length})</option>
+              ))}
+            </select>
+            {selectedModule && (
+              <select
+                className="flex-1 text-sm px-3 py-2 rounded-lg bg-background border border-border"
+                value={selectedApi?.id || ''}
+                onChange={e => handleSelectApi(e.target.value)}
+              >
+                <option value="">选择 API</option>
+                {selectedModule.apis.map(api => (
+                  <option key={api.id} value={api.id}>{api.name}</option>
+                ))}
+              </select>
+            )}
+          </div>
+        </div>
+
         {/* Left sidebar - Tree */}
         <div className="w-[240px] shrink-0 border-r border-border bg-muted/5 overflow-hidden hidden md:block">
           <SpecTreeNav
