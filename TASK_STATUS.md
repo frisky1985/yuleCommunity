@@ -1,8 +1,8 @@
 # yuleCommunity Web Task Status
 
 > **本文档用于记录项目当前状态，恢复工作时请先读取此文件。**
-> 最后更新: 2025-05-18
-> 状态: ✅ 高优先级任务已完成
+> 最后更新: 2026-05-27
+> 状态: ✅ AutoSAR DevHub Phase 1 核心功能已完成
 
 ---
 
@@ -11,14 +11,44 @@
 | 项目 | 内容 |
 |------|------|
 | **项目名称** | yuleCommunity Web |
-| **当前版本** | v1.4.2 |
+| **当前版本** | v1.4.2 (DevHub Phase 1 开发中) |
 | **GitHub 仓库** | https://github.com/frisky1985/yuleCommunity.git |
-| **在线演示** | https://frisky1985.github.io/yuleCommunity/ |
-| **工作目录** | /home/admin/yuleCommunity-web |
+| **工作目录** | /home/admin/workspace/yuleCommunity |
 
 ---
 
 ## ✅ 已完成的功能
+
+### 🛠️ AutoSAR DevHub Phase 1 — 规范引擎 (2026-05-27)
+- [x] **设计文档** — `docs/design/2026-05-27-autosar-devhub-design.md`
+- [x] **执行计划** — `docs/plans/2026-05-27-autosar-devhub-p1-implementation-plan.md`
+- [x] **数据类型定义** — `src/data/autosar/types.ts` (AutosarApi, AutosarModule, AutosarLayer 等)
+- [x] **规范索引** — `src/data/autosar/spec-index.ts` (搜索索引、版本数据、数据加载器)
+- [x] **Can 模块规范数据** — `src/data/autosar/can-spec.ts` (6 个 API: Init/Write/Read/SetBaudrate/GetVersionInfo/CheckWakeup)
+- [x] **SpecTreeNav 组件** — `src/components/autosar/SpecTreeNav.tsx`
+  - 左侧层级树导航（MCAL/ECUAL/Service/RTE_ASW 四层）
+  - framer-motion 展开/折叠动画
+  - 树内搜索过滤框
+  - 选中项高亮
+- [x] **ApiCard 组件** — `src/components/autosar/ApiCard.tsx`
+  - 函数签名 SyntaxHighlighter 高亮
+  - 参数表格（名/类型/方向标签/说明）
+  - 返回值展示
+  - 代码示例（行号 + 折叠 + 复制按钮）
+  - 关联 API 可点击链接
+  - 配置参数链接跳转 yuleASR
+- [x] **EmptyApiCard 组件** — `src/components/autosar/EmptyApiCard.tsx` (空状态引导)
+- [x] **DevHubPage 首页** — `src/pages/autosar/DevHubPage.tsx`
+  - Hero 区域 + 搜索入口
+  - 三功能卡片布局（规范引擎 ✅ / 在线编译 📅 / 模块仓库 📅）
+  - 统计概览
+- [x] **SpecBrowserPage 规范浏览器** — `src/pages/autosar/SpecBrowserPage.tsx`
+  - 面包屑导航
+  - 版本选择器（4.4 / 4.6 / R21-11）
+  - 响应式两栏布局
+- [x] **路由注册** — App.tsx 添加 4 条 DevHub 路由
+- [x] **导航栏入口** — Navbar.tsx 添加「开发者中心」
+- [x] **构建通过** — Vite build 成功（SpecBrowserPage 14.3 kB chunk）
 
 ### v1.4.2 - 架构设计与收藏优化
 - [x] **架构设计文档** - 1万并发架构设计 (docs/architecture/)
@@ -38,15 +68,27 @@
 
 ## 🚧 待办事项
 
-### 高优先级
-- [x] **yuleASR 集成** - 将 yuleASR 配置工具集成到主站
-  - [x] YuleASRPage.tsx 页面开发
-  - [x] YuleASREditorPage.tsx 编辑器页面
-  - [x] 路由配置 (/yuleasr, /yuleasr/editor/:configId)
-  - [x] 导航栏添加 yuleASR 入口
-- [x] **提交未推送的 commit** - 本地领先远程 1 个提交需要推送
+### AutoSAR DevHub Phase 1 — 剩余任务
+- [ ] **Dio 模块规范数据** — `src/data/autosar/dio-spec.ts` (10 API)
+- [ ] **Port 模块规范数据** — `src/data/autosar/port-spec.ts` (12 API)
+- [ ] **Mcu 模块规范数据** — `src/data/autosar/mcu-spec.ts` (8 API)
+- [ ] **Spi 模块规范数据** — `src/data/autosar/spi-spec.ts` (18 API)
+- [ ] **useSpecSearch Hook** — 集成 Fuse.js 模糊搜索
+- [ ] **版本对比页面** — `SpecComparePage.tsx` + `SpecVersionCompare.tsx`
+- [ ] **全局搜索集成** — 在 GlobalSearch 中显示 AutoSAR API 结果
+- [ ] **移动端适配** — 树导航折叠为选择器
 
-### 高优先级 (已完成 ✓)
+### AutoSAR DevHub Phase 2 — 在线编译与仿真
+- [ ] **TCC WASM 编译引擎** — 浏览器端 C 代码编译
+- [ ] **AutoSAR 头文件库** — Can.h、Dio.h、Port.h 等虚拟头文件
+- [ ] **运行时可视化** — CAN 总线面板、GPIO 波形图、中断时序图
+- [ ] **预设示例库** — 20+ AutoSAR 场景示例
+
+### AutoSAR DevHub Phase 3 — 模块生态仓库
+- [ ] **模块目录浏览** — 社区 BSW 模块模板展示
+- [ ] **一键导入** — 仓库模块 → yuleASR Configurator
+- [ ] **发布/审核流程** — 用户发布模块、管理员审核
+- [ ] **兼容性矩阵** — MCU × OS × Compiler 筛选
 
 ### 中优先级
 - [ ] **性能优化** - 首屏加载速度优化
@@ -61,29 +103,36 @@
 ## 📁 项目结构
 
 ```
-yuleCommunity-web/
-├── src/                          # TypeScript 源码
-│   ├── components/               # 通用组件
-│   │   ├── Navbar.tsx           # 导航栏 (⚠️ 禁止修改)
+yuleCommunity/
+├── src/
+│   ├── components/
+│   │   ├── autosar/              # [NEW] AutoSAR DevHub 组件
+│   │   │   ├── SpecTreeNav.tsx   # 层级树形导航
+│   │   │   ├── ApiCard.tsx       # API 详情卡片
+│   │   │   └── EmptyApiCard.tsx  # 空状态引导
+│   │   ├── Navbar.tsx            # 导航栏 (含"开发者中心"入口)
 │   │   └── ...
-│   ├── pages/                    # 页面组件
-│   │   ├── YuleASRPage.tsx      # [yuleASR] 配置列表
-│   │   ├── YuleASREditorPage.tsx # [yuleASR] 配置编辑器
-│   │   ├── Admin*.tsx           # 管理后台页面
+│   ├── pages/
+│   │   ├── autosar/              # [NEW] AutoSAR DevHub 页面
+│   │   │   ├── DevHubPage.tsx    # DevHub 首页
+│   │   │   └── SpecBrowserPage.tsx # 规范浏览器
 │   │   └── ...
-│   ├── admin/                    # 新版管理后台
+│   ├── data/
+│   │   ├── autosar/              # [NEW] AutoSAR 规范数据
+│   │   │   ├── types.ts          # 类型定义
+│   │   │   ├── spec-index.ts     # 索引/搜索/加载器
+│   │   │   └── can-spec.ts       # Can 模块规范数据
+│   │   └── ...
+│   ├── App.tsx                   # 路由配置 (含 DevHub 路由)
 │   └── ...
-├── apps/shell/src/              # JavaScript 版本
-│   ├── components/Navbar.js     # (⚠️ 禁止修改)
-│   └── pages/yuleasr/           # [yuleASR] JS 页面
-├── docs/                         # 项目文档
-│   ├── architecture/            # 架构设计文档
-│   ├── design/                  # 详细设计文档
-│   ├── plans/                   # 开发计划
-│   └── ROADMAP-v0.9-to-v1.0.md  # 路线图
-├── public/                       # 静态资源
-├── TASK_STATUS.md              # [本文件] 项目状态跟踪
-└── package.json                  # 项目配置
+├── docs/
+│   ├── design/
+│   │   └── 2026-05-27-autosar-devhub-design.md  # [NEW] DevHub 设计文档
+│   └── plans/
+│       └── 2026-05-27-autosar-devhub-p1-implementation-plan.md  # [NEW] Phase 1 执行计划
+└── TASK_STATUS.md                # [本文件] 项目状态跟踪
+```
+
 ---
 
 ## 🐛 已知问题
@@ -96,57 +145,44 @@ yuleCommunity-web/
 
 ## ✅ 本次完成工作
 
-### yuleASR 集成 (2025-05-18)
-1. **YuleASRPage.tsx** - 配置列表页面
-   - 网格/列表双视图切换
-   - 搜索和平台筛选功能
-   - 创建新配置弹窗
-   - 模拟数据展示
+### AutoSAR DevHub Phase 1 — 规范引擎 (2026-05-27)
 
-2. **YuleASREditorPage.tsx** - 配置编辑器页面
-   - 三标签页: 参数配置 / 代码预览 / 构建配置
-   - 模块列表与参数编辑
-   - 配置验证功能
-   - 代码生成预览
-   - 构建选项配置
+**设计阶段：**
+1. **设计文档** — 完整三位一体规划（规范引擎/在线编译/模块仓库）
+2. **执行计划** — 10 个 Task 的逐步骤实施计划
 
-3. **路由配置** (App.tsx)
-   - `/yuleasr` - 配置列表
-   - `/yuleasr/editor/:configId` - 编辑器
-   - `/yuleasr/editor/:configId/:moduleId` - 指定模块
+**实现阶段：**
+1. **数据类型** — 定义 AutosarApi、AutosarModule、AutosarLayer 等完整类型系统
+2. **Can 规范数据** — 6 个核心 Can API（Init/Write/Read/SetBaudrate/GetVersionInfo/CheckWakeup）
+3. **SpecTreeNav** — 四层树导航（MCAL/ECUAL/Service/RTE_ASW），framer-motion 动画，搜索过滤
+4. **ApiCard** — 函数签名高亮、参数表格、返回值、代码示例（行号+复制）、关联 API、配置参数
+5. **DevHub 首页** — 三功能卡片布局、搜索入口、统计概览
+6. **规范浏览器** — 两栏布局、面包屑导航、版本选择器
+7. **路由注册** — 4 条 DevHub 路由（首页/规范浏览/模块详情/API 详情）
+8. **导航入口** — 导航栏添加「开发者中心」
 
-4. **导航栏入口** (Navbar.tsx)
-   - 添加 "ASR配置" 导航项
-
-5. **JS 版本支持** (apps/shell/src/)
-   - YuleASRPage.js
-   - YuleASRConfigPage.js
+**构建验证：**
+- TypeScript 编译通过（零 AutoSAR 新代码错误）
+- Vite build 通过，生成 SpecBrowserPage 14.3 kB 独立 chunk
 
 ### Git 提交
-- Commit: `530f808` - feat(yuleasr): 完成 yuleASR 配置工具集成
-- 已推送到远程: origin/master
+- 暂未提交（等待 Phase 1 全部完成后一次性提交）
 
 ---
 
 ## 📚 参考文档
 
+- [AutoSAR DevHub 设计文档](./docs/design/2026-05-27-autosar-devhub-design.md)
+- [Phase 1 执行计划](./docs/plans/2026-05-27-autosar-devhub-p1-implementation-plan.md)
 - [CHANGELOG-v1.1.1.md](./CHANGELOG-v1.1.1.md) - v1.1.1 变更日志
-- [ROADMAP.md](./ROADMAP.md) - 项目路线图
 - [docs/architecture/](./docs/architecture/) - 架构设计文档
-- [docs/design/](./docs/design/) - 详细设计文档
 
 ---
 
 ## 🔧 最近提交
 
 ```
-530f808 feat(yuleasr): 完成 yuleASR 配置工具集成
-5c88805 docs(architecture): 添加1万并发架构设计文档
-345f5f3 fix: 移除未使用的 import
-9f9f013 feat(admin): 完善后台管理功能
-40a63fc Phase 5 Task 4.2: Add cloud sync for bookmarks and points system
-92b9632 Phase 5: Add admin dashboard with dashboard, users, builds, settings pages
-65dba19 docs: 添加管理后台和 yuleASR 集成设计文档
+(等待 Phase 1 完成后提交)
 ```
 
 ---
@@ -155,8 +191,7 @@ yuleCommunity-web/
 
 | 仓库 | 状态 | 备注 |
 |------|------|------|
-| yuleCommunity-web | ✅ 已同步 | 本地与远程一致，commit: 530f808 |
-| yuleCommunity-cloud | ✅ 已上传 | https://github.com/frisky1985/yuleCommunity-cloud |
+| yuleCommunity | ⏳ 未提交 | 本地有未提交的 DevHub 代码修改 |
 
 ---
 

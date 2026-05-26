@@ -40,6 +40,10 @@ const BookmarksPage = lazy(() => import('./pages/BookmarksPage').then(m => ({ de
 const YuleASRPage = lazy(() => import('./pages/YuleASRPage').then(m => ({ default: m.YuleASRPage })));
 const YuleASREditorPage = lazy(() => import('./pages/YuleASREditorPage').then(m => ({ default: m.YuleASREditorPage })));
 
+// AutoSAR DevHub pages
+const DevHubPage = lazy(() => import('./pages/autosar/DevHubPage').then(m => ({ default: m.DevHubPage })));
+const SpecBrowserPage = lazy(() => import('./pages/autosar/SpecBrowserPage').then(m => ({ default: m.SpecBrowserPage })));
+
 // Admin pages - New implementation
 const AdminLogin = lazy(() => import('./admin/pages/Login').then(m => ({ default: m.Login })));
 const AdminLayout = lazy(() => import('./admin/components/Layout').then(m => ({ default: m.Layout })));
@@ -159,6 +163,11 @@ function App() {
                   <Route path="yuleasr" element={<YuleASRPage />} />
                   <Route path="yuleasr/editor/:configId" element={<YuleASREditorPage />} />
                   <Route path="yuleasr/editor/:configId/:moduleId" element={<YuleASREditorPage />} />
+                  {/* AutoSAR DevHub routes */}
+                  <Route path="autosar" element={<DevHubPage />} />
+                  <Route path="autosar/spec" element={<SpecBrowserPage />} />
+                  <Route path="autosar/spec/:module" element={<SpecBrowserPage />} />
+                  <Route path="autosar/spec/:module/:api" element={<SpecBrowserPage />} />
                   <Route path="*" element={
                     <div className="min-h-screen flex items-center justify-center">
                       <div className="text-center">
