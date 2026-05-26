@@ -11,7 +11,7 @@
 | 项目 | 内容 |
 |------|------|
 | **项目名称** | yuleCommunity Web |
-| **当前版本** | v1.4.2 (DevHub Phase 1 开发中) |
+| **当前版本** | v1.5.0 (devhub 分支开发中) |
 | **GitHub 仓库** | https://github.com/frisky1985/yuleCommunity.git |
 | **工作目录** | /home/admin/workspace/yuleCommunity |
 
@@ -69,14 +69,14 @@
 ## 🚧 待办事项
 
 ### AutoSAR DevHub Phase 1 — 剩余任务
-- [ ] **Dio 模块规范数据** — `src/data/autosar/dio-spec.ts` (10 API)
-- [ ] **Port 模块规范数据** — `src/data/autosar/port-spec.ts` (12 API)
-- [ ] **Mcu 模块规范数据** — `src/data/autosar/mcu-spec.ts` (8 API)
-- [ ] **Spi 模块规范数据** — `src/data/autosar/spi-spec.ts` (18 API)
-- [ ] **useSpecSearch Hook** — 集成 Fuse.js 模糊搜索
-- [ ] **版本对比页面** — `SpecComparePage.tsx` + `SpecVersionCompare.tsx`
-- [ ] **全局搜索集成** — 在 GlobalSearch 中显示 AutoSAR API 结果
-- [ ] **移动端适配** — 树导航折叠为选择器
+- [x] **Dio 模块规范数据** — `src/data/autosar/dio-spec.ts` (10 API)
+- [x] **Port 模块规范数据** — `src/data/autosar/port-spec.ts` (12 API)
+- [x] **Mcu 模块规范数据** — `src/data/autosar/mcu-spec.ts` (8 API)
+- [x] **Spi 模块规范数据** — `src/data/autosar/spi-spec.ts` (18 API)
+- [x] **useSpecSearch Hook** — 集成 Fuse.js 模糊搜索
+- [x] **版本对比页面** — `SpecComparePage.tsx` + `SpecVersionCompare.tsx`
+- [x] **全局搜索集成** — 在 GlobalSearch 中显示 AutoSAR API 结果
+- [x] **移动端适配** — 树导航折叠为选择器
 
 ### AutoSAR DevHub Phase 2 — 在线编译与仿真
 - [ ] **TCC WASM 编译引擎** — 浏览器端 C 代码编译
