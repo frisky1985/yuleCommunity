@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { BookOpen, ArrowLeft } from 'lucide-react';
+import { BookOpen, ArrowLeft, GitCompare } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { SpecTreeNav } from '../../components/autosar/SpecTreeNav';
 import { ApiCard } from '../../components/autosar/ApiCard';
 import { EmptyApiCard } from '../../components/autosar/EmptyApiCard';
@@ -67,13 +68,22 @@ export function SpecBrowserPage() {
           </div>
 
           {/* Version selector */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">版本:</span>
-            <select className="text-xs px-2 py-1 rounded-md bg-background border border-border">
-              {SPEC_VERSIONS.map(v => (
-                <option key={v.id} value={v.id}>{v.label}</option>
-              ))}
-            </select>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/autosar/spec/compare"
+              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-md hover:bg-muted/30"
+            >
+              <GitCompare className="w-3.5 h-3.5" />
+              版本对比
+            </Link>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">版本:</span>
+              <select className="text-xs px-2 py-1 rounded-md bg-background border border-border">
+                {SPEC_VERSIONS.map(v => (
+                  <option key={v.id} value={v.id}>{v.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </div>
