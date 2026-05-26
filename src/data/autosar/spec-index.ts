@@ -1,5 +1,6 @@
 import type { AutosarModule, AutosarLayer, AutosarVersion, ApiIndexEntry, AutosarApi } from './types';
 import { CAN_APIS } from './can-spec';
+import { DIO_APIS } from './dio-spec';
 
 export const SPEC_VERSIONS: AutosarVersion[] = [
   { id: '4.4', label: 'AUTOSAR 4.4', releaseDate: '2020-12', status: 'active' },
@@ -18,6 +19,7 @@ export const LAYERS: { id: string; name: string; description: string; color: str
 function getModuleApis(moduleId: string): AutosarApi[] {
   const registry: Record<string, AutosarApi[]> = {
     Can: CAN_APIS,
+    Dio: DIO_APIS,
   };
   return registry[moduleId] || [];
 }
