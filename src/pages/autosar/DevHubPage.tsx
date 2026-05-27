@@ -29,11 +29,11 @@ const cards = [
     icon: Package,
     title: '模块仓库',
     description: '社区共建的 BSW 模块模板，支持一键导入 yuleASR 配置器。',
-    link: '#',
-    linkText: '即将推出',
+    link: '/autosar/registry',
+    linkText: '开始浏览',
     color: 'from-teal-500/20 to-teal-600/5 border-teal-500/20',
     iconBg: 'bg-teal-500/10 text-teal-500',
-    status: '即将推出' as const,
+    status: '已上线' as const,
   },
 ];
 

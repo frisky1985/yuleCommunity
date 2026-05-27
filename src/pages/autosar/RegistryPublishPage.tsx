@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Send, ArrowLeft, AlertCircle, CheckCircle2, Plus, X } from 'lucide-react';
 import { LAYER_OPTIONS, MCU_OPTIONS, OS_OPTIONS, COMPILER_OPTIONS } from '../../data/autosar/registry-types';
-import { REGISTRY_MODULES } from '../../data/autosar/registry-samples';
 import type { RegistryModuleDependency } from '../../data/autosar/registry-types';
 
 interface PublishForm {
