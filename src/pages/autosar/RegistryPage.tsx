@@ -1,0 +1,240 @@
+import { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
+import { Search, Filter, Download, Package, Layers, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
+import { ModuleCard } from '../../components/autosar/ModuleCard';
+import { REGISTRY_MODULES, getRegistryStats } from '../../data/autosar/registry-samples';
+import { LAYER_OPTIONS, MCU_OPTIONS, OS_OPTIONS } from '../../data/autosar/registry-types';
+import type { RegistryFilter } from '../../data/autosar/registry-types';
+
+export function RegistryPage() {
+  const [filters, setFilters] = useState<RegistryFilter>({
+    search: '',
+    layer: '',
+    mcu: '',
+    os: '',
+    sort: 'downloads',
+  });
+  const [showFilters, setShowFilters] = useState(false);
+
+  const stats = useMemo(() => getRegistryStats(), []);
+
+  const filteredModules = useMemo(() => {
+    let list = [...REGISTRY_MODULES];
+
+    // Search
+    if (filters.search) {
+      const q = filters.search.toLowerCase();
+      list = list.filter(
+        m =>
+          m.name.toLowerCase().includes(q) ||
+          m.description.toLowerCase().includes(q) ||
+          m.tags.some(t => t.toLowerCase().includes(q)) ||
+          m.author.toLowerCase().includes(q)
+      );
+    }
+
+    // Layer filter
+    if (filters.layer) {
+      list = list.filter(m => m.layer === filters.layer);
+    }
+
+    // MCU filter
+    if (filters.mcu) {
+      list = list.filter(m => m.compatibility.mcu.includes(filters.mcu));
+    }
+
+    // OS filter
+    if (filters.os) {
+      list = list.filter(m => m.compatibility.os.includes(filters.os));
+    }
+
+    // Sort
+    switch (filters.sort) {
+      case 'downloads':
+        list.sort((a, b) => b.stats.downloads - a.stats.downloads);
+        break;
+      case 'rating':
+        list.sort((a, b) => b.stats.rating - a.stats.rating);
+        break;
+      case 'newest':
+        list.sort((a, b) => new Date(b.timestamps.created).getTime() - new Date(a.timestamps.created).getTime());
+        break;
+      case 'name':
+        list.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+    }
+
+    return list;
+  }, [filters]);
+
+  return (
+    <div className="min-h-screen pt-24 pb-16">
+      <Helmet>
+        <title>BSW 模块仓库 - AutoSAR 开发者中心 - YuleTech</title>
+        <meta name="description" content="社区共建的 AutoSAR BSW 模块模板仓库，支持搜索、筛选和一键导入 yuleASR 配置器。" />
+      </Helmet>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <Package className="w-6 h-6 text-primary" />
+            <h1 className="text-3xl font-bold">BSW 模块仓库</h1>
+          </div>
+          <p className="text-muted-foreground max-w-2xl">
+            社区共建的 BSW 模块模板，支持一键导入 yuleASR 配置器，加速你的 AutoSAR 开发
+          </p>
+        </motion.div>
+
+        {/* Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8"
+        >
+          {[
+            { icon: Package, label: '模块总数', value: `${stats.totalModules}`, desc: 'BSW 模块' },
+            { icon: Download, label: '总下载量', value: `${(stats.totalDownloads / 1000).toFixed(1)}k`, desc: '社区下载' },
+            { icon: Layers, label: '层级覆盖', value: `${stats.layers.length}`, desc: 'MCAL/ECUAL/Service' },
+            { icon: Filter, label: 'MCU 支持', value: `${stats.mcus.length}`, desc: '芯片型号' },
+          ].map((stat, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border"
+            >
+              <div className="shrink-0 w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                <stat.icon className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-xl font-bold">{stat.value}</div>
+                <div className="text-xs text-muted-foreground">{stat.desc}</div>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Search & Filters */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-8 space-y-4"
+        >
+          {/* Search + Sort Bar */}
+          <div className="flex items-center gap-3">
+            <div className="relative flex-1 max-w-lg">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input
+                type="text"
+                value={filters.search}
+                onChange={e => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                placeholder="搜索模块名称、描述、标签..."
+                className="w-full pl-9 pr-4 py-2.5 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30"
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className={`inline-flex items-center gap-1.5 px-3 py-2.5 text-sm rounded-lg border transition-colors ${
+                  showFilters
+                    ? 'bg-primary/10 text-primary border-primary/30'
+                    : 'bg-card border-border text-muted-foreground hover:text-foreground hover:border-primary/30'
+                }`}
+              >
+                <SlidersHorizontal className="w-4 h-4" />
+                筛选
+              </button>
+
+              <div className="flex items-center gap-1.5 px-3 py-2.5 text-sm rounded-lg bg-card border border-border">
+                <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+                <select
+                  value={filters.sort}
+                  onChange={e => setFilters(prev => ({ ...prev, sort: e.target.value as RegistryFilter['sort'] }))}
+                  className="bg-transparent text-sm focus:outline-none cursor-pointer"
+                >
+                  <option value="downloads">按下载量</option>
+                  <option value="rating">按评分</option>
+                  <option value="newest">最新发布</option>
+                  <option value="name">按名称</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Advanced Filters */}
+          {showFilters && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl bg-card border border-border"
+            >
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1.5">层级</label>
+                <select
+                  value={filters.layer}
+                  onChange={e => setFilters(prev => ({ ...prev, layer: e.target.value }))}
+                  className="w-full px-3 py-2 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30"
+                >
+                  <option value="">全部层级</option>
+                  {LAYER_OPTIONS.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label} - {opt.description}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1.5">MCU</label>
+                <select
+                  value={filters.mcu}
+                  onChange={e => setFilters(prev => ({ ...prev, mcu: e.target.value }))}
+                  className="w-full px-3 py-2 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30"
+                >
+                  <option value="">全部 MCU</option>
+                  {MCU_OPTIONS.map(opt => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1.5">操作系统</label>
+                <select
+                  value={filters.os}
+                  onChange={e => setFilters(prev => ({ ...prev, os: e.target.value }))}
+                  className="w-full px-3 py-2 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30"
+                >
+                  <option value="">全部 OS</option>
+                  {OS_OPTIONS.map(opt => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+              </div>
+            </motion.div>
+          )}
+        </motion.div>
+
+        {/* Module Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          {filteredModules.length > 0 ? (
+            filteredModules.map((mod, i) => (
+              <ModuleCard key={mod.id} module={mod} index={i} />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-16">
+              <Package className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-muted-foreground mb-1">未找到匹配模块</h3>
+              <p className="text-sm text-muted-foreground/70">尝试调整筛选条件或搜索关键词</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
