@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, GitCompare } from 'lucide-react';
-import { SpecVersionCompare } from '../components/autosar/SpecVersionCompare';
+import { SpecVersionCompare } from '../../components/autosar/SpecVersionCompare';
 
 export function SpecComparePage() {
   const navigate = useNavigate();
