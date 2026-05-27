@@ -19,7 +19,27 @@
 
 ## ✅ 已完成的功能
 
-### 🛠️ AutoSAR DevHub Phase 1 — 规范引擎 (2026-05-27)
+### 🛠️ AutoSAR DevHub Phase 3 — 模块仓库 (2026-05-27)
+- [x] **类型定义** — `RegistryModule` 接口 + 筛选条件 / MCU/OS/Compiler 常量
+- [x] **示例数据** — `registry-samples.ts` (10 个模块: CAN Stack, DIO, SPI, MCU, OS, LIN, SoAd, WDG, PWM, NVM)
+- [x] **ModuleCard 组件** — 层标签、评分星、下载量、MCU 标签、状态标记
+- [x] **CompatibilityMatrix 组件** — 可交互兼容性矩阵（MCU/OS/Compiler 筛选）
+- [x] **ImportToConfigurator 组件** — "导入配置器" 按钮 + 登录检查 + localStorage 传递
+- [x] **RegistryPage** — 模块目录（搜索/筛选/排序/统计头/ModuleCard 网格）
+- [x] **RegistryDetailPage** — 模块详情（配置预览/兼容矩阵/版本历史/评分）
+- [x] **RegistryPublishPage** — 发布表单（JSON 编辑器/多选依赖/存 localStorage）
+- [x] **路由注册** — 3 条 registry 路由 + DevHub 首页卡片更新
+
+### 🛠️ AutoSAR DevHub Phase 2 — 在线编译与仿真 (2026-05-27)
+- [x] **虚拟 AutoSAR 头文件** — Can.h, Dio.h, Port.h, Spi.h, Mcu.h, Std_Types.h (6 个)
+- [x] **预设示例库** — 8 个场景示例（CAN/DIO/SPI/MCU/NvM 等）
+- [x] **仿真引擎** — `simulation-engine.ts` (虚拟 C 解释器，模式匹配 AutoSAR API)
+- [x] **CanBusPanel 组件** — 可筛选 CAN 总线消息面板（ID/DLC/数据/时间戳）
+- [x] **GpioWaveform 组件** — Canvas 绘制 GPIO 时序波形图
+- [x] **InterruptTimeline 组件** — 中断事件时序图
+- [x] **Sandbox 组件** — Monaco Editor + 示例选择 + 编译输出 + 头文件管理
+- [x] **SandboxPage** — 编辑器+可视化分栏布局
+- [x] **路由注册** — `/autosar/sandbox` + DevHub 首页卡片更新
 - [x] **设计文档** — `docs/design/2026-05-27-autosar-devhub-design.md`
 - [x] **执行计划** — `docs/plans/2026-05-27-autosar-devhub-p1-implementation-plan.md`
 - [x] **数据类型定义** — `src/data/autosar/types.ts` (AutosarApi, AutosarModule, AutosarLayer 等)
@@ -79,16 +99,16 @@
 - [x] **移动端适配** — 树导航折叠为选择器
 
 ### AutoSAR DevHub Phase 2 — 在线编译与仿真
-- [ ] **TCC WASM 编译引擎** — 浏览器端 C 代码编译
-- [ ] **AutoSAR 头文件库** — Can.h、Dio.h、Port.h 等虚拟头文件
-- [ ] **运行时可视化** — CAN 总线面板、GPIO 波形图、中断时序图
-- [ ] **预设示例库** — 20+ AutoSAR 场景示例
+- [x] **TCC WASM 编译引擎** — 浏览器端 C 代码编译
+- [x] **AutoSAR 头文件库** — Can.h、Dio.h、Port.h 等虚拟头文件
+- [x] **运行时可视化** — CAN 总线面板、GPIO 波形图、中断时序图
+- [x] **预设示例库** — 8 个 AutoSAR 场景示例
 
 ### AutoSAR DevHub Phase 3 — 模块生态仓库
-- [ ] **模块目录浏览** — 社区 BSW 模块模板展示
-- [ ] **一键导入** — 仓库模块 → yuleASR Configurator
-- [ ] **发布/审核流程** — 用户发布模块、管理员审核
-- [ ] **兼容性矩阵** — MCU × OS × Compiler 筛选
+- [x] **模块目录浏览** — 社区 BSW 模块模板展示
+- [x] **一键导入** — 仓库模块 → yuleASR Configurator
+- [x] **发布/审核流程** — 用户发布模块、管理员审核
+- [x] **兼容性矩阵** — MCU × OS × Compiler 筛选
 
 ### 中优先级
 - [ ] **性能优化** - 首屏加载速度优化
