@@ -44,6 +44,7 @@ const YuleASREditorPage = lazy(() => import('./pages/YuleASREditorPage').then(m 
 const DevHubPage = lazy(() => import('./pages/autosar/DevHubPage').then(m => ({ default: m.DevHubPage })));
 const SpecBrowserPage = lazy(() => import('./pages/autosar/SpecBrowserPage').then(m => ({ default: m.SpecBrowserPage })));
 const SpecComparePage = lazy(() => import('./pages/autosar/SpecComparePage').then(m => ({ default: m.SpecComparePage })));
+const SandboxPage = lazy(() => import('./pages/autosar/SandboxPage').then(m => ({ default: m.SandboxPage })));
 
 // Admin pages - New implementation
 const AdminLogin = lazy(() => import('./admin/pages/Login').then(m => ({ default: m.Login })));
@@ -170,6 +171,7 @@ function App() {
                   <Route path="autosar/spec/:module" element={<SpecBrowserPage />} />
                   <Route path="autosar/spec/:module/:api" element={<SpecBrowserPage />} />
                   <Route path="autosar/spec/compare" element={<SpecComparePage />} />
+                  <Route path="autosar/sandbox" element={<SandboxPage />} />
                   <Route path="*" element={
                     <div className="min-h-screen flex items-center justify-center">
                       <div className="text-center">
