@@ -1,5 +1,15 @@
 import type { AutosarModule, AutosarLayer, AutosarVersion, ApiIndexEntry, AutosarApi } from './types';
 import { CAN_APIS } from './can-spec';
+import { DIO_APIS } from './dio-spec';
+import { PORT_APIS } from './port-spec';
+import { MCU_APIS } from './mcu-spec';
+import { SPI_APIS } from './spi-spec';
+import { COM_APIS } from './com-spec';
+import { PDUR_APIS } from './pdur-spec';
+import { CANIF_APIS } from './canif-spec';
+import { NVM_APIS } from './nvm-spec';
+import { ECUM_APIS } from './ecum-spec';
+import { RTE_APIS } from './rte-spec';
 
 export const SPEC_VERSIONS: AutosarVersion[] = [
   { id: '4.4', label: 'AUTOSAR 4.4', releaseDate: '2020-12', status: 'active' },
@@ -18,6 +28,16 @@ export const LAYERS: { id: string; name: string; description: string; color: str
 function getModuleApis(moduleId: string): AutosarApi[] {
   const registry: Record<string, AutosarApi[]> = {
     Can: CAN_APIS,
+    Dio: DIO_APIS,
+    Port: PORT_APIS,
+    Mcu: MCU_APIS,
+    Spi: SPI_APIS,
+    Com: COM_APIS,
+    PduR: PDUR_APIS,
+    CanIf: CANIF_APIS,
+    NvM: NVM_APIS,
+    EcuM: ECUM_APIS,
+    Rte: RTE_APIS,
   };
   return registry[moduleId] || [];
 }
@@ -53,6 +73,12 @@ export function getAllModules(): AutosarModule[] {
       description: 'SPI 通信驱动，支持主从模式和数据传输',
       versionIntroduced: '4.0',
       apis: getModuleApis('Spi'),
+    },
+    {
+      id: 'CanIf', name: 'CanIf', layer: 'ECUAL',
+      description: 'CAN 接口模块，为上层提供与硬件无关的 CAN 通信抽象接口',
+      versionIntroduced: '4.0',
+      apis: getModuleApis('CanIf'),
     },
     {
       id: 'Com', name: 'Com', layer: 'ECUAL',

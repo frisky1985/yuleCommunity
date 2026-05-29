@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {
   ChevronDown, ChevronRight, Copy, Check, ExternalLink,
-  BookOpen, Code2, ArrowRight, Info, Clock,
+  BookOpen, Code2, ArrowRight, Info, Clock, Star,
 } from 'lucide-react';
 import type { AutosarApi } from '../../data/autosar/types';
 import { LAYERS } from '../../data/autosar/spec-index';
+import { useBookmarks } from '../../hooks/autosar/useBookmarks';
+
+const CodeBlock = lazy(() => import('./CodeBlock'));
 
 const layerColors: Record<string, string> = {
   MCAL: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
@@ -30,12 +31,20 @@ interface ApiCardProps {
 export function ApiCard({ api }: ApiCardProps) {
   const [showExample, setShowExample] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
   const layerInfo = LAYERS.find(l => l.id === api.layerId);
+  const { toggleBookmark, isBookmarked } = useBookmarks();
 
   const copyExample = () => {
     navigator.clipboard.writeText(api.example);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const copyShareLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 2000);
   };
 
   return (
@@ -54,6 +63,26 @@ export function ApiCard({ api }: ApiCardProps) {
           <span className={`px-2 py-0.5 text-[10px] font-medium rounded-full ${statusColors[api.status]}`}>
             {api.status === 'standard' ? '标准' : api.status === 'optional' ? '可选' : '弃用'}
           </span>
+          <button
+            onClick={() => toggleBookmark(api.id)}
+            className="p-1.5 rounded-md hover:bg-muted/50 transition-colors"
+            title={isBookmarked(api.id) ? '取消收藏' : '收藏'}
+          >
+            {isBookmarked(api.id)
+              ? <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+              : <Star className="w-4 h-4 text-muted-foreground" />
+            }
+          </button>
+          <button
+            onClick={copyShareLink}
+            className="ml-auto p-1.5 rounded-md hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors"
+            title="分享链接"
+          >
+            {shareCopied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
+          </button>
+          {shareCopied && (
+            <span className="text-[10px] text-green-500 font-medium">已复制链接</span>
+          )}
         </div>
         <p className="text-sm text-muted-foreground">{api.brief}</p>
       </div>
@@ -73,14 +102,15 @@ export function ApiCard({ api }: ApiCardProps) {
           函数签名
         </h3>
         <div className="bg-[#1e1e1e] dark:bg-[#1e1e1e] rounded-lg p-3 overflow-x-auto">
-          <SyntaxHighlighter
-            language="c"
-            style={oneDark}
-            customStyle={{ background: 'transparent', padding: 0, margin: 0, fontSize: '13px' }}
-            wrapLongLines
-          >
-            {api.signature}
-          </SyntaxHighlighter>
+          <Suspense fallback={<pre className="text-sm font-mono text-gray-300" style={{ margin: 0, padding: 0, fontSize: '13px', background: 'transparent' }}><code>{api.signature}</code></pre>}>
+            <CodeBlock
+              language="c"
+              customStyle={{ background: 'transparent', padding: 0, margin: 0, fontSize: '13px' }}
+              wrapLongLines
+            >
+              {api.signature}
+            </CodeBlock>
+          </Suspense>
         </div>
       </div>
 
@@ -146,6 +176,14 @@ export function ApiCard({ api }: ApiCardProps) {
         </div>
       )}
 
+      {/* Run in Sandbox Button */}
+      <Link
+        to={`/autosar/sandbox?example=${api.name}`}
+        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors border border-primary/20"
+      >
+        🚀 在沙盒中运行
+      </Link>
+
       {/* Code Example */}
       <div className="rounded-lg border border-border overflow-hidden">
         <button
@@ -174,14 +212,15 @@ export function ApiCard({ api }: ApiCardProps) {
         </button>
         {showExample && (
           <div className="border-t border-border">
-            <SyntaxHighlighter
-              language="c"
-              style={oneDark}
-              customStyle={{ margin: 0, padding: '16px', fontSize: '13px' }}
-              showLineNumbers
-            >
-              {api.example}
-            </SyntaxHighlighter>
+            <Suspense fallback={<div className="p-4 text-xs text-muted-foreground">加载语法高亮...</div>}>
+              <CodeBlock
+                language="c"
+                customStyle={{ margin: 0, padding: '16px', fontSize: '13px' }}
+                showLineNumbers
+              >
+                {api.example}
+              </CodeBlock>
+            </Suspense>
           </div>
         )}
       </div>
@@ -196,13 +235,21 @@ export function ApiCard({ api }: ApiCardProps) {
             </h3>
             <div className="flex flex-wrap gap-1.5">
               {api.seeAlso.map(ref => (
-                <Link
-                  key={ref}
-                  to={`/autosar/spec/${api.moduleId}/${ref}`}
-                  className="px-2 py-1 text-xs rounded-md bg-primary/5 text-primary hover:bg-primary/10 transition-colors font-mono"
-                >
-                  {ref}
-                </Link>
+                <div key={ref} className="flex items-center gap-0.5">
+                  <Link
+                    to={`/autosar/spec/${api.moduleId}/${ref}`}
+                    className="px-2 py-1 text-xs rounded-md bg-primary/5 text-primary hover:bg-primary/10 transition-colors font-mono"
+                  >
+                    {ref}
+                  </Link>
+                  <Link
+                    to={`/autosar/sandbox?example=${ref}`}
+                    className="p-1 rounded-md hover:bg-primary/10 text-primary/60 hover:text-primary transition-colors"
+                    title="在沙盒中查看"
+                  >
+                    ▶
+                  </Link>
+                </div>
               ))}
             </div>
           </div>
