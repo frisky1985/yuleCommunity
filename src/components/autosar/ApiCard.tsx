@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ChevronDown, ChevronRight, Copy, Check, ExternalLink,
-  BookOpen, Code2, ArrowRight, Info, Clock,
+  BookOpen, Code2, ArrowRight, Info, Clock, Star,
 } from 'lucide-react';
 import type { AutosarApi } from '../../data/autosar/types';
 import { LAYERS } from '../../data/autosar/spec-index';
+import { useBookmarks } from '../../hooks/autosar/useBookmarks';
 
 const CodeBlock = lazy(() => import('./CodeBlock'));
 
@@ -32,6 +33,7 @@ export function ApiCard({ api }: ApiCardProps) {
   const [copied, setCopied] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const layerInfo = LAYERS.find(l => l.id === api.layerId);
+  const { toggleBookmark, isBookmarked } = useBookmarks();
 
   const copyExample = () => {
     navigator.clipboard.writeText(api.example);
@@ -61,6 +63,16 @@ export function ApiCard({ api }: ApiCardProps) {
           <span className={`px-2 py-0.5 text-[10px] font-medium rounded-full ${statusColors[api.status]}`}>
             {api.status === 'standard' ? '标准' : api.status === 'optional' ? '可选' : '弃用'}
           </span>
+          <button
+            onClick={() => toggleBookmark(api.id)}
+            className="p-1.5 rounded-md hover:bg-muted/50 transition-colors"
+            title={isBookmarked(api.id) ? '取消收藏' : '收藏'}
+          >
+            {isBookmarked(api.id)
+              ? <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+              : <Star className="w-4 h-4 text-muted-foreground" />
+            }
+          </button>
           <button
             onClick={copyShareLink}
             className="ml-auto p-1.5 rounded-md hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors"

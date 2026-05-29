@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronRight, Search } from 'lucide-react';
-import { getLayers, buildSearchIndex } from '../../data/autosar/spec-index';
+import { ChevronDown, ChevronRight, Search, Star } from 'lucide-react';
+import { getLayers, buildSearchIndex, findApiById } from '../../data/autosar/spec-index';
+import { useBookmarks } from '../../hooks/autosar/useBookmarks';
 
 const layerColors: Record<string, string> = {
   MCAL: 'text-blue-500', ECUAL: 'text-cyan-500', Service: 'text-teal-500', RTE_ASW: 'text-emerald-500',
@@ -18,6 +19,7 @@ export function SpecTreeNav({ selectedApi, onSelectApi }: SpecTreeNavProps) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const searchIndex = buildSearchIndex();
+  const { bookmarks, isBookmarked } = useBookmarks();
 
   const toggleLayer = (layerId: string) => {
     setExpandedLayers(prev => {
@@ -93,76 +95,107 @@ export function SpecTreeNav({ selectedApi, onSelectApi }: SpecTreeNavProps) {
             )}
           </div>
         ) : (
-          /* Layer Tree */
-          filteredLayers.map(layer => (
-            <div key={layer.id}>
-              <button
-                onClick={() => toggleLayer(layer.id)}
-                className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-xs font-medium hover:bg-muted/50 transition-colors"
-              >
-                {expandedLayers.has(layer.id)
-                  ? <ChevronDown className="w-3 h-3 text-muted-foreground shrink-0" />
-                  : <ChevronRight className="w-3 h-3 text-muted-foreground shrink-0" />
-                }
-                <span className={layerColors[layer.id]}>{layer.name}</span>
-                <span className="text-[10px] text-muted-foreground ml-auto">
-                  {layer.modules.reduce((s, m) => s + m.apis.length, 0)}
-                </span>
-              </button>
+          <>
+            {/* Bookmarks Section */}
+            {bookmarks.length > 0 && (
+              <div className="mb-2">
+                <div className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-muted-foreground">
+                  <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />
+                  收藏的 API ({bookmarks.length})
+                </div>
+                {bookmarks.map(apiId => {
+                  const api = findApiById(apiId);
+                  if (!api) return null;
+                  return (
+                    <button
+                      key={apiId}
+                      onClick={() => onSelectApi(apiId)}
+                      className={`w-full text-left pl-4 pr-2 py-1 rounded text-[11px] transition-colors ${
+                        selectedApi === apiId
+                          ? 'bg-primary/10 text-primary font-medium'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/20'
+                      }`}
+                    >
+                      {api.name}
+                    </button>
+                  );
+                })}
+                <div className="border-t border-border my-1" />
+              </div>
+            )}
 
-              <AnimatePresence>
-                {expandedLayers.has(layer.id) && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
-                  >
-                    {layer.modules.map(mod => (
-                      <div key={mod.id} className="ml-3">
-                        <button
-                          onClick={() => toggleModule(mod.id)}
-                          className="w-full flex items-center gap-1.5 px-2 py-1 rounded-md text-xs hover:bg-muted/30 transition-colors"
-                        >
-                          {expandedModules.has(mod.id)
-                            ? <ChevronDown className="w-2.5 h-2.5 text-muted-foreground shrink-0" />
-                            : <ChevronRight className="w-2.5 h-2.5 text-muted-foreground shrink-0" />
-                          }
-                          <span className="text-muted-foreground">{mod.name}</span>
-                          <span className="text-[10px] text-muted-foreground ml-auto">{mod.apis.length}</span>
-                        </button>
+            {/* Layer Tree */}
+            {filteredLayers.map(layer => (
+              <div key={layer.id}>
+                <button
+                  onClick={() => toggleLayer(layer.id)}
+                  className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-xs font-medium hover:bg-muted/50 transition-colors"
+                >
+                  {expandedLayers.has(layer.id)
+                    ? <ChevronDown className="w-3 h-3 text-muted-foreground shrink-0" />
+                    : <ChevronRight className="w-3 h-3 text-muted-foreground shrink-0" />
+                  }
+                  <span className={layerColors[layer.id]}>{layer.name}</span>
+                  <span className="text-[10px] text-muted-foreground ml-auto">
+                    {layer.modules.reduce((s, m) => s + m.apis.length, 0)}
+                  </span>
+                </button>
 
-                        <AnimatePresence>
-                          {expandedModules.has(mod.id) && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: 'auto', opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              className="overflow-hidden"
-                            >
-                              {mod.apis.map(api => (
-                                <button
-                                  key={api.id}
-                                  onClick={() => onSelectApi(api.id)}
-                                  className={`w-full text-left pl-6 pr-2 py-1 rounded text-[11px] transition-colors ${
-                                    selectedApi === api.id
-                                      ? 'bg-primary/10 text-primary font-medium'
-                                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/20'
-                                  }`}
-                                >
-                                  {api.name}
-                                </button>
-                              ))}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ))
+                <AnimatePresence>
+                  {expandedLayers.has(layer.id) && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      {layer.modules.map(mod => (
+                        <div key={mod.id} className="ml-3">
+                          <button
+                            onClick={() => toggleModule(mod.id)}
+                            className="w-full flex items-center gap-1.5 px-2 py-1 rounded-md text-xs hover:bg-muted/30 transition-colors"
+                          >
+                            {expandedModules.has(mod.id)
+                              ? <ChevronDown className="w-2.5 h-2.5 text-muted-foreground shrink-0" />
+                              : <ChevronRight className="w-2.5 h-2.5 text-muted-foreground shrink-0" />
+                            }
+                            <span className="text-muted-foreground">{mod.name}</span>
+                            <span className="text-[10px] text-muted-foreground ml-auto">{mod.apis.length}</span>
+                          </button>
+
+                          <AnimatePresence>
+                            {expandedModules.has(mod.id) && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                className="overflow-hidden"
+                              >
+                                {mod.apis.map(api => (
+                                  <button
+                                    key={api.id}
+                                    onClick={() => onSelectApi(api.id)}
+                                    className={`w-full text-left pl-6 pr-2 py-1 rounded text-[11px] transition-colors flex items-center gap-1 ${
+                                      selectedApi === api.id
+                                        ? 'bg-primary/10 text-primary font-medium'
+                                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/20'
+                                    }`}
+                                  >
+                                    {api.name}
+                                    {isBookmarked(api.id) && <Star className="w-2.5 h-2.5 fill-yellow-500 text-yellow-500 shrink-0 ml-auto" />}
+                                  </button>
+                                ))}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
+          </>
         )}
       </div>
     </div>
