@@ -30,12 +30,19 @@ interface ApiCardProps {
 export function ApiCard({ api }: ApiCardProps) {
   const [showExample, setShowExample] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
   const layerInfo = LAYERS.find(l => l.id === api.layerId);
 
   const copyExample = () => {
     navigator.clipboard.writeText(api.example);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const copyShareLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 2000);
   };
 
   return (
@@ -54,6 +61,16 @@ export function ApiCard({ api }: ApiCardProps) {
           <span className={`px-2 py-0.5 text-[10px] font-medium rounded-full ${statusColors[api.status]}`}>
             {api.status === 'standard' ? '标准' : api.status === 'optional' ? '可选' : '弃用'}
           </span>
+          <button
+            onClick={copyShareLink}
+            className="ml-auto p-1.5 rounded-md hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors"
+            title="分享链接"
+          >
+            {shareCopied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
+          </button>
+          {shareCopied && (
+            <span className="text-[10px] text-green-500 font-medium">已复制链接</span>
+          )}
         </div>
         <p className="text-sm text-muted-foreground">{api.brief}</p>
       </div>
@@ -146,6 +163,14 @@ export function ApiCard({ api }: ApiCardProps) {
         </div>
       )}
 
+      {/* Run in Sandbox Button */}
+      <Link
+        to={`/autosar/sandbox?example=${api.name}`}
+        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors border border-primary/20"
+      >
+        🚀 在沙盒中运行
+      </Link>
+
       {/* Code Example */}
       <div className="rounded-lg border border-border overflow-hidden">
         <button
@@ -196,13 +221,21 @@ export function ApiCard({ api }: ApiCardProps) {
             </h3>
             <div className="flex flex-wrap gap-1.5">
               {api.seeAlso.map(ref => (
-                <Link
-                  key={ref}
-                  to={`/autosar/spec/${api.moduleId}/${ref}`}
-                  className="px-2 py-1 text-xs rounded-md bg-primary/5 text-primary hover:bg-primary/10 transition-colors font-mono"
-                >
-                  {ref}
-                </Link>
+                <div key={ref} className="flex items-center gap-0.5">
+                  <Link
+                    to={`/autosar/spec/${api.moduleId}/${ref}`}
+                    className="px-2 py-1 text-xs rounded-md bg-primary/5 text-primary hover:bg-primary/10 transition-colors font-mono"
+                  >
+                    {ref}
+                  </Link>
+                  <Link
+                    to={`/autosar/sandbox?example=${ref}`}
+                    className="p-1 rounded-md hover:bg-primary/10 text-primary/60 hover:text-primary transition-colors"
+                    title="在沙盒中查看"
+                  >
+                    ▶
+                  </Link>
+                </div>
               ))}
             </div>
           </div>
