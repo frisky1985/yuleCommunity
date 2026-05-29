@@ -10,7 +10,7 @@ import {
   getRegistryStats,
   getRegistryVersionHistory,
 } from '../registry-samples';
-import type { RegistryModule } from '../registry-types';
+
 
 describe('AutoSAR Registry Sample Data', () => {
   // ─── Module count ──────────────────────────────────────────────────

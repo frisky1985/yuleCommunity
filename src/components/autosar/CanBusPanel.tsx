@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Radio, Search, X } from 'lucide-react';
 
@@ -36,9 +36,7 @@ export function CanBusPanel({ messages, maxMessages = 100 }: CanBusPanelProps) {
     }
   }, [displayedMessages.length, autoScroll]);
 
-  const clearMessages = useCallback(() => {
-    /* Parent controls the actual clear */
-  }, []);
+  /* Parent controls the actual clear */
 
   const formatHex = (val: number, pad: number = 2) =>
     val.toString(16).toUpperCase().padStart(pad, '0');

@@ -49,7 +49,6 @@ export function simulateCode(code: string): SimulationResult {
     const lines = code.split('\n');
     let inComment = false;
     let inFunction = false;
-    let currentFunction = '';
     const cleanedLines: string[] = [];
 
     for (const rawLine of lines) {
@@ -94,14 +93,12 @@ export function simulateCode(code: string): SimulationResult {
       // Detect function definitions
       if (line.includes('void main(void)') || line.includes('void main()')) {
         inFunction = true;
-        currentFunction = 'main';
         cleanedLines.push('');
         continue;
       }
 
       if (inFunction && line === '}') {
         inFunction = false;
-        currentFunction = '';
         continue;
       }
 
@@ -116,8 +113,6 @@ export function simulateCode(code: string): SimulationResult {
       config: {} as Record<string, any>,
     };
     const simDioState: number[] = new Array(16).fill(0);
-    let simSpiInitialized = false;
-    let simMcuInitialized = false;
     let simMcuClock = 8000000;
 
     // Track pin flips for blink patterns
@@ -308,7 +303,6 @@ export function simulateCode(code: string): SimulationResult {
 
       // Spi_Init
       if (line.includes('Spi_Init(')) {
-        simSpiInitialized = true;
         output.push(`[SIM] Spi_Init: SPI controller initialized`);
         state.interrupts.push({
           source: 'SPI',
@@ -349,7 +343,6 @@ export function simulateCode(code: string): SimulationResult {
 
       // Mcu_Init
       if (line.includes('Mcu_Init(')) {
-        simMcuInitialized = true;
         output.push(`[SIM] Mcu_Init: MCU initialized with HSI/PLL clock config`);
         state.interrupts.push({
           source: 'MCU',
@@ -389,7 +382,6 @@ export function simulateCode(code: string): SimulationResult {
       // Mcu_PerformReset
       if (line.includes('Mcu_PerformReset(')) {
         output.push(`[SIM] Mcu_PerformReset: System reset executed`);
-        simMcuInitialized = false;
         state.interrupts.push({
           source: 'MCU',
           timestamp: simTime,

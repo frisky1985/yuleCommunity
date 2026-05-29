@@ -26,7 +26,7 @@ export function GpioWaveform({ events, pins = [0, 1, 2, 3], timeWindow = 1000 }:
   const pinEvents = useMemo(() => {
     const now = Date.now();
     const recentEvents = events.filter(e => (now - e.timestamp) < timeWindow);
-    const map = new Map<number, { time: number; level: number }[]>();
+    const map = new Map<number, GpioEvent[]>();
     for (const pin of pins) {
       const pinEvts = recentEvents
         .filter(e => e.pin === pin)

@@ -35,31 +35,6 @@ export function RegistryPage() {
     localStorage.setItem('autosar-registry-search-history', JSON.stringify(searchHistory));
   }, [searchHistory]);
 
-  // When search query changes with results, save to history
-  const prevSearchRef = useRef(filters.search);
-  useEffect(() => {
-    const currentSearch = filters.search.trim();
-    const prevSearch = prevSearchRef.current.trim();
-    prevSearchRef.current = filters.search;
-
-    if (currentSearch && currentSearch !== prevSearch && filteredModules.length > 0) {
-      setSearchHistory(prev => {
-        const filtered = prev.filter(s => s !== currentSearch);
-        return [currentSearch, ...filtered].slice(0, 5);
-      });
-    }
-  }, [filters.search, filteredModules.length]);
-
-  const handleClearHistory = useCallback(() => {
-    setSearchHistory([]);
-    localStorage.removeItem('autosar-registry-search-history');
-  }, []);
-
-  const handleHistoryClick = useCallback((term: string) => {
-    setFilters(prev => ({ ...prev, search: term }));
-    setIsSearchFocused(false);
-  }, []);
-
   const filteredModules = useMemo(() => {
     let list = [...REGISTRY_MODULES];
 
@@ -108,6 +83,31 @@ export function RegistryPage() {
 
     return list;
   }, [filters]);
+
+  // When search query changes with results, save to history
+  const prevSearchRef = useRef(filters.search);
+  useEffect(() => {
+    const currentSearch = filters.search.trim();
+    const prevSearch = prevSearchRef.current.trim();
+    prevSearchRef.current = filters.search;
+
+    if (currentSearch && currentSearch !== prevSearch && filteredModules.length > 0) {
+      setSearchHistory(prev => {
+        const filtered = prev.filter(s => s !== currentSearch);
+        return [currentSearch, ...filtered].slice(0, 5);
+      });
+    }
+  }, [filters.search, filteredModules.length]);
+
+  const handleClearHistory = useCallback(() => {
+    setSearchHistory([]);
+    localStorage.removeItem('autosar-registry-search-history');
+  }, []);
+
+  const handleHistoryClick = useCallback((term: string) => {
+    setFilters(prev => ({ ...prev, search: term }));
+    setIsSearchFocused(false);
+  }, []);
 
   return (
     <DevHubLayout title="模块仓库" backTo="/autosar">

@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { getAllModules, SPEC_VERSIONS } from '../../data/autosar/spec-index';
-import type { AutosarVersion } from '../../data/autosar/types';
+
 import { CheckCircle2, XCircle, AlertTriangle, ArrowRight } from 'lucide-react';
 
 interface VersionDiff {

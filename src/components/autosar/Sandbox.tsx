@@ -83,18 +83,6 @@ export function Sandbox({ onCanMessages, onGpioEvents, onInterrupts, initialExam
     }
   }, []);
 
-  // Build full code with headers if auto-include is on
-  const getCompiledCode = useCallback(() => {
-    if (!autoIncludeHeaders) return code;
-
-    const headerIncludes = VIRTUAL_HEADERS
-      .filter(h => h.name !== 'Std_Types.h')
-      .map(h => `#include "${h.name}"`)
-      .join('\n');
-
-    return `/* AutoSAR Virtual Headers Auto-Included */\n#include "Std_Types.h"\n${headerIncludes}\n\n${code}`;
-  }, [code, autoIncludeHeaders]);
-
   const StatusBadge = () => {
     switch (compileStatus) {
       case 'running':
