@@ -404,6 +404,7 @@ void Spi_ConfigCs(void) {
   {
     id: 'Spi_Exchange',
     name: 'Spi_Exchange',
+    signature: 'Std_ReturnType Spi_Exchange(Spi_ChannelType Channel, Spi_DataBufferType* DataBufferPtr, uint16 Length)',
     brief: '全双工同步数据交换',
     description: '执行全双工 SPI 数据交换：在发送数据的同时接收数据。适用于需要同时发送和接收的场景，如读取 SPI 寄存器。',
     params: [
