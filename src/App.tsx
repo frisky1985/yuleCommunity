@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { BottomTabBar } from './components/BottomTabBar';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { PageLoader } from './components/PageLoader';
 import { InteractiveCLI } from './components/InteractiveCLI';
@@ -193,6 +194,7 @@ function App() {
               </Suspense>
             </main>
             <Footer />
+            <BottomTabBar />
             <InteractiveCLI />
             
             {/* Phase 4: 组件级代码分割 - 使用 LazyEngagement 实现懒加载 */}
