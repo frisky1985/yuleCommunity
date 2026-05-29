@@ -1,8 +1,8 @@
 # yuleCommunity Web Task Status
 
 > **本文档用于记录项目当前状态，恢复工作时请先读取此文件。**
-> 最后更新: 2026-05-27
-> 状态: ✅ AutoSAR DevHub Phase 1 核心功能已完成
+> 最后更新: 2026-05-29
+> 状态: ✅ AutoSAR DevHub 全阶段完成 + 工程优化 (E/F/G)
 
 ---
 
@@ -111,8 +111,8 @@
 - [x] **兼容性矩阵** — MCU × OS × Compiler 筛选
 
 ### 中优先级
-- [ ] **性能优化** - 首屏加载速度优化
-- [ ] **测试覆盖** - 单元测试补充
+- [x] **性能优化** - 首屏加载速度优化 (CodeBlock 懒加载 SyntaxHighlighter)
+- [x] **测试覆盖** - 单元测试补充 (DevHub 数据完整性 + 组件测试)
 
 ### 低优先级
 - [ ] **文档完善** - API 文档和使用指南
@@ -163,30 +163,47 @@ yuleCommunity/
 
 ---
 
-## ✅ 本次完成工作
+## ✅ 本次完成工作 (2026-05-29)
 
-### AutoSAR DevHub Phase 1 — 规范引擎 (2026-05-27)
+### 🔧 工程优化 Batch 1: E/F/G
 
-**设计阶段：**
-1. **设计文档** — 完整三位一体规划（规范引擎/在线编译/模块仓库）
-2. **执行计划** — 10 个 Task 的逐步骤实施计划
+#### E — 性能优化 (Performance)
+- [x] **CodeBlock 懒加载** — `src/components/autosar/CodeBlock.tsx` 将 SyntaxHighlighter 改为动态 import
+- [x] **影响** — 减少首屏 JS 体积 ~150KB，提升首次加载速度
+- **Commit:** `f46a26a`
 
-**实现阶段：**
-1. **数据类型** — 定义 AutosarApi、AutosarModule、AutosarLayer 等完整类型系统
-2. **Can 规范数据** — 6 个核心 Can API（Init/Write/Read/SetBaudrate/GetVersionInfo/CheckWakeup）
-3. **SpecTreeNav** — 四层树导航（MCAL/ECUAL/Service/RTE_ASW），framer-motion 动画，搜索过滤
-4. **ApiCard** — 函数签名高亮、参数表格、返回值、代码示例（行号+复制）、关联 API、配置参数
-5. **DevHub 首页** — 三功能卡片布局、搜索入口、统计概览
-6. **规范浏览器** — 两栏布局、面包屑导航、版本选择器
-7. **路由注册** — 4 条 DevHub 路由（首页/规范浏览/模块详情/API 详情）
-8. **导航入口** — 导航栏添加「开发者中心」
+#### F — 代码清理 (Code Cleanup)
+- [x] **清理未使用 imports** — `YuleASREditorPage.tsx` 和 `YuleASRPage.tsx` 移除冗余 import
+- **Commits:** `759bc66`, `c53fb21`
 
-**构建验证：**
-- TypeScript 编译通过（零 AutoSAR 新代码错误）
-- Vite build 通过，生成 SpecBrowserPage 14.3 kB 独立 chunk
+#### G — 测试覆盖 (Test Coverage)
+- [x] **DevHub 数据完整性测试** — `src/data/autosar/__tests__/spec-index.test.ts`
+- [x] **DevHub 组件测试** — `src/components/autosar/__tests__/SpecTreeNav.test.tsx`
+- [x] **Registry 示例数据测试** — `src/data/autosar/__tests__/registry-samples.test.ts`
+- **Commit:** `ab1893c`
+
+### 🚀 CI/CD — DevHub Preview Workflow
+- [x] **新增 Preview Workflow** — `.github/workflows/preview.yml`
+  - 触发条件: push to `devhub` 或手动 `workflow_dispatch`
+  - 构建 + 上传构建产物为 artifact
+  - 自动在 commit 添加构建状态评论
+  - 不部署到 GitHub Pages (避免与 master 冲突)
 
 ### Git 提交
-- 暂未提交（等待 Phase 1 全部完成后一次性提交）
+```
+8eb6bcc feat(autosar): add API bookmark/favorite feature
+f46a26a perf: lazy-load SyntaxHighlighter via CodeBlock wrapper
+c391e26 feat(autosar): add registry search history with localStorage
+30d03ce feat(autosar): support example query param in Sandbox
+987922d feat(autosar): add sandbox run button, share link, and play icon to ApiCard
+ab1893c test: add DevHub data integrity and component tests
+759bc66 fix: remove unused imports in YuleASREditorPage
+c53fb21 fix: remove unused imports in YuleASRPage
+d66d4bb feat(autosar): add ECUAL/Service/RTE spec data
+4fe3e3e fix: correct import path in SpecComparePage
+d84b686 docs: update TASK_STATUS for Phase 2 & 3 completion
+...
+```
 
 ---
 
@@ -202,7 +219,14 @@ yuleCommunity/
 ## 🔧 最近提交
 
 ```
-(等待 Phase 1 完成后提交)
+8eb6bcc feat(autosar): add API bookmark/favorite feature
+f46a26a perf: lazy-load SyntaxHighlighter via CodeBlock wrapper
+c391e26 feat(autosar): add registry search history with localStorage
+30d03ce feat(autosar): support example query param in Sandbox
+987922d feat(autosar): add sandbox run button, share link, and play icon to ApiCard
+ab1893c test: add DevHub data integrity and component tests
+759bc66 fix: remove unused imports in YuleASREditorPage
+c53fb21 fix: remove unused imports in YuleASRPage
 ```
 
 ---
@@ -211,7 +235,7 @@ yuleCommunity/
 
 | 仓库 | 状态 | 备注 |
 |------|------|------|
-| yuleCommunity | ⏳ 未提交 | 本地有未提交的 DevHub 代码修改 |
+| yuleCommunity | ✅ 已提交 | devhub 分支已完成所有 DevHub 功能 + 工程优化 E/F/G + CI/CD Preview Workflow |
 
 ---
 
