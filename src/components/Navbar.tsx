@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Code2, Menu, X, Shield } from 'lucide-react';
+import { Menu, X, Shield } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { GlobalSearch } from './GlobalSearch';
 import { NotificationCenter } from './NotificationCenter';
@@ -62,7 +62,7 @@ export function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--accent))] flex items-center justify-center">
-              <Code2 className="w-5 h-5 text-white" />
+              <span className="text-xs font-bold text-white tracking-tight">YL</span>
             </div>
             <span className="font-bold text-lg tracking-tight">
               Yule<span className="text-gradient-accent">Tech</span>
