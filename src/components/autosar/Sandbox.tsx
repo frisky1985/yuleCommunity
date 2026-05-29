@@ -13,13 +13,15 @@ interface SandboxProps {
   onCanMessages?: (msgs: CanMessage[]) => void;
   onGpioEvents?: (events: GpioEvent[]) => void;
   onInterrupts?: (events: InterruptEvent[]) => void;
+  initialExampleId?: string;
 }
 
-export function Sandbox({ onCanMessages, onGpioEvents, onInterrupts }: SandboxProps) {
-  const [code, setCode] = useState(SANDBOX_EXAMPLES[0].code);
+export function Sandbox({ onCanMessages, onGpioEvents, onInterrupts, initialExampleId }: SandboxProps) {
+  const initialExample = initialExampleId ? (getExampleById(initialExampleId) ?? SANDBOX_EXAMPLES[0]) : SANDBOX_EXAMPLES[0];
+  const [code, setCode] = useState(initialExample.code);
   const [output, setOutput] = useState<string[]>([]);
   const [isRunning, setIsRunning] = useState(false);
-  const [selectedExample, setSelectedExample] = useState(SANDBOX_EXAMPLES[0].id);
+  const [selectedExample, setSelectedExample] = useState(initialExample.id);
   const [autoIncludeHeaders, setAutoIncludeHeaders] = useState(true);
   const [activeTab, setActiveTab] = useState<'code' | 'headers'>('code');
   const [compileStatus, setCompileStatus] = useState<'idle' | 'running' | 'success' | 'error'>('idle');

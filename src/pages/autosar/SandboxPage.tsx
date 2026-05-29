@@ -2,18 +2,29 @@ import { useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Code2, Radio, Activity, Zap, ChevronLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Sandbox } from '../../components/autosar/Sandbox';
 import { CanBusPanel } from '../../components/autosar/CanBusPanel';
 import { GpioWaveform } from '../../components/autosar/GpioWaveform';
 import { InterruptTimeline } from '../../components/autosar/InterruptTimeline';
+import { SANDBOX_EXAMPLES } from '../../data/autosar/sandbox-examples';
 import type { CanMessage } from '../../components/autosar/CanBusPanel';
 import type { GpioEvent } from '../../components/autosar/GpioWaveform';
 import type { InterruptEvent } from '../../components/autosar/InterruptTimeline';
 
 type VisualizationTab = 'can' | 'gpio' | 'interrupt';
 
+function findExampleIdForApiName(apiName: string): string | undefined {
+  const lowerName = apiName.toLowerCase();
+  // Try direct match by checking if any example code contains the API name
+  const match = SANDBOX_EXAMPLES.find(ex => ex.code.toLowerCase().includes(lowerName));
+  return match?.id;
+}
+
 export function SandboxPage() {
+  const [searchParams] = useSearchParams();
+  const exampleParam = searchParams.get('example');
+  const initialExampleId = exampleParam ? findExampleIdForApiName(exampleParam) : undefined;
   const [canMessages, setCanMessages] = useState<CanMessage[]>([]);
   const [gpioEvents, setGpioEvents] = useState<GpioEvent[]>([]);
   const [interrupts, setInterrupts] = useState<InterruptEvent[]>([]);
@@ -104,6 +115,7 @@ export function SandboxPage() {
               onCanMessages={handleCanMessages}
               onGpioEvents={handleGpioEvents}
               onInterrupts={handleInterrupts}
+              initialExampleId={initialExampleId}
             />
           </motion.div>
 
