@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { Code2, Radio, Activity, Zap, ChevronLeft } from 'lucide-react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Code2, Radio, Activity, Zap } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
+import { DevHubLayout } from '../../components/autosar/DevHubLayout';
 import { Sandbox } from '../../components/autosar/Sandbox';
 import { CanBusPanel } from '../../components/autosar/CanBusPanel';
 import { GpioWaveform } from '../../components/autosar/GpioWaveform';
@@ -55,33 +56,18 @@ export function SandboxPage() {
   ];
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
+    <DevHubLayout title="在线编译" backTo="/autosar">
       <Helmet>
         <title>在线编译器 - AutoSAR DevHub - YuleTech</title>
         <meta name="description" content="AutoSAR 在线编译器与运行时仿真环境，支持 CAN/DIO/SPI/MCU 仿真可视化。" />
       </Helmet>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Back link */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
-          <Link
-            to="/autosar"
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Back to DevHub
-          </Link>
-        </motion.div>
-
-        {/* Header */}
+      <div className="py-6">
+        {/* Header badges */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-6"
         >
           <div className="flex items-center gap-3 mb-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 text-xs font-medium">
@@ -209,6 +195,6 @@ export function SandboxPage() {
           </motion.div>
         </div>
       </div>
-    </div>
+    </DevHubLayout>
   );
 }
