@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {
   ChevronDown, ChevronRight, Copy, Check, ExternalLink,
   BookOpen, Code2, ArrowRight, Info, Clock,
 } from 'lucide-react';
 import type { AutosarApi } from '../../data/autosar/types';
 import { LAYERS } from '../../data/autosar/spec-index';
+
+const CodeBlock = lazy(() => import('./CodeBlock'));
 
 const layerColors: Record<string, string> = {
   MCAL: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
@@ -90,14 +90,15 @@ export function ApiCard({ api }: ApiCardProps) {
           函数签名
         </h3>
         <div className="bg-[#1e1e1e] dark:bg-[#1e1e1e] rounded-lg p-3 overflow-x-auto">
-          <SyntaxHighlighter
-            language="c"
-            style={oneDark}
-            customStyle={{ background: 'transparent', padding: 0, margin: 0, fontSize: '13px' }}
-            wrapLongLines
-          >
-            {api.signature}
-          </SyntaxHighlighter>
+          <Suspense fallback={<pre className="text-sm font-mono text-gray-300" style={{ margin: 0, padding: 0, fontSize: '13px', background: 'transparent' }}><code>{api.signature}</code></pre>}>
+            <CodeBlock
+              language="c"
+              customStyle={{ background: 'transparent', padding: 0, margin: 0, fontSize: '13px' }}
+              wrapLongLines
+            >
+              {api.signature}
+            </CodeBlock>
+          </Suspense>
         </div>
       </div>
 
@@ -199,14 +200,15 @@ export function ApiCard({ api }: ApiCardProps) {
         </button>
         {showExample && (
           <div className="border-t border-border">
-            <SyntaxHighlighter
-              language="c"
-              style={oneDark}
-              customStyle={{ margin: 0, padding: '16px', fontSize: '13px' }}
-              showLineNumbers
-            >
-              {api.example}
-            </SyntaxHighlighter>
+            <Suspense fallback={<div className="p-4 text-xs text-muted-foreground">加载语法高亮...</div>}>
+              <CodeBlock
+                language="c"
+                customStyle={{ margin: 0, padding: '16px', fontSize: '13px' }}
+                showLineNumbers
+              >
+                {api.example}
+              </CodeBlock>
+            </Suspense>
           </div>
         )}
       </div>
