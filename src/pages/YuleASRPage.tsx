@@ -1,19 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { 
   Plus, 
   FolderOpen, 
   Clock, 
   Users, 
-  MoreVertical,
   Search,
-  Filter,
   Grid3X3,
   List,
   Trash2,
-  Copy,
-  Share2,
-  CheckCircle,
   AlertCircle,
   Cloud,
   CloudOff
@@ -39,7 +34,7 @@ interface ConfigItem {
 
 export function YuleASRPage() {
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuth();
+  const { user } = useAuth();
   const [configs, setConfigs] = useState<ConfigItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
