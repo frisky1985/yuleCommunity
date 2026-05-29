@@ -8,10 +8,7 @@ import {
   GitBranch,
   CheckCircle,
   AlertCircle,
-  Search,
   Settings,
-  ChevronRight,
-  MoreVertical,
   Code,
   Terminal,
   Cpu,
@@ -63,8 +60,6 @@ export function YuleASREditorPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDirty, setIsDirty] = useState(false);
   const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showDisabled, setShowDisabled] = useState(true);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [activeTab, setActiveTab] = useState<'params' | 'code' | 'build'>('params');
