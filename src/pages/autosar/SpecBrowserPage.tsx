@@ -5,9 +5,10 @@ import { GitCompare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { DevHubLayout } from '../../components/autosar/DevHubLayout';
 import { SpecTreeNav } from '../../components/autosar/SpecTreeNav';
+import { SpecSheetNav } from '../../components/autosar/SpecSheetNav';
 import { ApiCard } from '../../components/autosar/ApiCard';
 import { EmptyApiCard } from '../../components/autosar/EmptyApiCard';
-import { findApiById, findModuleById, getAllModules, SPEC_VERSIONS } from '../../data/autosar/spec-index';
+import { findApiById, findModuleById, SPEC_VERSIONS } from '../../data/autosar/spec-index';
 
 export function SpecBrowserPage() {
   const { module: moduleParam, api: apiParam } = useParams();
@@ -21,11 +22,6 @@ export function SpecBrowserPage() {
     }
     return null;
   }, [moduleParam, apiParam]);
-
-  const selectedModule = useMemo(() => {
-    if (!selectedApi) return null;
-    return findModuleById(selectedApi.moduleId);
-  }, [selectedApi]);
 
   const handleSelectApi = (apiId: string) => {
     const api = findApiById(apiId);
@@ -61,36 +57,8 @@ export function SpecBrowserPage() {
       </Helmet>
 
       {/* Mobile selector - visible only on small screens */}
-      <div className="md:hidden -mx-4 sm:-mx-6 lg:-mx-8 px-4 py-3 border-b border-border bg-muted/5">
-        <div className="flex gap-2">
-          <select
-            className="flex-1 text-sm px-3 py-2 rounded-lg bg-background border border-border"
-            value={selectedModule?.id || ''}
-            onChange={e => {
-              const mod = findModuleById(e.target.value);
-              if (mod && mod.apis.length > 0) {
-                navigate(`/autosar/spec/${mod.id}/${mod.apis[0].id}`);
-              }
-            }}
-          >
-            <option value="">选择模块</option>
-            {getAllModules().map(mod => (
-              <option key={mod.id} value={mod.id}>{mod.name} ({mod.apis.length})</option>
-            ))}
-          </select>
-          {selectedModule && (
-            <select
-              className="flex-1 text-sm px-3 py-2 rounded-lg bg-background border border-border"
-              value={selectedApi?.id || ''}
-              onChange={e => handleSelectApi(e.target.value)}
-            >
-              <option value="">选择 API</option>
-              {selectedModule.apis.map(api => (
-                <option key={api.id} value={api.id}>{api.name}</option>
-              ))}
-            </select>
-          )}
-        </div>
+      <div className="md:hidden px-4 py-3 border-b border-border bg-muted/5">
+        <SpecSheetNav selectedApi={selectedApi?.id || null} onSelectApi={handleSelectApi} />
       </div>
 
       {/* Sidebar + detail */}
