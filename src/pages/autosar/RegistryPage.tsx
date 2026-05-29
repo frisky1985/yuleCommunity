@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Search, Filter, Download, Package, Layers, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
+import { DevHubLayout } from '../../components/autosar/DevHubLayout';
 import { ModuleCard } from '../../components/autosar/ModuleCard';
 import { REGISTRY_MODULES, getRegistryStats } from '../../data/autosar/registry-samples';
 import { LAYER_OPTIONS, MCU_OPTIONS, OS_OPTIONS } from '../../data/autosar/registry-types';
@@ -109,57 +110,40 @@ export function RegistryPage() {
   }, [filters]);
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
+    <DevHubLayout title="模块仓库" backTo="/autosar">
       <Helmet>
         <title>BSW 模块仓库 - AutoSAR 开发者中心 - YuleTech</title>
         <meta name="description" content="社区共建的 AutoSAR BSW 模块模板仓库，支持搜索、筛选和一键导入 yuleASR 配置器。" />
       </Helmet>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <div className="flex items-center gap-3 mb-2">
-            <Package className="w-6 h-6 text-primary" />
-            <h1 className="text-3xl font-bold">BSW 模块仓库</h1>
-          </div>
-          <p className="text-muted-foreground max-w-2xl">
-            社区共建的 BSW 模块模板，支持一键导入 yuleASR 配置器，加速你的 AutoSAR 开发
-          </p>
-        </motion.div>
-
-        {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8"
-        >
-          {[
-            { icon: Package, label: '模块总数', value: `${stats.totalModules}`, desc: 'BSW 模块' },
-            { icon: Download, label: '总下载量', value: `${(stats.totalDownloads / 1000).toFixed(1)}k`, desc: '社区下载' },
-            { icon: Layers, label: '层级覆盖', value: `${stats.layers.length}`, desc: 'MCAL/ECUAL/Service' },
-            { icon: Filter, label: 'MCU 支持', value: `${stats.mcus.length}`, desc: '芯片型号' },
-          ].map((stat, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border"
-            >
-              <div className="shrink-0 w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                <stat.icon className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="text-xl font-bold">{stat.value}</div>
-                <div className="text-xs text-muted-foreground">{stat.desc}</div>
-              </div>
+      {/* Stats */}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 pb-8"
+      >
+        {[
+          { icon: Package, label: '模块总数', value: `${stats.totalModules}`, desc: 'BSW 模块' },
+          { icon: Download, label: '总下载量', value: `${(stats.totalDownloads / 1000).toFixed(1)}k`, desc: '社区下载' },
+          { icon: Layers, label: '层级覆盖', value: `${stats.layers.length}`, desc: 'MCAL/ECUAL/Service' },
+          { icon: Filter, label: 'MCU 支持', value: `${stats.mcus.length}`, desc: '芯片型号' },
+        ].map((stat, i) => (
+          <div
+            key={i}
+            className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border"
+          >
+            <div className="shrink-0 w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+              <stat.icon className="w-5 h-5" />
             </div>
-          ))}
-        </motion.div>
+            <div>
+              <div className="text-xl font-bold">{stat.value}</div>
+              <div className="text-xs text-muted-foreground">{stat.desc}</div>
+            </div>
+          </div>
+        ))}
+      </motion.div>
 
-        {/* Search & Filters */}
+      {/* Search & Filters */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -301,7 +285,6 @@ export function RegistryPage() {
             </div>
           )}
         </div>
-      </div>
-    </div>
+    </DevHubLayout>
   );
 }
