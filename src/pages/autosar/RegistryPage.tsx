@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Search, Filter, Download, Package, Layers, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
@@ -16,8 +16,48 @@ export function RegistryPage() {
     sort: 'downloads',
   });
   const [showFilters, setShowFilters] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchHistory, setSearchHistory] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('autosar-registry-search-history');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const stats = useMemo(() => getRegistryStats(), []);
+
+  // Save search history to localStorage
+  useEffect(() => {
+    localStorage.setItem('autosar-registry-search-history', JSON.stringify(searchHistory));
+  }, [searchHistory]);
+
+  // When search query changes with results, save to history
+  const prevSearchRef = useRef(filters.search);
+  useEffect(() => {
+    const currentSearch = filters.search.trim();
+    const prevSearch = prevSearchRef.current.trim();
+    prevSearchRef.current = filters.search;
+
+    if (currentSearch && currentSearch !== prevSearch && filteredModules.length > 0) {
+      setSearchHistory(prev => {
+        const filtered = prev.filter(s => s !== currentSearch);
+        return [currentSearch, ...filtered].slice(0, 5);
+      });
+    }
+  }, [filters.search, filteredModules.length]);
+
+  const handleClearHistory = useCallback(() => {
+    setSearchHistory([]);
+    localStorage.removeItem('autosar-registry-search-history');
+  }, []);
+
+  const handleHistoryClick = useCallback((term: string) => {
+    setFilters(prev => ({ ...prev, search: term }));
+    setIsSearchFocused(false);
+  }, []);
 
   const filteredModules = useMemo(() => {
     let list = [...REGISTRY_MODULES];
@@ -131,12 +171,39 @@ export function RegistryPage() {
             <div className="relative flex-1 max-w-lg">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
+                ref={searchInputRef}
                 type="text"
                 value={filters.search}
                 onChange={e => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
                 placeholder="搜索模块名称、描述、标签..."
                 className="w-full pl-9 pr-4 py-2.5 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
+              {/* Search History Dropdown */}
+              {isSearchFocused && !filters.search && searchHistory.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-lg border border-border bg-card shadow-lg overflow-hidden">
+                  <div className="px-3 py-2 text-[10px] text-muted-foreground font-medium border-b border-border flex items-center justify-between">
+                    <span>搜索历史</span>
+                    <button
+                      onClick={handleClearHistory}
+                      className="text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      清除历史
+                    </button>
+                  </div>
+                  {searchHistory.map((term) => (
+                    <button
+                      key={term}
+                      onMouseDown={(e) => { e.preventDefault(); handleHistoryClick(term); }}
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-muted/20 transition-colors flex items-center gap-2"
+                    >
+                      <Search className="w-3 h-3 text-muted-foreground shrink-0" />
+                      {term}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="flex items-center gap-2">
