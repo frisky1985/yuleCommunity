@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { BookOpen, ArrowLeft, GitCompare } from 'lucide-react';
+import { GitCompare } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { DevHubLayout } from '../../components/autosar/DevHubLayout';
 import { SpecTreeNav } from '../../components/autosar/SpecTreeNav';
 import { ApiCard } from '../../components/autosar/ApiCard';
 import { EmptyApiCard } from '../../components/autosar/EmptyApiCard';
@@ -33,96 +34,67 @@ export function SpecBrowserPage() {
     }
   };
 
+  const headerExtra: ReactNode = (
+    <>
+      <Link
+        to="/autosar/spec/compare"
+        className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-md hover:bg-muted/30"
+      >
+        <GitCompare className="w-3.5 h-3.5" />
+        版本对比
+      </Link>
+      <div className="flex items-center gap-2">
+        <span className="text-xs text-muted-foreground">版本:</span>
+        <select className="text-xs px-2 py-1 rounded-md bg-background border border-border">
+          {SPEC_VERSIONS.map(v => (
+            <option key={v.id} value={v.id}>{v.label}</option>
+          ))}
+        </select>
+      </div>
+    </>
+  );
+
   return (
-    <div className="min-h-screen pt-16">
+    <DevHubLayout title="规范引擎" backTo="/autosar" headerExtra={headerExtra}>
       <Helmet>
         <title>{selectedApi ? `${selectedApi.name} - AutoSAR 规范` : 'AutoSAR 规范引擎'} - YuleTech</title>
       </Helmet>
 
-      {/* Header */}
-      <div className="border-b border-border bg-muted/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate('/autosar')}
-              className="p-1.5 rounded-lg hover:bg-muted/50 transition-colors"
+      {/* Mobile selector - visible only on small screens */}
+      <div className="md:hidden -mx-4 sm:-mx-6 lg:-mx-8 px-4 py-3 border-b border-border bg-muted/5">
+        <div className="flex gap-2">
+          <select
+            className="flex-1 text-sm px-3 py-2 rounded-lg bg-background border border-border"
+            value={selectedModule?.id || ''}
+            onChange={e => {
+              const mod = findModuleById(e.target.value);
+              if (mod && mod.apis.length > 0) {
+                navigate(`/autosar/spec/${mod.id}/${mod.apis[0].id}`);
+              }
+            }}
+          >
+            <option value="">选择模块</option>
+            {getAllModules().map(mod => (
+              <option key={mod.id} value={mod.id}>{mod.name} ({mod.apis.length})</option>
+            ))}
+          </select>
+          {selectedModule && (
+            <select
+              className="flex-1 text-sm px-3 py-2 rounded-lg bg-background border border-border"
+              value={selectedApi?.id || ''}
+              onChange={e => handleSelectApi(e.target.value)}
             >
-              <ArrowLeft className="w-4 h-4" />
-            </button>
-            <div className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-primary" />
-              <span className="font-semibold text-sm">规范引擎</span>
-            </div>
-            {selectedModule && (
-              <>
-                <span className="text-muted-foreground">/</span>
-                <span className="text-sm">{selectedModule.name}</span>
-              </>
-            )}
-            {selectedApi && (
-              <>
-                <span className="text-muted-foreground">/</span>
-                <span className="text-sm font-mono text-primary">{selectedApi.name}</span>
-              </>
-            )}
-          </div>
-
-          {/* Version selector */}
-          <div className="flex items-center gap-3">
-            <Link
-              to="/autosar/spec/compare"
-              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-md hover:bg-muted/30"
-            >
-              <GitCompare className="w-3.5 h-3.5" />
-              版本对比
-            </Link>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">版本:</span>
-              <select className="text-xs px-2 py-1 rounded-md bg-background border border-border">
-                {SPEC_VERSIONS.map(v => (
-                  <option key={v.id} value={v.id}>{v.label}</option>
-                ))}
-              </select>
-            </div>
-          </div>
+              <option value="">选择 API</option>
+              {selectedModule.apis.map(api => (
+                <option key={api.id} value={api.id}>{api.name}</option>
+              ))}
+            </select>
+          )}
         </div>
       </div>
 
-      {/* Main content: sidebar + detail */}
-      <div className="flex h-[calc(100vh-8.5rem)]">
-        {/* Mobile selector - visible only on small screens */}
-        <div className="md:hidden px-4 py-3 border-b border-border bg-muted/5">
-          <div className="flex gap-2">
-            <select
-              className="flex-1 text-sm px-3 py-2 rounded-lg bg-background border border-border"
-              value={selectedModule?.id || ''}
-              onChange={e => {
-                const mod = findModuleById(e.target.value);
-                if (mod && mod.apis.length > 0) {
-                  navigate(`/autosar/spec/${mod.id}/${mod.apis[0].id}`);
-                }
-              }}
-            >
-              <option value="">选择模块</option>
-              {getAllModules().map(mod => (
-                <option key={mod.id} value={mod.id}>{mod.name} ({mod.apis.length})</option>
-              ))}
-            </select>
-            {selectedModule && (
-              <select
-                className="flex-1 text-sm px-3 py-2 rounded-lg bg-background border border-border"
-                value={selectedApi?.id || ''}
-                onChange={e => handleSelectApi(e.target.value)}
-              >
-                <option value="">选择 API</option>
-                {selectedModule.apis.map(api => (
-                  <option key={api.id} value={api.id}>{api.name}</option>
-                ))}
-              </select>
-            )}
-          </div>
-        </div>
-
+      {/* Sidebar + detail */}
+      <div className="flex" style={{ height: 'calc(100vh - 8.5rem)' }}>
         {/* Left sidebar - Tree */}
         <div className="w-[240px] shrink-0 border-r border-border bg-muted/5 overflow-hidden hidden md:block">
           <SpecTreeNav
@@ -142,6 +114,6 @@ export function SpecBrowserPage() {
           </div>
         </div>
       </div>
-    </div>
+    </DevHubLayout>
   );
 }
