@@ -87,112 +87,115 @@ export function SandboxPage() {
           </p>
         </motion.div>
 
-        {/* Main Layout: Editor Left, Visualization Right */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        {/* Main Layout: stacked on mobile, side-by-side on desktop */}
+        <div className="flex flex-col md:flex-row gap-4">
           {/* Editor */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
-            className="lg:col-span-3 rounded-xl border border-border bg-card overflow-hidden"
-            style={{ height: 'calc(100vh - 200px)', minHeight: '600px' }}
-          >
-            <Sandbox
-              onCanMessages={handleCanMessages}
-              onGpioEvents={handleGpioEvents}
-              onInterrupts={handleInterrupts}
-              initialExampleId={initialExampleId}
-            />
-          </motion.div>
+          <div className="flex-1 md:flex-[3]">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+              className="rounded-xl border border-border bg-card overflow-hidden"
+              style={{ height: 'calc(100vh - 200px)', minHeight: '600px' }}
+            >
+              <Sandbox
+                onCanMessages={handleCanMessages}
+                onGpioEvents={handleGpioEvents}
+                onInterrupts={handleInterrupts}
+                initialExampleId={initialExampleId}
+              />
+            </motion.div>
+          </div>
 
           {/* Visualization Panel */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="lg:col-span-2 space-y-4"
-          >
-            {/* Clear button */}
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-foreground">Runtime Visualization</h2>
-              <button
-                onClick={clearAll}
-                className="text-[10px] px-2 py-1 rounded-md border border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 transition-colors"
-              >
-                Clear All
-              </button>
-            </div>
+          <div className="flex-1 md:flex-[2]">
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="space-y-4"
+            >
+              {/* Clear button */}
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-semibold text-foreground">Runtime Visualization</h2>
+                <button
+                  onClick={clearAll}
+                  className="text-[10px] px-2 py-1 rounded-md border border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 transition-colors"
+                >
+                  Clear All
+                </button>
+              </div>
 
-            {/* Tab Navigation */}
-            <div className="flex gap-1 p-1 rounded-xl bg-muted/30 border border-border">
-              {tabs.map(tab => {
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setVisualTab(tab.id)}
-                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg transition-all ${
-                      visualTab === tab.id
-                        ? 'bg-card text-foreground shadow-sm border border-border'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
+              {/* Tab Switcher - always visible, scrollable on mobile */}
+              <div className="flex gap-1 overflow-x-auto">
+                {tabs.map(tab => {
+                  const emoji = tab.id === 'can' ? '🚍' : tab.id === 'gpio' ? '📊' : '⚡';
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setVisualTab(tab.id)}
+                      className={`px-3 py-1.5 text-xs rounded-lg whitespace-nowrap transition-colors ${
+                        visualTab === tab.id
+                          ? 'bg-primary/10 text-primary font-medium'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
+                      }`}
+                    >
+                      {emoji} {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Active visualization panel */}
+              <div className="space-y-4">
+                {visualTab === 'can' && (
+                  <motion.div
+                    key="can"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
                   >
-                    <Icon className="w-3.5 h-3.5" />
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </div>
+                    <CanBusPanel messages={canMessages} />
+                  </motion.div>
+                )}
 
-            {/* Visual Panels */}
-            <div className="space-y-4">
-              {visualTab === 'can' && (
-                <motion.div
-                  key="can"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <CanBusPanel messages={canMessages} />
-                </motion.div>
-              )}
+                {visualTab === 'gpio' && (
+                  <motion.div
+                    key="gpio"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <GpioWaveform events={gpioEvents} />
+                  </motion.div>
+                )}
 
-              {visualTab === 'gpio' && (
-                <motion.div
-                  key="gpio"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <GpioWaveform events={gpioEvents} />
-                </motion.div>
-              )}
-
-              {visualTab === 'interrupt' && (
-                <motion.div
-                  key="interrupt"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <InterruptTimeline events={interrupts} />
-                </motion.div>
-              )}
-            </div>
-
-            {/* Quick Stats */}
-            <div className="grid grid-cols-3 gap-2">
-              <div className="p-2.5 rounded-lg bg-card border border-border text-center">
-                <div className="text-lg font-bold text-primary">{canMessages.length}</div>
-                <div className="text-[10px] text-muted-foreground">CAN Msgs</div>
+                {visualTab === 'interrupt' && (
+                  <motion.div
+                    key="interrupt"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <InterruptTimeline events={interrupts} />
+                  </motion.div>
+                )}
               </div>
-              <div className="p-2.5 rounded-lg bg-card border border-border text-center">
-                <div className="text-lg font-bold text-green-500">{gpioEvents.length}</div>
-                <div className="text-[10px] text-muted-foreground">GPIO Events</div>
+
+              {/* Quick Stats */}
+              <div className="grid grid-cols-3 gap-2">
+                <div className="p-2.5 rounded-lg bg-card border border-border text-center">
+                  <div className="text-lg font-bold text-primary">{canMessages.length}</div>
+                  <div className="text-[10px] text-muted-foreground">CAN Msgs</div>
+                </div>
+                <div className="p-2.5 rounded-lg bg-card border border-border text-center">
+                  <div className="text-lg font-bold text-green-500">{gpioEvents.length}</div>
+                  <div className="text-[10px] text-muted-foreground">GPIO Events</div>
+                </div>
+                <div className="p-2.5 rounded-lg bg-card border border-border text-center">
+                  <div className="text-lg font-bold text-amber-500">{interrupts.length}</div>
+                  <div className="text-[10px] text-muted-foreground">IRQs</div>
+                </div>
               </div>
-              <div className="p-2.5 rounded-lg bg-card border border-border text-center">
-                <div className="text-lg font-bold text-amber-500">{interrupts.length}</div>
-                <div className="text-[10px] text-muted-foreground">IRQs</div>
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       </div>
     </DevHubLayout>
