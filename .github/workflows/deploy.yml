@@ -18,20 +18,42 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout yuleCommunity
         uses: actions/checkout@v4
+        with:
+          path: ./yuleCommunity
+
+      - name: Checkout yuleASR-Configurator
+        uses: actions/checkout@v4
+        with:
+          repository: frisky1985/yuleASR-Configurator
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./yuleASR-Configurator
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: |
+            yuleCommunity/package-lock.json
+            yuleASR-Configurator/apps/yuleasr-web/package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Build yuleCommunity
+        working-directory: ./yuleCommunity
+        run: |
+          npm ci
+          npm run build
 
-      - name: Build
-        run: npm run build
+      - name: Build yuleASR-Configurator
+        working-directory: ./yuleASR-Configurator/apps/yuleasr-web
+        run: |
+          npm ci
+          npx vite build
+
+      - name: Bundle configurator
+        run: |
+          cp -r ./yuleASR-Configurator/apps/yuleasr-web/dist ./yuleCommunity/dist/configurator
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -39,7 +61,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: ./yuleCommunity/dist
 
   deploy:
     needs: build
