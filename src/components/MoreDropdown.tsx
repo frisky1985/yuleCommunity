@@ -1,21 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, Settings, Wrench, FileText, HelpCircle, BookOpen, Cpu, Download, Calendar } from 'lucide-react';
+import { ChevronDown, FileText, BookOpen, HelpCircle, Cpu, Download, Wrench, Calendar, MessageSquare, Info, Mail } from 'lucide-react';
 
 const moreGroups = [
-  {
-    label: '🛠️ 开发工具',
-    items: [
-      { label: 'ASR配置', to: '/yuleasr', icon: Settings },
-      { label: '工具链', to: '/toolchain', icon: Wrench },
-    ],
-  },
   {
     label: '📚 资源中心',
     items: [
       { label: '文档中心', to: '/docs', icon: FileText },
-      { label: '问答', to: '/qa', icon: HelpCircle },
       { label: '技术博客', to: '/blog', icon: BookOpen },
+      { label: '问答', to: '/qa', icon: HelpCircle },
     ],
   },
   {
@@ -23,12 +16,21 @@ const moreGroups = [
     items: [
       { label: '开发板', to: '/hardware', icon: Cpu },
       { label: '下载中心', to: '/downloads', icon: Download },
+      { label: '工具链', to: '/toolchain', icon: Wrench },
     ],
   },
   {
-    label: '📅 社区活动',
+    label: '📅 社区',
     items: [
       { label: '活动', to: '/events', icon: Calendar },
+      { label: '论坛', to: '/forum', icon: MessageSquare },
+    ],
+  },
+  {
+    label: 'ℹ️ 关于',
+    items: [
+      { label: '关于我们', to: '/about', icon: Info },
+      { label: '联系我们', to: '/contact', icon: Mail },
     ],
   },
 ];

@@ -40,6 +40,8 @@ const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage').then(m => ({ de
 const BookmarksPage = lazy(() => import('./pages/BookmarksPage').then(m => ({ default: m.BookmarksPage })));
 const YuleASRPage = lazy(() => import('./pages/YuleASRPage').then(m => ({ default: m.YuleASRPage })));
 const YuleASREditorPage = lazy(() => import('./pages/YuleASREditorPage').then(m => ({ default: m.YuleASREditorPage })));
+const EnterprisePage = lazy(() => import('./pages/EnterprisePage').then(m => ({ default: m.EnterprisePage })));
+const PricingPage = lazy(() => import('./pages/PricingPage').then(m => ({ default: m.PricingPage })));
 
 // AutoSAR DevHub pages
 const DevHubPage = lazy(() => import('./pages/autosar/DevHubPage').then(m => ({ default: m.DevHubPage })));
@@ -179,6 +181,8 @@ function App() {
                   <Route path="autosar/registry" element={<RegistryPage />} />
                   <Route path="autosar/registry/:moduleId" element={<RegistryDetailPage />} />
                   <Route path="autosar/registry/publish" element={<RegistryPublishPage />} />
+                  <Route path="enterprise" element={<EnterprisePage />} />
+                  <Route path="pricing" element={<PricingPage />} />
                   <Route path="*" element={
                     <div className="min-h-screen flex items-center justify-center">
                       <div className="text-center">

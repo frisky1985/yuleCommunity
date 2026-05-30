@@ -4,6 +4,7 @@ import { Menu } from 'lucide-react';
 import { GlobalSearch } from './GlobalSearch';
 import { ThemeToggle } from './ThemeToggle';
 import { MoreDropdown } from './MoreDropdown';
+import { ProductDropdown } from './ProductDropdown';
 import { MobileDrawer } from './MobileDrawer';
 
 export function Navbar() {
@@ -28,7 +29,6 @@ export function Navbar() {
     { label: '开发者中心', to: '/autosar' },
     { label: '开源代码', to: '/opensource' },
     { label: '学习成长', to: '/learning' },
-    { label: '论坛', to: '/forum' },
   ];
 
   return (
@@ -53,6 +53,7 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-6">
+            <ProductDropdown />
             {navLinks.map((link) => (
               <NavLink
                 key={link.to}
