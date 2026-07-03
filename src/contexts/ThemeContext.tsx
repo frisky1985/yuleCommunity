@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useMemo, useCallback, useRef, type ReactNode } from 'react';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -29,14 +29,6 @@ function storeTheme(theme: Theme): void {
   }
 }
 
-function getResolvedTheme(theme: Theme): 'light' | 'dark' {
-  return theme === 'system'
-    ? window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light'
-    : theme;
-}
-
 function applyThemeToDOM(resolved: 'light' | 'dark') {
   const root = document.documentElement;
   root.classList.remove('light', 'dark');
@@ -52,21 +44,23 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children, defaultTheme = 'system' }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<Theme>(() => {
-    return getStoredTheme() || defaultTheme;
-  });
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>(() => {
-    // Honour the class already applied by the inline script in index.html
-    const existing = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-    return existing;
-  });
+  const [theme, setThemeState] = useState<Theme>(() => getStoredTheme() || defaultTheme);
+  const [systemPref, setSystemPref] = useState<'light' | 'dark'>(() =>
+    document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+  );
 
-  // Sync React state with DOM when theme preference changes
+  const resolvedTheme = useMemo<'light' | 'dark'>(
+    () => (theme === 'system' ? systemPref : theme),
+    [theme, systemPref]
+  );
+
+  const isFirstRender = useRef(true);
+
+  // Sync React state with DOM when resolved theme changes (skip initial mount — inline script already did it)
   useEffect(() => {
-    const resolved = getResolvedTheme(theme);
-    setResolvedTheme(resolved);
-    applyThemeToDOM(resolved);
-  }, [theme]);
+    if (isFirstRender.current) { isFirstRender.current = false; return; }
+    applyThemeToDOM(resolvedTheme);
+  }, [resolvedTheme]);
 
   // Listen for system theme changes when in 'system' mode
   useEffect(() => {
@@ -74,9 +68,7 @@ export function ThemeProvider({ children, defaultTheme = 'system' }: ThemeProvid
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handler = (e: MediaQueryListEvent) => {
-      const resolved = e.matches ? 'dark' : 'light';
-      setResolvedTheme(resolved);
-      applyThemeToDOM(resolved);
+      setSystemPref(e.matches ? 'dark' : 'light');
     };
 
     mediaQuery.addEventListener('change', handler);

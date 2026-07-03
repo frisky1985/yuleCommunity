@@ -14,15 +14,33 @@ interface CacheEntry<T> {
 
 const memoryCache = new Map<string, CacheEntry<unknown>>();
 
+// 缓存 token 到模块变量，避免每次请求读 localStorage
+let cachedToken: string | null | undefined; // undefined = uninitialized, null = set to null
+
 /**
  * 获取可选的 GitHub Token（用户可在 localStorage 中设置）
  * 无 token 时自动降级为未认证请求（限流 60次/小时）
  */
 function getToken(): string | null {
+  if (cachedToken !== undefined) return cachedToken;
   try {
-    return localStorage.getItem(TOKEN_KEY);
+    cachedToken = localStorage.getItem(TOKEN_KEY);
   } catch {
-    return null;
+    cachedToken = null;
+  }
+  return cachedToken;
+}
+
+/**
+ * 设置 GitHub Token（写入 localStorage + 模块缓存）
+ */
+export function setToken(token: string | null): void {
+  cachedToken = token;
+  try {
+    if (token) localStorage.setItem(TOKEN_KEY, token);
+    else localStorage.removeItem(TOKEN_KEY);
+  } catch {
+    // Ignore
   }
 }
 
@@ -60,12 +78,17 @@ export async function githubFetch(url: string): Promise<Response> {
 /**
  * 统一缓存获取
  * 优先内存缓存 -> 降级 sessionStorage
+ * 同时清除过期条目，防止 memoryCache 无限增长
  */
 function cacheGet<T>(key: string): T | null {
   // 1. 检查内存缓存
   const mem = memoryCache.get(key);
-  if (mem && Date.now() - mem.timestamp < CACHE_TTL) {
-    return mem.data as T;
+  if (mem) {
+    if (Date.now() - mem.timestamp < CACHE_TTL) {
+      return mem.data as T;
+    }
+    // 过期了，清除
+    memoryCache.delete(key);
   }
 
   // 2. 检查 sessionStorage（向后兼容已缓存的用户数据）
@@ -108,14 +131,7 @@ function cacheSet<T>(key: string, data: T): void {
 export function clearGitHubCache(): void {
   memoryCache.clear();
   try {
-    const keysToRemove: string[] = [];
-    for (let i = 0; i < sessionStorage.length; i++) {
-      const key = sessionStorage.key(i);
-      if (key?.startsWith('yuletech_github_')) {
-        keysToRemove.push(key);
-      }
-    }
-    keysToRemove.forEach((k) => sessionStorage.removeItem(k));
+    Object.values(CACHE_KEYS).forEach((key) => sessionStorage.removeItem(key));
   } catch {
     // Ignore
   }
