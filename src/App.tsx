@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Link } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { BottomTabBar } from './components/BottomTabBar';
@@ -188,9 +188,9 @@ function App() {
                       <div className="text-center">
                         <h1 className="text-4xl font-bold mb-4">404</h1>
                         <p className="text-muted-foreground mb-6">页面不存在</p>
-                        <a href="#/" className="text-[hsl(var(--primary))] hover:underline">
+                        <Link to="/" className="text-[hsl(var(--primary))] hover:underline">
                           返回首页
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   } />
