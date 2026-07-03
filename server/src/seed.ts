@@ -1,54 +1,45 @@
 /**
- * 种子数据脚本 — 创建管理员和测试用户
+ * 种子数据脚本 (PostgreSQL 版)
+ * 创建管理员和测试用户
  * 运行: npm run seed
  */
 import bcrypt from 'bcryptjs';
-import { store } from './services/storage.js';
+import pool, { runMigrations } from './services/db.js';
 
 async function seed() {
   console.log('🌱 Seeding database...');
+  await runMigrations();
 
-  const adminPassword = await bcrypt.hash('admin123', 10);
-  const userPassword = await bcrypt.hash('user123', 10);
-
-  const initialUsers = [
-    {
-      id: 'admin-001',
-      username: 'admin',
-      email: 'admin@yuletech.com',
-      password: adminPassword,
-      role: 'super_admin',
-      createdAt: '2026-01-01T00:00:00.000Z',
-      updatedAt: '2026-01-01T00:00:00.000Z',
-    },
-    {
-      id: 'user-001',
-      username: '工程师小王',
-      email: 'user@yuletech.com',
-      password: userPassword,
-      role: 'user',
-      createdAt: '2026-03-15T00:00:00.000Z',
-      updatedAt: '2026-03-15T00:00:00.000Z',
-    },
-  ];
-
-  const existingData = store.get();
-
-  if (existingData.users.length > 0) {
-    console.log('⚠️ 数据库已有数据，跳过种子创建');
+  // 检查是否已有管理员
+  const existing = await pool.query('SELECT id FROM users WHERE email = $1 LIMIT 1', ['admin@yuletech.com']);
+  if (existing.rows.length > 0) {
+    console.log('⚠️ 数据库已有种子数据，跳过创建');
+    await pool.end();
     return;
   }
 
-  store.save({
-    users: initialUsers,
-    bookmarks: [],
-    pointsRecords: [],
-    pointsStates: {},
-  });
+  const adminPassword = await bcrypt.hash('admin123', 10);
+  const userPassword = await bcrypt.hash('user123', 10);
+  const now = new Date();
+
+  await pool.query(
+    `INSERT INTO users (id, username, email, password, role, created_at, updated_at) VALUES
+     ($1, $2, $3, $4, 'super_admin', $5, $5),
+     ($6, $7, $8, $9, 'user', $10, $10)`,
+    [
+      'admin-001', 'admin', 'admin@yuletech.com', adminPassword, now,
+      'user-001', '工程师小王', 'user@yuletech.com', userPassword, now,
+    ]
+  );
 
   console.log('✅ Seed complete!');
   console.log('   Admin: admin@yuletech.com / admin123');
   console.log('   User:  user@yuletech.com / user123');
+
+  await pool.end();
 }
 
-seed().catch(console.error);
+seed().catch(err => {
+  console.error('Seed failed:', err);
+  process.exit(1);
+});

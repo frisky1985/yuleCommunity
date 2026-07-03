@@ -3,3 +3,4 @@ dist/
 src/data/store.json
 .env
 *.log
+server/.env

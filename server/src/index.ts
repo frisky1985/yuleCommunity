@@ -1,5 +1,6 @@
 /**
  * yuleCommunity API Server — 入口
+ * 数据库: PostgreSQL
  */
 import express from 'express';
 import cors from 'cors';
@@ -13,7 +14,12 @@ const PORT = parseInt(process.env.PORT || '3000', 10);
 
 // 中间件
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:4173', 'https://frisky1985.github.io'],
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:4173',
+    'https://frisky1985.github.io',
+    /\.github\.io$/,
+  ],
   credentials: true,
 }));
 app.use(express.json());
@@ -26,7 +32,7 @@ app.use((req, _res, next) => {
 
 // 健康检查
 app.get('/api/health', (_req, res) => {
-  res.json({ success: true, message: 'yuleCommunity API is running', version: '1.0.0' });
+  res.json({ success: true, message: 'yuleCommunity API is running', version: '2.0.0' });
 });
 
 // 路由注册
@@ -44,4 +50,5 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
 app.listen(PORT, () => {
   console.log(`🚀 yuleCommunity API server running at http://localhost:${PORT}`);
   console.log(`   Health check: http://localhost:${PORT}/api/health`);
+  console.log(`   Database: PostgreSQL`);
 });

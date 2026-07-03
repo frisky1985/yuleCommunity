@@ -90,10 +90,14 @@
 
 ### 🖥️ 后端基础设施 (server/)
 - [x] **Express + TypeScript 服务** — `server/src/index.ts`，默认端口 3000
-- [x] **文件存储引擎** — `server/src/services/storage.ts`，JSON 文件持久化，可平滑迁移到 SQLite/PostgreSQL
+- [x] **PostgreSQL 数据库层** — `server/src/services/db.ts`，连接池 + 自动建表迁移
+- [x] **从 JSON 文件升级为 PostgreSQL** — 所有路由改为原生 SQL 查询
+- [x] **Docker 支持** — `docker-compose.yml` + `Dockerfile`，一键启动 PostgreSQL + API
 - [x] **种子数据** — `server/src/seed.ts`，创建管理员 (admin@yuletech.com) 和测试用户
 - [x] **JWT 认证中间件** — `server/src/middleware/auth.ts`，含 requireAuth / optionalAuth
 - [x] **CORS 配置** — 允许 localhost:5173/4173 和 GitHub Pages
+- [x] **TypeScript 编译通过** — server 和前端均无错误
+- [x] **前端 Vite 构建通过**
 - [x] **E2E 测试全部通过** — 认证/书签/积分/DevHub 数据接口
 
 ### 🔐 认证 API
@@ -129,15 +133,15 @@
 
 ```
 前端 (React SPA)             后端 (Express API)          存储
-   ┌──────────┐              ┌──────────────┐          ┌────────┐
-   │ Browser  │───fetch────▶│  auth.ts     │─────────▶│ 文件   │
-   │ (Vite)   │              │  bookmarks.ts│          │ JSON   │
-   │ localhost│              │  points.ts   │          │存储    │
-   │ :5173    │              │  devhub.ts   │          └────────┘
+   ┌──────────┐              ┌──────────────┐          ┌───────────┐
+   │ Browser  │───fetch────▶│  auth.ts     │─────────▶│PostgreSQL │
+   │ (Vite)   │              │  bookmarks.ts│          │   16      │
+   │ localhost│              │  points.ts   │          │(Docker)   │
+   │ :5173    │              │  devhub.ts   │          └───────────┘
    └──────────┘              └──────────────┘
          │                         │
-   未登录降级                 健康检查 /api/health
-   localStorage              CORS 跨域配置
+   未登录降级               Docker Compose 一键启动
+   localStorage              docker compose up -d
 ```
 
 ---
@@ -176,11 +180,11 @@
 
 ## 🎯 下一阶段建议
 
-1. **SQLite 迁移** — 将 JSON 文件存储升级为 SQLite (better-sqlite3)，适合单机/小规模部署
-2. **管理员 API** — 用户管理/内容管理/系统设置等 Admin 后台接口
-3. **邮箱验证** — 注册时邮箱验证流程
-4. **数据看板 API** — 真实统计数据接口替代 Admin 的 mock 数据
-5. **DevOps** — API 服务部署脚本 (Docker + GitHub Actions deploy)
+1. **管理员 API** — 用户管理/内容管理/系统设置等 Admin 后台接口
+2. **邮箱验证** — 注册时邮箱验证流程
+3. **数据看板 API** — 真实统计数据接口替代 Admin 的 mock 数据
+4. **CI/CD** — GitHub Actions 自动部署 API 服务 (含 Docker Compose)
+5. **REST API 文档** — OpenAPI/Swagger 文档，方便前端对接
 
 ---
 
