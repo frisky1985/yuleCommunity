@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Download, AlertCircle, Check } from 'lucide-react';
+import { safeSessionGet } from '../../lib/utils';
 
 interface ImportToConfiguratorProps {
   configData: string;
@@ -13,7 +14,7 @@ export function ImportToConfigurator({ configData, moduleName, disabled = false 
   const [imported, setImported] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
-  const isLoggedIn = localStorage.getItem('yule_user_token') !== null;
+  const isLoggedIn = safeSessionGet('yuletech:auth:token') !== null;
 
   const handleImport = () => {
     if (!isLoggedIn) {

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft,
@@ -25,6 +25,7 @@ const layerColors: Record<string, string> = {
 };
 
 export function ModuleComparePage() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const moduleIds = searchParams.get('modules')?.split(',') || [];
   const [showRadar, setShowRadar] = useState(true);
@@ -62,7 +63,7 @@ export function ModuleComparePage() {
   const removeModule = (id: string) => {
     const newIds = moduleIds.filter(mid => mid !== id);
     if (newIds.length === 0) {
-      window.location.href = '/yuleCommunity/opensource';
+      navigate('/opensource');
       return;
     }
     setSearchParams({ modules: newIds.join(',') });

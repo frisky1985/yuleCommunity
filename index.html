@@ -22,6 +22,12 @@
         if (theme === 'dark') {
           document.querySelector('meta[name=theme-color]').content = '#0f172a';
         }
+        // Restore deep-link after GH Pages 404 redirect
+        var redirect = sessionStorage.getItem('yule-spa-redirect');
+        if (redirect) {
+          sessionStorage.removeItem('yule-spa-redirect');
+          window.history.replaceState(null, '', redirect);
+        }
       })();
     </script>
   </head>
