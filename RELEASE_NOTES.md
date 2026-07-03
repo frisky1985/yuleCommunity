@@ -1,3 +1,55 @@
+# YuleTech Community v2.1.0
+
+## 概述
+
+v2.1.0 是 AutoSAR DevHub 开发者中心的重大版本发布！新增 AutoSAR 规范浏览器、API 沙盒模拟器、模块注册表和书签系统，整合 yuleASR 配置器 iframe 部署，为 AutoSAR BSW 开发者提供一站式的规范查阅、代码实验和工具集成平台。
+
+## 新增功能
+
+### 🚀 AutoSAR DevHub 开发者中心（全新增）
+
+| 模块 | 说明 |
+|:-----|:------|
+| **规范浏览器 (SpecBrowser)** | 浏览 MCAL/ECUAL/Service/RTE 四层模块的 API 规范，支持移动端切换 |
+| **版本对比 (SpecCompare)** | 跨版本 API 差异对比，Fuse.js 模糊搜索 |
+| **API 沙盒 (Sandbox)** | 浏览器内运行 AutoSAR API 模拟，支持 CAN/DIO/SPI/MCU/NvM 等 8 个预设示例 |
+| **运行时可视化** | CAN Bus 面板、GPIO 波形图、中断时间线实时模拟 |
+| **模块注册表 (Registry)** | 浏览、搜索、发布 BSW 模块，支持书签收藏和搜索历史 |
+| **虚拟头文件** | 浏览器端编译模拟，支持 Can.h/Dio.h/Port.h/Spi.h/Mcu.h/Std_Types.h |
+
+### 🔗 企业功能增强
+
+- **产品下拉菜单** — 导航栏新增"企业版"和"定价"入口
+- **yuleASR 配置器集成** — 通过 iframe 嵌入实时 AutoSAR 配置工具
+
+### 🎨 UI/UX 大幅优化
+
+- **导航重构** — 全新 Mega Menu、移动端抽屉菜单、底部 Tab Bar
+- **DevHubLayout** — 统一的开发者中心页面布局
+- **移动端适配** — 沙盒移动端 Tab 切换、规范浏览器 Sheet 式导航
+- **书签功能** — API 和模块可添加书签，本地持久化
+
+## 性能优化
+
+- **懒加载 SyntaxHighlighter** — 通过 CodeBlock 包装器延迟加载，首屏包体减小
+- **TypeScript 错误修复** — 清理 CI 阻塞的编译错误
+- **未使用导入清理** — YuleASRPage / YuleASREditorPage 移除无用 import
+
+## 测试与质量
+
+- **DevHub 数据完整性测试** — 确保规范数据与路由的一致性
+- **注册表示例数据测试** — 验证样本数据的正确性
+
+## 技术栈更新
+
+| 变更 | 内容 |
+|:-----|:------|
+| Fuse.js ^7.3.0 | 模糊搜索引擎，支持 API 名称/描述搜索 |
+| 虚拟头文件系统 | 浏览器端 C 语言语法编译模拟 |
+| Canvas 可视化 | 基于 Canvas 的 CAN 总线/GPIO/中断实时模拟 |
+
+---
+
 # YuleTech Community v0.9.0
 
 ## 概述
