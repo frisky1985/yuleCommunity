@@ -3,6 +3,8 @@
  * 提供共享的 fetch 封装、缓存系统和可选的 Token 认证
  */
 
+import { safeGet, safeSet, safeRemove } from '../lib/utils';
+
 const TOKEN_KEY = 'yuletech_github_token';
 const CACHE_TTL = 5 * 60 * 1000; // 5 分钟
 
@@ -23,11 +25,7 @@ let cachedToken: string | null | undefined; // undefined = uninitialized, null =
  */
 function getToken(): string | null {
   if (cachedToken !== undefined) return cachedToken;
-  try {
-    cachedToken = localStorage.getItem(TOKEN_KEY);
-  } catch {
-    cachedToken = null;
-  }
+  cachedToken = safeGet(TOKEN_KEY);
   return cachedToken;
 }
 
@@ -36,12 +34,8 @@ function getToken(): string | null {
  */
 export function setToken(token: string | null): void {
   cachedToken = token;
-  try {
-    if (token) localStorage.setItem(TOKEN_KEY, token);
-    else localStorage.removeItem(TOKEN_KEY);
-  } catch {
-    // Ignore
-  }
+  if (token) safeSet(TOKEN_KEY, token);
+  else safeRemove(TOKEN_KEY);
 }
 
 /**

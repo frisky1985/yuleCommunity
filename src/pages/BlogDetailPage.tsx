@@ -168,12 +168,12 @@ export function BlogDetailPage() {
 
   // 返回列表
   const handleBack = useCallback(() => {
-    navigate('#/blog');
+    navigate('/blog');
   }, [navigate]);
 
   // 打开相关文章
   const handleArticleClick = useCallback((slug: string) => {
-    navigate(`#/blog/${slug}`);
+    navigate(`/blog/${slug}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [navigate]);
 
@@ -404,7 +404,7 @@ export function BlogDetailPage() {
                   {article.tags.map((tag) => (
                     <button
                       key={tag}
-                      onClick={() => navigate(`#/blog?tag=${encodeURIComponent(tag)}`)}
+                      onClick={() => navigate(`/blog?tag=${encodeURIComponent(tag)}`)}
                       className="px-3 py-1 bg-secondary text-secondary-foreground text-sm rounded-full hover:bg-secondary/80 transition-colors"
                     >
                       {tag}

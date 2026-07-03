@@ -1,9 +1,10 @@
 /**
  * 用户认证 Hook
- * @description 管理用户登录状态和 Token
+ * @description 管理用户登录状态和 Token（sessionStorage，关闭标签页即失效）
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { safeSessionGet, safeSessionSet, safeSessionRemove } from '../lib/utils';
 
 export interface User {
   id: string;
@@ -20,67 +21,56 @@ interface AuthState {
   isLoading: boolean;
 }
 
-const AUTH_KEY = 'yuletech:auth';
+const USER_KEY = 'yuletech:auth:user';
+const TOKEN_KEY = 'yuletech:auth:token';
 
 export function useAuth() {
-  const [auth, setAuth] = useState<AuthState>({
-    user: null,
-    token: null,
-    isAuthenticated: false,
-    isLoading: true,
+  const [auth, setAuth] = useState<AuthState>(() => {
+    // Synchronous read from sessionStorage for instant init
+    const userRaw = safeSessionGet(USER_KEY);
+    const token = safeSessionGet(TOKEN_KEY);
+    if (userRaw && token) {
+      try {
+        const user = JSON.parse(userRaw) as User;
+        return { user, token, isAuthenticated: true, isLoading: false };
+      } catch { /* fall through */ }
+    }
+    return { user: null, token: null, isAuthenticated: false, isLoading: false };
   });
 
-  // 初始化时从 localStorage 读取
+  // Async re-check on mount (catch edge cases from SSR or stale data)
   useEffect(() => {
-    const initAuth = () => {
-      try {
-        const stored = localStorage.getItem(AUTH_KEY);
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          setAuth({
-            user: parsed.user,
-            token: parsed.token,
-            isAuthenticated: true,
-            isLoading: false,
-          });
-        } else {
-          setAuth(prev => ({ ...prev, isLoading: false }));
-        }
-      } catch {
-        setAuth(prev => ({ ...prev, isLoading: false }));
+    const token = safeSessionGet(TOKEN_KEY);
+    if (token && !auth.isAuthenticated) {
+      const userRaw = safeSessionGet(USER_KEY);
+      if (userRaw) {
+        try {
+          const user = JSON.parse(userRaw) as User;
+          setAuth({ user, token, isAuthenticated: true, isLoading: false });
+          return;
+        } catch { /* fall through */ }
       }
-    };
-
-    initAuth();
-  }, []);
+    }
+    setAuth(prev => ({ ...prev, isLoading: false }));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const login = useCallback((user: User, token: string) => {
-    const authData = { user, token };
-    localStorage.setItem(AUTH_KEY, JSON.stringify(authData));
-    setAuth({
-      user,
-      token,
-      isAuthenticated: true,
-      isLoading: false,
-    });
+    safeSessionSet(USER_KEY, JSON.stringify(user));
+    safeSessionSet(TOKEN_KEY, token);
+    setAuth({ user, token, isAuthenticated: true, isLoading: false });
   }, []);
 
   const logout = useCallback(() => {
-    localStorage.removeItem(AUTH_KEY);
-    setAuth({
-      user: null,
-      token: null,
-      isAuthenticated: false,
-      isLoading: false,
-    });
+    safeSessionRemove(USER_KEY);
+    safeSessionRemove(TOKEN_KEY);
+    setAuth({ user: null, token: null, isAuthenticated: false, isLoading: false });
   }, []);
 
   const updateUser = useCallback((updates: Partial<User>) => {
     setAuth(prev => {
       if (!prev.user) return prev;
       const newUser = { ...prev.user, ...updates };
-      const authData = { user: newUser, token: prev.token };
-      localStorage.setItem(AUTH_KEY, JSON.stringify(authData));
+      safeSessionSet(USER_KEY, JSON.stringify(newUser));
       return { ...prev, user: newUser };
     });
   }, []);

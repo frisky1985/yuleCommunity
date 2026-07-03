@@ -62,7 +62,7 @@ export function ModuleComparePage() {
   const removeModule = (id: string) => {
     const newIds = moduleIds.filter(mid => mid !== id);
     if (newIds.length === 0) {
-      window.location.href = '/#/opensource';
+      window.location.href = '/yuleCommunity/opensource';
       return;
     }
     setSearchParams({ modules: newIds.join(',') });
