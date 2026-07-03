@@ -87,6 +87,48 @@ const MIGRATIONS = [
   )`,
   `CREATE INDEX IF NOT EXISTS idx_points_user ON points_records(user_id)`,
   `CREATE INDEX IF NOT EXISTS idx_points_created ON points_records(created_at)`,
+  `CREATE TABLE IF NOT EXISTS categories (
+    id          TEXT PRIMARY KEY,
+    name        TEXT NOT NULL UNIQUE,
+    slug        TEXT NOT NULL UNIQUE,
+    description TEXT DEFAULT '',
+    parent_id   TEXT DEFAULT NULL,
+    sort_order  INTEGER NOT NULL DEFAULT 0,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`,
+  `CREATE TABLE IF NOT EXISTS blogs (
+    id          TEXT PRIMARY KEY,
+    title       TEXT NOT NULL,
+    slug        TEXT NOT NULL UNIQUE,
+    content     TEXT NOT NULL DEFAULT '',
+    excerpt     TEXT DEFAULT '',
+    category_id TEXT REFERENCES categories(id) ON DELETE SET NULL,
+    tags        TEXT DEFAULT '[]',
+    author_id   TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    status      TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','published','archived')),
+    cover_image TEXT DEFAULT '',
+    view_count  INTEGER NOT NULL DEFAULT 0,
+    like_count  INTEGER NOT NULL DEFAULT 0,
+    is_featured BOOLEAN NOT NULL DEFAULT FALSE,
+    published_at TIMESTAMPTZ,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_blogs_status ON blogs(status)`,
+  `CREATE INDEX IF NOT EXISTS idx_blogs_slug ON blogs(slug)`,
+  `CREATE INDEX IF NOT EXISTS idx_blogs_author ON blogs(author_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_blogs_category ON blogs(category_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_blogs_published ON blogs(published_at) WHERE status = 'published'`,
+  `CREATE TABLE IF NOT EXISTS blog_comments (
+    id          TEXT PRIMARY KEY,
+    blog_id     TEXT NOT NULL REFERENCES blogs(id) ON DELETE CASCADE,
+    user_id     TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    content     TEXT NOT NULL,
+    parent_id   TEXT REFERENCES blog_comments(id) ON DELETE CASCADE,
+    status      TEXT NOT NULL DEFAULT 'approved' CHECK (status IN ('approved','pending','spam')),
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_comments_blog ON blog_comments(blog_id)`,
 ];
 
 export async function runMigrations(): Promise<void> {

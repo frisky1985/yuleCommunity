@@ -8,6 +8,8 @@ import authRoutes from './routes/auth.js';
 import bookmarkRoutes from './routes/bookmarks.js';
 import pointsRoutes from './routes/points.js';
 import devhubRoutes from './routes/devhub.js';
+import blogRoutes from './routes/blogs.js';
+import adminRoutes from './routes/admin.js';
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3000', 10);
@@ -40,6 +42,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user/bookmarks', bookmarkRoutes);
 app.use('/api/user/points', pointsRoutes);
 app.use('/api/devhub', devhubRoutes);
+app.use('/api/blogs', blogRoutes);
+app.use('/api/admin', adminRoutes);
 
 // 全局错误处理
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
