@@ -15,8 +15,7 @@ export function useGitHubRepos(): UseGitHubReposReturn {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 刷新数据函数
-  const refresh = useCallback(async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -32,31 +31,22 @@ export function useGitHubRepos(): UseGitHubReposReturn {
   // 初始加载数据
   useEffect(() => {
     let mounted = true;
-    
+
     const loadData = async () => {
       setLoading(true);
       setError(null);
       try {
         const data = await fetchGitHubRepos();
-        if (mounted) {
-          setStats(data);
-        }
+        if (mounted) setStats(data);
       } catch (err) {
-        if (mounted) {
-          setError(err instanceof Error ? err.message : '加载失败');
-        }
+        if (mounted) setError(err instanceof Error ? err.message : '加载失败');
       } finally {
-        if (mounted) {
-          setLoading(false);
-        }
+        if (mounted) setLoading(false);
       }
     };
-    
+
     loadData();
-    
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, []);
 
   const findRepo = useCallback(
@@ -67,5 +57,5 @@ export function useGitHubRepos(): UseGitHubReposReturn {
     [stats]
   );
 
-  return { stats, loading, error, refresh, findRepo };
+  return { stats, loading, error, refresh: load, findRepo };
 }
