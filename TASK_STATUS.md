@@ -1,8 +1,8 @@
 # yuleCommunity Web Task Status
 
 > **本文档用于记录项目当前状态，恢复工作时请先读取此文件。**
-> 最后更新: 2026-05-29
-> 状态: ✅ AutoSAR DevHub 全阶段完成 + 工程优化 (E/F/G)
+> 最后更新: 2026-07-03
+> 状态: ✅ Phase 4 — 后端 API 服务上线 (认证/书签/积分/DevHub 数据)
 
 ---
 
@@ -11,7 +11,7 @@
 | 项目 | 内容 |
 |------|------|
 | **项目名称** | yuleCommunity Web |
-| **当前版本** | v1.5.0 (devhub 分支开发中) |
+| **当前版本** | v2.2.0 (第一阶段后端上线)
 | **GitHub 仓库** | https://github.com/frisky1985/yuleCommunity.git |
 | **工作目录** | /home/admin/workspace/yuleCommunity |
 
@@ -86,6 +86,62 @@
 
 ---
 
+## ✅ v2.2.0 — Phase 4: 后端 API 服务 (2026-07-03)
+
+### 🖥️ 后端基础设施 (server/)
+- [x] **Express + TypeScript 服务** — `server/src/index.ts`，默认端口 3000
+- [x] **文件存储引擎** — `server/src/services/storage.ts`，JSON 文件持久化，可平滑迁移到 SQLite/PostgreSQL
+- [x] **种子数据** — `server/src/seed.ts`，创建管理员 (admin@yuletech.com) 和测试用户
+- [x] **JWT 认证中间件** — `server/src/middleware/auth.ts`，含 requireAuth / optionalAuth
+- [x] **CORS 配置** — 允许 localhost:5173/4173 和 GitHub Pages
+- [x] **E2E 测试全部通过** — 认证/书签/积分/DevHub 数据接口
+
+### 🔐 认证 API
+- [x] `POST /api/auth/register` — 用户注册 (bcrypt 加密)
+- [x] `POST /api/auth/login` — 用户登录，返回 JWT Token (7天有效期)
+- [x] `GET /api/auth/me` — 获取当前用户信息
+
+### 🔖 收藏 API
+- [x] `GET /api/user/bookmarks` — 获取收藏列表 (支持分页/筛选/收藏夹分类)
+- [x] `POST /api/user/bookmarks` — 添加收藏
+- [x] `DELETE /api/user/bookmarks/:contentId` — 删除收藏
+- [x] `POST /api/user/bookmarks/toggle` — 切换收藏状态
+- [x] `POST /api/user/bookmarks/check` — 批量检查收藏状态
+
+### ⭐ 积分 API
+- [x] `GET /api/user/points` — 获取积分信息 (含等级/今日统计/总统计)
+- [x] `GET /api/user/points/history` — 积分历史 (分页)
+- [x] `POST /api/user/points/earn` — 获取积分 (含每日上限检测)
+- [x] `GET /api/user/points/rules` — 积分规则 (公开)
+- [x] `GET /api/user/points/leaderboard` — 排行榜 (公开)
+
+### 🛠️ DevHub 数据 API
+- [x] `GET /api/devhub/specs` — 规范索引 (4层架构/14个模块)
+- [x] `GET /api/devhub/registry` — 模块注册表列表 (10个模块)
+
+### 🔗 前端对接
+- [x] `useAuth.ts` 改造 — login/register 异步调用后端 API，后端不可用时自动降级到本地 mock
+- [x] `admin/pages/Login.tsx` 改造 — 管理后台登录对接后端 API
+- [x] `.env` 配置 — VITE_API_BASE_URL 指向后端地址
+- [x] `usePoints` / `useBookmarks` 保持双轨模式 — 登录用 API，未登录用 localStorage
+
+### 🏗️ 架构设计
+
+```
+前端 (React SPA)             后端 (Express API)          存储
+   ┌──────────┐              ┌──────────────┐          ┌────────┐
+   │ Browser  │───fetch────▶│  auth.ts     │─────────▶│ 文件   │
+   │ (Vite)   │              │  bookmarks.ts│          │ JSON   │
+   │ localhost│              │  points.ts   │          │存储    │
+   │ :5173    │              │  devhub.ts   │          └────────┘
+   └──────────┘              └──────────────┘
+         │                         │
+   未登录降级                 健康检查 /api/health
+   localStorage              CORS 跨域配置
+```
+
+---
+
 ## 🚧 待办事项
 
 ### AutoSAR DevHub Phase 1 — 剩余任务
@@ -117,6 +173,14 @@
 ### 低优先级
 - [ ] **文档完善** - API 文档和使用指南
 - [ ] **国际化** - i18n 多语言支持
+
+## 🎯 下一阶段建议
+
+1. **SQLite 迁移** — 将 JSON 文件存储升级为 SQLite (better-sqlite3)，适合单机/小规模部署
+2. **管理员 API** — 用户管理/内容管理/系统设置等 Admin 后台接口
+3. **邮箱验证** — 注册时邮箱验证流程
+4. **数据看板 API** — 真实统计数据接口替代 Admin 的 mock 数据
+5. **DevOps** — API 服务部署脚本 (Docker + GitHub Actions deploy)
 
 ---
 
