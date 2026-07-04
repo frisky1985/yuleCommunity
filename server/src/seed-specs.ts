@@ -56,6 +56,16 @@ async function seedSpecs() {
   console.log('  Seeding API specs...');
   if (!dryRun) await runMigrations();
 
+  // --if-empty: 已有数据则跳过
+  if (args.includes('--if-empty')) {
+    const existing = await pool.query('SELECT 1 FROM api_specs LIMIT 1');
+    if (existing.rows.length > 0) {
+      console.log('  ℹ️  api_specs 非空，--if-empty 模式下跳过');
+      await pool.end();
+      return;
+    }
+  }
+
   const apis = loadSpecs();
   if (!Array.isArray(apis) || apis.length === 0) { console.error('  No specs loaded'); process.exit(1); }
   console.log(`  Loaded ${apis.length} APIs`);

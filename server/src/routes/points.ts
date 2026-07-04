@@ -35,12 +35,15 @@ const POINTS_RULES: Record<string, { points: number; dailyLimit?: number }> = {
   'invite.user': { points: 30 },
 };
 
+// 与前端 usePoints.ts 保持一致的 7 级体系
 const LEVELS = [
-  { level: 1, title: '初级工程师', min: 0, max: 100 },
-  { level: 2, title: '中级工程师', min: 101, max: 500 },
-  { level: 3, title: '高级工程师', min: 501, max: 2000 },
-  { level: 4, title: '技术专家', min: 2001, max: 5000 },
-  { level: 5, title: '架构师', min: 5001, max: Infinity },
+  { level: 1, title: '新手', min: 0, max: 100 },
+  { level: 2, title: '学徒', min: 100, max: 300 },
+  { level: 3, title: '工程师', min: 300, max: 600 },
+  { level: 4, title: '高级工程师', min: 600, max: 1000 },
+  { level: 5, title: '专家', min: 1000, max: 2000 },
+  { level: 6, title: '大牛', min: 2000, max: 5000 },
+  { level: 7, title: '传说', min: 5000, max: Infinity },
 ];
 
 function getLevel(points: number) {

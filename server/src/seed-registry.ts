@@ -77,6 +77,16 @@ async function seedRegistry() {
   console.log('  Seeding registry modules...');
   if (!dryRun) await runMigrations();
 
+  // --if-empty: 已有数据则跳过
+  if (args.includes('--if-empty')) {
+    const existing = await pool.query('SELECT 1 FROM registry_modules LIMIT 1');
+    if (existing.rows.length > 0) {
+      console.log('  ℹ️  registry_modules 非空，--if-empty 模式下跳过');
+      await pool.end();
+      return;
+    }
+  }
+
   const modules = loadRegistry();
   console.log(`  Loaded ${modules.length} modules`);
 

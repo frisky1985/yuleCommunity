@@ -10,6 +10,7 @@
  * 所有接口要求 super_admin 或 admin 角色
  */
 import { Router } from 'express';
+import { v4 as uuid } from 'uuid';
 import pool from '../services/db.js';
 import { requireAuth } from '../middleware/auth.js';
 
@@ -122,6 +123,163 @@ router.patch('/users/:id/role', async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     console.error('[admin role error]', err);
+    res.status(500).json({ success: false, message: '服务器内部错误' });
+  }
+});
+
+// ── 博客管理 CRUD ──
+function slugify(text: string): string {
+  return text.toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+// POST /api/admin/blogs — 创建文章
+router.post('/blogs', async (req, res) => {
+  try {
+    const { title, content, excerpt, category_id, tags, cover_image, status = 'draft' } = req.body;
+
+    if (!title || title.length > 200) {
+      res.status(400).json({ success: false, message: '标题为必填项，最长 200 字' });
+      return;
+    }
+    if (content && content.length > 100000) {
+      res.status(400).json({ success: false, message: '内容超过长度限制（100,000 字）' });
+      return;
+    }
+
+    const id = `blog-${Date.now()}`;
+    const slug = slugify(title) + '-' + Date.now().toString(36);
+    const authorId = req.user!.userId;
+    const publishedAt = status === 'published' ? new Date() : null;
+
+    await pool.query(
+      `INSERT INTO blogs (id, title, slug, content, excerpt, category_id, tags, author_id, status, cover_image, published_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+      [id, title, slug, content || '', excerpt || '', category_id || null,
+       JSON.stringify(tags || []), authorId, status, cover_image || '', publishedAt]
+    );
+
+    res.status(201).json({ success: true, data: { id, slug } });
+  } catch (err) {
+    console.error('[admin blog create error]', err);
+    res.status(500).json({ success: false, message: '服务器内部错误' });
+  }
+});
+
+// PUT /api/admin/blogs/:id — 更新文章
+router.put('/blogs/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, content, excerpt, category_id, tags, cover_image, status } = req.body;
+
+    if (title && title.length > 200) {
+      res.status(400).json({ success: false, message: '标题最长 200 字' });
+      return;
+    }
+    if (content && content.length > 100000) {
+      res.status(400).json({ success: false, message: '内容超过长度限制（100,000 字）' });
+      return;
+    }
+
+    const existing = await pool.query('SELECT * FROM blogs WHERE id = $1', [id]);
+    if (existing.rows.length === 0) {
+      res.status(404).json({ success: false, message: '文章未找到' });
+      return;
+    }
+
+    const current = existing.rows[0];
+    const newSlug = title && title !== current.title ? slugify(title) + '-' + Date.now().toString(36) : current.slug;
+    const publishedAt = status === 'published' && !current.published_at ? new Date() : current.published_at;
+
+    await pool.query(
+      `UPDATE blogs SET
+        title = COALESCE($1, title), slug = COALESCE($2, slug),
+        content = COALESCE($3, content), excerpt = COALESCE($4, excerpt),
+        category_id = $5, tags = COALESCE($6, tags),
+        cover_image = COALESCE($7, cover_image), status = COALESCE($8, status),
+        published_at = COALESCE($9, published_at), updated_at = NOW()
+       WHERE id = $10`,
+      [title || null, newSlug, content || null, excerpt || null,
+       category_id ?? current.category_id, tags ? JSON.stringify(tags) : null,
+       cover_image ?? null, status || null, publishedAt, id]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[admin blog update error]', err);
+    res.status(500).json({ success: false, message: '服务器内部错误' });
+  }
+});
+
+// PATCH /api/admin/blogs/:id/status — 修改状态
+router.patch('/blogs/:id/status', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!['draft', 'published', 'archived'].includes(status)) {
+      res.status(400).json({ success: false, message: '无效的状态值' });
+      return;
+    }
+
+    const publishedAt = status === 'published' ? new Date() : null;
+
+    await pool.query(
+      'UPDATE blogs SET status = $1, published_at = COALESCE($2, published_at), updated_at = NOW() WHERE id = $3',
+      [status, publishedAt, id]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[admin blog status error]', err);
+    res.status(500).json({ success: false, message: '服务器内部错误' });
+  }
+});
+
+// DELETE /api/admin/blogs/:id — 删除文章
+router.delete('/blogs/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query('DELETE FROM blogs WHERE id = $1', [id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[admin blog delete error]', err);
+    res.status(500).json({ success: false, message: '服务器内部错误' });
+  }
+});
+
+// POST /api/admin/categories — 创建/编辑分类
+router.post('/categories', async (req, res) => {
+  try {
+    const { name, description, parent_id, sort_order } = req.body;
+    if (!name) {
+      res.status(400).json({ success: false, message: '分类名称为必填项' });
+      return;
+    }
+    const id = `cat-${Date.now()}`;
+    const slug = slugify(name);
+    await pool.query(
+      'INSERT INTO categories (id, name, slug, description, parent_id, sort_order) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (name) DO UPDATE SET sort_order = EXCLUDED.sort_order',
+      [id, name, slug, description || '', parent_id || null, sort_order || 0]
+    );
+    res.status(201).json({ success: true, data: { id, name, slug } });
+  } catch (err) {
+    console.error('[admin category create error]', err);
+    res.status(500).json({ success: false, message: '服务器内部错误' });
+  }
+});
+
+// DELETE /api/admin/categories/:id — 删除分类
+router.delete('/categories/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query('DELETE FROM categories WHERE id = $1', [id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[admin category delete error]', err);
     res.status(500).json({ success: false, message: '服务器内部错误' });
   }
 });

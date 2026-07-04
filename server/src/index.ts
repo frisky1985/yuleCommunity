@@ -51,6 +51,16 @@ app.get('/api/health', (_req, res) => {
 });
 
 // 路由注册
+
+// Auth 路由单独限流 (更严格)
+const authLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20,  // 每 IP 最多 20 次/分钟 (登录/注册)
+  message: { success: false, message: '请求过于频繁，请稍后再试' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/auth', authLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/user/bookmarks', bookmarkRoutes);
 app.use('/api/user/points', pointsRoutes);

@@ -6,13 +6,7 @@
  *   GET    /api/blogs/:slug         — 文章详情 (按 slug)
  *   GET    /api/blogs/categories    — 分类列表
  *
- * 管理 (需 Admin 或 super_admin 角色):
- *   POST   /api/admin/blogs         — 新建文章
- *   PUT    /api/admin/blogs/:id     — 编辑文章
- *   DELETE /api/admin/blogs/:id     — 删除文章
- *   PATCH  /api/admin/blogs/:id/status — 修改状态
- *   POST   /api/admin/categories    — 新建/编辑分类
- *   DELETE /api/admin/categories/:id — 删除分类
+ * 管理端 API 位于 admin.ts: /api/admin/blogs, /api/admin/categories
  */
 import { Router } from 'express';
 import pool from '../services/db.js';

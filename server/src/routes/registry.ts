@@ -1,9 +1,10 @@
 /**
  * Registry API 路由 — AutoSAR BSW 模块仓库后端
  *
- * GET  /api/devhub/registry          — 模块列表 (支持搜索/筛选/分页)
- * GET  /api/devhub/registry/:id     — 模块详情 (含版本历史)
- * POST /api/devhub/registry/refresh — 从 seed 数据刷新缓存 (管理员)
+ * GET  /api/devhub/registry            — 模块列表 (支持搜索/筛选/分页)
+ * GET  /api/devhub/registry/stats      — 统计信息
+ * GET  /api/devhub/registry/:id        — 模块详情 (含版本历史)
+ * POST /api/devhub/registry/:id/review — 提交评价 (需登录)
  */
 import { Router, Request, Response } from 'express';
 import pool from '../services/db.js';
@@ -196,18 +197,18 @@ router.post('/:id/review', requireAuth, async (req: Request, res: Response) => {
       [reviewId, id, req.user!.userId, rating, content || '']
     );
 
-    // 更新模块评分
+    // 更新模块评分（COALESCE 兜底 NULL stats）
     await pool.query(`
       UPDATE registry_modules
       SET stats = jsonb_set(
-        jsonb_set(stats, '{rating}', (
+        COALESCE(stats, '{}'::jsonb),
+        '{rating}', (
           SELECT COALESCE(AVG(rating)::text::jsonb, '0'::jsonb)
           FROM registry_reviews WHERE module_id = $1
-        )),
-        '{reviewCount}', (
-          SELECT COUNT(*)::text::jsonb
-          FROM registry_reviews WHERE module_id = $1
         )
+      ) || jsonb_build_object(
+        'reviewCount', (SELECT COUNT(*)::int FROM registry_reviews WHERE module_id = $1),
+        'downloads', COALESCE((stats->>'downloads')::int, 0)
       )
       WHERE id = $1
     `, [id]);
