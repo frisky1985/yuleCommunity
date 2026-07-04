@@ -4,6 +4,7 @@
  */
 import express from 'express';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/auth.js';
 import bookmarkRoutes from './routes/bookmarks.js';
 import pointsRoutes from './routes/points.js';
@@ -27,6 +28,16 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
+
+// API 限流
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 分钟
+  max: 200,             // 每 IP 最多 200 次/分钟
+  message: { success: false, message: '请求过于频繁，请稍后再试' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/', apiLimiter);
 
 // 请求日志
 app.use((req, _res, next) => {

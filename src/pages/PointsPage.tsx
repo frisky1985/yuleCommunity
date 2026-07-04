@@ -38,6 +38,13 @@ const levelColors = [
 
 const medalColors = ['text-yellow-500', 'text-gray-400', 'text-amber-700'];
 
+/** 积分规则条目 */
+interface PointsRule {
+  action: string;
+  points: number;
+  note: string;
+}
+
 /** 排行榜条目 */
 interface LeaderEntry {
   userId: string;
@@ -64,6 +71,9 @@ export function PointsPage() {
   const [leaders, setLeaders] = useState<LeaderEntry[]>([]);
   const [leadersLoading, setLeadersLoading] = useState(false);
 
+  const [pointsRules, setPointsRules] = useState<PointsRule[] | null>(null);
+  const [rulesLoading, setRulesLoading] = useState(false);
+
   // 加载签到状态
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -72,12 +82,32 @@ export function PointsPage() {
     }).catch(() => {});
   }, [isAuthenticated]);
 
-  // 加载排行榜
+  // 加载排行榜和积分规则
   useEffect(() => {
     setLeadersLoading(true);
     userApi.getLeaderboard({ limit: 50 }).then(res => {
       if (res.success) setLeaders(res.data);
     }).catch(() => {}).finally(() => setLeadersLoading(false));
+
+    userApi.getPointsRules().then(res => {
+      if (res.success) {
+        const actionLabels: Record<string, string> = {
+          'daily.login': '每日签到',
+          'article.read': '阅读文章',
+          'article.like': '点赞文章',
+          'article.comment': '评论文章',
+          'article.publish': '发布文章',
+          'build.success': '构建成功',
+          'module.published': '发布模块',
+        };
+        const rules = Object.entries(res.data).map(([action, cfg]) => ({
+          action: actionLabels[action] || action,
+          points: cfg.points,
+          note: cfg.dailyLimit ? `每天最多${cfg.dailyLimit}次` : ''
+        }));
+        setPointsRules(rules);
+      }
+    }).catch(() => {});
   }, []);
 
   const handleCheckin = useCallback(async () => {
@@ -380,7 +410,7 @@ export function PointsPage() {
                 获取积分
               </h4>
               <div className="space-y-2 text-sm">
-                {[
+                {(pointsRules || [
                   { action: '每日签到', points: 5, note: '每天1次' },
                   { action: '阅读文章', points: 1, note: '每天最多50篇' },
                   { action: '点赞文章', points: 2, note: '每天最多20个' },
@@ -388,7 +418,7 @@ export function PointsPage() {
                   { action: '发布文章', points: 50, note: '' },
                   { action: '构建成功', points: 10, note: '每天最多20次' },
                   { action: '发布模块', points: 100, note: '' },
-                ].map(item => (
+                ]).map(item => (
                   <div key={item.action} className="flex items-center justify-between">
                     <span className="text-muted-foreground">{item.action}</span>
                     <div className="text-right">

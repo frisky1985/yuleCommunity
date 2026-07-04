@@ -38,6 +38,8 @@ pool.on('error', (err) => {
 /**
  * 自动建表迁移
  */
+const MIGRATION_FINGERPRINT = 'v1.0.0-2026-07-05';
+
 const MIGRATIONS = [
   `CREATE TABLE IF NOT EXISTS users (
     id          TEXT PRIMARY KEY,
@@ -200,10 +202,37 @@ const MIGRATIONS = [
 export async function runMigrations(): Promise<void> {
   const client = await pool.connect();
   try {
+    // 检查 migration 指纹，防止重复跑
+    const fpResult = await client.query(
+      `SELECT 1 FROM pg_tables WHERE tablename = '_migrations'`
+    );
+    if (fpResult.rows.length > 0) {
+      const applied = await client.query(
+        'SELECT fingerprint FROM _migrations WHERE fingerprint = $1',
+        [MIGRATION_FINGERPRINT]
+      );
+      if (applied.rows.length > 0) {
+        console.log('[pg] Migrations already applied (fingerprint: ' + MIGRATION_FINGERPRINT + ')');
+        return;
+      }
+    } else {
+      // 首次：创建 migration 跟踪表
+      await client.query(
+        'CREATE TABLE IF NOT EXISTS _migrations (fingerprint TEXT PRIMARY KEY, applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW())'
+      );
+    }
+
     for (const sql of MIGRATIONS) {
       await client.query(sql);
     }
-    console.log('[pg] Migrations applied successfully');
+
+    // 记录指纹
+    await client.query(
+      'INSERT INTO _migrations (fingerprint) VALUES ($1) ON CONFLICT (fingerprint) DO NOTHING',
+      [MIGRATION_FINGERPRINT]
+    );
+
+    console.log('[pg] Migrations applied successfully (fingerprint: ' + MIGRATION_FINGERPRINT + ')');
   } catch (err) {
     console.error('[pg] Migration failed:', err);
     throw err;

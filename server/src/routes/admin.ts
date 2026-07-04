@@ -112,6 +112,12 @@ router.patch('/users/:id/role', async (req, res) => {
       return;
     }
 
+    // 禁止修改自己的角色
+    if (req.user && req.user.userId === id) {
+      res.status(400).json({ success: false, message: '不能修改自己的角色' });
+      return;
+    }
+
     await pool.query('UPDATE users SET role = $1, updated_at = NOW() WHERE id = $2', [role, id]);
     res.json({ success: true });
   } catch (err) {
