@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, Link } from 'react-router-dom';
+import { preloadSpecData } from './data/autosar/spec-index';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { BottomTabBar } from './components/BottomTabBar';
@@ -71,6 +73,8 @@ const ProtectedAdminRoute: React.FC<{ children: React.ReactNode }> = ({ children
 
 function App() {
   const { showHelp, setShowHelp } = useHotkeys();
+  // 后台预加载 AutoSAR 规范数据 (API 优先, 自动降级)
+  useEffect(() => { preloadSpecData(); }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground">

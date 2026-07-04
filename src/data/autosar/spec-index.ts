@@ -11,6 +11,115 @@ import { NVM_APIS } from './nvm-spec';
 import { ECUM_APIS } from './ecum-spec';
 import { RTE_APIS } from './rte-spec';
 
+/** 后端 API 基础地址 */
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
+/** 后端的 API spec JSON 结构 */
+interface ApiSpecRow {
+  id: string;
+  module_id: string;
+  layer_id: string;
+  name: string;
+  signature: string;
+  brief: string;
+  brief_cn?: string;
+  description: string;
+  description_cn?: string;
+  params: Array<{ name: string; type: string; direction: string; description: string; range?: string }>;
+  return_type: string;
+  return_description: string;
+  version: string;
+  example: string;
+  example_description: string;
+  see_also: string[];
+  config_params: Array<{ paramName: string; configModule: string; path: string }>;
+  timing: string;
+  status: string;
+}
+
+/** 将后端行转成 AutosarApi */
+function rowToApi(row: ApiSpecRow): AutosarApi {
+  return {
+    id: row.id,
+    name: row.name,
+    signature: row.signature,
+    brief: row.brief,
+    description: row.description,
+    params: row.params,
+    returnType: row.return_type,
+    returnDescription: row.return_description,
+    moduleId: row.module_id,
+    layerId: row.layer_id as AutosarApi['layerId'],
+    version: row.version,
+    example: row.example,
+    exampleDescription: row.example_description,
+    seeAlso: row.see_also || [],
+    configParams: row.config_params || [],
+    timing: row.timing,
+    status: row.status as AutosarApi['status'],
+  };
+}
+
+/** 缓存: 按模块 id 缓存的 API 列表 (避免反复请求) */
+let _moduleCache: Map<string, AutosarApi[]> = new Map();
+
+/**
+ * 从后端加载指定模块的 APIs
+ */
+export async function fetchModuleApis(moduleId: string): Promise<AutosarApi[] | null> {
+  if (_moduleCache.has(moduleId)) return _moduleCache.get(moduleId)!;
+  try {
+    const res = await fetch(`${API_BASE}/api/specs?module=${moduleId}&limit=100`, {
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json.success || !json.data) throw new Error('invalid response');
+    const apis = json.data.map(rowToApi);
+    _moduleCache.set(moduleId, apis);
+    return apis;
+  } catch {
+    return null; // caller 应降级到本地
+  }
+}
+
+/** 清空模块缓存 */
+export function clearSpecCache() {
+  _moduleCache.clear();
+}
+
+/**
+ * 尝试从后端批量获取所有模块的 API 索引（模块列表页面用）
+ */
+export async function fetchModuleIndex(): Promise<{ id: string; name: string; layer: string; apiCount: number }[] | null> {
+  try {
+    const res = await fetch(`${API_BASE}/api/specs/modules`, {
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json.success || !json.data) throw new Error('invalid response');
+    return json.data.map((m: any) => ({
+      id: m.id, name: m.name, layer: m.layer_id, apiCount: m.api_count,
+    }));
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * 后台预加载所有模块的 API 数据（不阻塞渲染，失败时自动降级到本地数据）
+ * 在应用入口调用
+ */
+export function preloadSpecData(): void {
+  // 所有模块列表
+  const modules = ['Can', 'Dio', 'Port', 'Mcu', 'Spi', 'CanIf', 'Com', 'PduR', 'NvM', 'EcuM', 'Rte'];
+  // 静默加载，不关心结果
+  for (const mod of modules) {
+    fetchModuleApis(mod).catch(() => {});
+  }
+}
+
 export const SPEC_VERSIONS: AutosarVersion[] = [
   { id: '4.4', label: 'AUTOSAR 4.4', releaseDate: '2020-12', status: 'active' },
   { id: '4.6', label: 'AUTOSAR 4.6', releaseDate: '2022-06', status: 'active' },

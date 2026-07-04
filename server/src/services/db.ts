@@ -129,6 +129,31 @@ const MIGRATIONS = [
     created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
   )`,
   `CREATE INDEX IF NOT EXISTS idx_comments_blog ON blog_comments(blog_id)`,
+  `CREATE TABLE IF NOT EXISTS api_specs (
+    id                  TEXT PRIMARY KEY,
+    module_id           TEXT NOT NULL,
+    layer_id            TEXT NOT NULL,
+    name                TEXT NOT NULL,
+    signature           TEXT NOT NULL DEFAULT '',
+    brief               TEXT NOT NULL DEFAULT '',
+    brief_cn            TEXT DEFAULT '',
+    description         TEXT NOT NULL DEFAULT '',
+    description_cn      TEXT DEFAULT '',
+    params              JSONB DEFAULT '[]'::jsonb,
+    return_type         TEXT NOT NULL DEFAULT '',
+    return_description  TEXT NOT NULL DEFAULT '',
+    version             TEXT NOT NULL DEFAULT '4.4',
+    example             TEXT DEFAULT '',
+    example_description TEXT DEFAULT '',
+    see_also            JSONB DEFAULT '[]'::jsonb,
+    config_params       JSONB DEFAULT '[]'::jsonb,
+    timing              TEXT DEFAULT '',
+    status              TEXT NOT NULL DEFAULT 'standard' CHECK (status IN ('standard','optional','deprecated')),
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_specs_module ON api_specs(module_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_specs_layer ON api_specs(layer_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_specs_name ON api_specs(name)`,
 ];
 
 export async function runMigrations(): Promise<void> {

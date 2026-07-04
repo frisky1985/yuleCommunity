@@ -307,4 +307,55 @@ c53fb21 fix: remove unused imports in YuleASRPage
 
 ---
 
+---
+
+## 🚧 当前阶段: Phase 5 — 后端 API 全链路完成 (2026-07-04)
+
+### Ralph Loop #1: 博客后端 + Admin API ✅
+- [x] **blogs 表** — title/slug/content/excerpt/category/tags/author/status/view_count 等
+- [x] **categories 表** — id/name/slug/description/parent_id/sort_order
+- [x] **blog_comments 表** — blog_id/user_id/content/parent_id/status
+- [x] **博客 CRUD API** — `GET/POST/PUT/DELETE /api/blogs` + `GET /api/blogs/:slug`
+- [x] **博客 Admin API** — `POST/PUT/DELETE /api/admin/blogs` + category/tag 变更
+- [x] **Admin stats API** — `GET /api/admin/stats` (用户数/文章数/评论数/收藏数)
+- [x] **Admin 用户管理** — `GET /api/admin/users` (分页/搜索)
+- [x] **种子文章** — 3 篇示例文章 + 5 个分类
+- [x] **种子数据自动迁移** — `runMigrations()` 自带建表
+- Commit: `a0aee5a`
+
+### Ralph Loop #2: SEO + 前端博客 API 对接 ✅
+- [x] **SEO 组件** — `SEO.tsx` 通用组件 + OpenGraph/Twitter Card 支持
+- [x] **博客 blogService 双轨模式** — 优先 fetch API, 自动降级本地 mock
+- [x] **sitemap.xml** — 已有 `scripts/generate-sitemap.ts` 自动生成
+- [x] **robots.txt** — 构建时生成
+- Commit: `a0aee5a`
+
+### Ralph Loop #3: 规范数据后端化 ✅ (当前)
+- [x] **api_specs 表** — 含 id/module_id/layer_id/name/signature/brief/params(jsonb)/see_also/timing/status
+- [x] **种子脚本** — `server/src/seed-specs.ts` 将 11 个前端 spec 文件导入 PostgreSQL (dry-run 验证 122 API 全部正确)
+- [x] **npm scripts** — `npm run seed:specs`, `npm run seed:all`
+- [x] **specs API 路由** — `GET /api/specs` (支持 module/layer/search/paging) + `GET /api/specs/modules` + `GET /api/specs/:id`
+- [x] **前端双轨加载** — `fetchModuleApis()` + `preloadSpecData()` 后台预加载
+- [x] **git push** — 当前提交待推送
+
+### Ralph Loop #4: 模块仓库后端化 🔲
+### Ralph Loop #5: 积分前端集成 🔲
+### Ralph Loop #6: 内容冷启动 🔲
+### Ralph Loop #7: 部署上线 + CI/CD 🔲
+
+## 🔧 最近提交
+
+```
+a0aee5a v2.2.2 Phase 5 WIP: Blog API + Admin routes + SEO + dual-mode blog service
+d9b342a v2.2.1: Migrate storage from JSON file to PostgreSQL
+3b1ff90 v2.2.0 Phase 4: Backend API service
+```
+
+## 🔄 同步状态
+
+| 仓库 | 状态 | 当前分支 | 备注 |
+|------|------|----------|------|
+| yuleCommunity | ✅ 已推送 | master | a0aee5a pushed |
+| 当前工作 | ⏳ 即将推送 | master | v2.2.3 — Spec data backend |
+
 *本文件由 AI 助手维护，每次会话结束时更新*

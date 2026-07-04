@@ -10,6 +10,7 @@ import pointsRoutes from './routes/points.js';
 import devhubRoutes from './routes/devhub.js';
 import blogRoutes from './routes/blogs.js';
 import adminRoutes from './routes/admin.js';
+import specsRoutes from './routes/specs.js';
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3000', 10);
@@ -44,6 +45,7 @@ app.use('/api/user/points', pointsRoutes);
 app.use('/api/devhub', devhubRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/specs', specsRoutes);
 
 // 全局错误处理
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
