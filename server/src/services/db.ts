@@ -154,6 +154,47 @@ const MIGRATIONS = [
   `CREATE INDEX IF NOT EXISTS idx_specs_module ON api_specs(module_id)`,
   `CREATE INDEX IF NOT EXISTS idx_specs_layer ON api_specs(layer_id)`,
   `CREATE INDEX IF NOT EXISTS idx_specs_name ON api_specs(name)`,
+
+  `CREATE TABLE IF NOT EXISTS registry_modules (
+    id            TEXT PRIMARY KEY,
+    name          TEXT NOT NULL,
+    version       TEXT NOT NULL,
+    layer         TEXT NOT NULL CHECK (layer IN ('MCAL','ECUAL','Service','RTE_ASW','Complex','System')),
+    description   TEXT NOT NULL DEFAULT '',
+    tags          JSONB DEFAULT '[]'::jsonb,
+    author        TEXT NOT NULL DEFAULT '',
+    author_id     TEXT REFERENCES users(id) ON DELETE SET NULL,
+    config_data   TEXT DEFAULT '',
+    compatibility JSONB DEFAULT '{}'::jsonb,
+    dependencies  JSONB DEFAULT '[]'::jsonb,
+    stats         JSONB DEFAULT '{"downloads":0,"rating":0,"reviewCount":0}'::jsonb,
+    status        TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','review','published','deprecated')),
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    published_at  TIMESTAMPTZ
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_reg_layer ON registry_modules(layer)`,
+  `CREATE INDEX IF NOT EXISTS idx_reg_status ON registry_modules(status)`,
+  `CREATE INDEX IF NOT EXISTS idx_reg_name ON registry_modules(name)`,
+
+  `CREATE TABLE IF NOT EXISTS registry_versions (
+    id            TEXT PRIMARY KEY,
+    module_id     TEXT NOT NULL REFERENCES registry_modules(id) ON DELETE CASCADE,
+    version       TEXT NOT NULL,
+    release_notes TEXT DEFAULT '',
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_reg_ver_module ON registry_versions(module_id)`,
+
+  `CREATE TABLE IF NOT EXISTS registry_reviews (
+    id            TEXT PRIMARY KEY,
+    module_id     TEXT NOT NULL REFERENCES registry_modules(id) ON DELETE CASCADE,
+    user_id       TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    rating        INTEGER NOT NULL DEFAULT 5 CHECK (rating >= 1 AND rating <= 5),
+    content       TEXT DEFAULT '',
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_reg_rev_module ON registry_reviews(module_id)`,
 ];
 
 export async function runMigrations(): Promise<void> {

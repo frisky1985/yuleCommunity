@@ -4,9 +4,10 @@ import { Helmet } from 'react-helmet-async';
 import { Search, Filter, Download, Package, Layers, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
 import { DevHubLayout } from '../../components/autosar/DevHubLayout';
 import { ModuleCard } from '../../components/autosar/ModuleCard';
-import { REGISTRY_MODULES, getRegistryStats } from '../../data/autosar/registry-samples';
+import { REGISTRY_MODULES, getRegistryStats, fetchRegistryList, fetchRegistryStats as fetchStats } from '../../data/autosar/registry-samples';
 import { LAYER_OPTIONS, MCU_OPTIONS, OS_OPTIONS } from '../../data/autosar/registry-types';
 import type { RegistryFilter } from '../../data/autosar/registry-types';
+import type { RegistryModule } from '../../data/autosar/registry-types';
 
 export function RegistryPage() {
   const [filters, setFilters] = useState<RegistryFilter>({
@@ -28,7 +29,27 @@ export function RegistryPage() {
   });
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const stats = useMemo(() => getRegistryStats(), []);
+  const [modules, setModules] = useState<RegistryModule[]>(REGISTRY_MODULES);
+  const [serverStats, setServerStats] = useState<{ totalModules: number; totalDownloads: number; layers: string[]; mcus: string[] } | null>(null);
+
+  // 尝试从后端获取数据
+  useEffect(() => {
+    fetchRegistryList().then(res => {
+      if (res?.data?.length) setModules(res.data);
+    });
+    fetchStats().then(s => {
+      if (s) {
+        setServerStats({
+          totalModules: s.totalModules,
+          totalDownloads: s.totalDownloads,
+          layers: REGISTRY_MODULES.map(m => m.layer).filter((v,i,a) => a.indexOf(v)===i),
+          mcus: s.mcus || [],
+        });
+      }
+    });
+  }, []);
+
+  const stats = useMemo(() => serverStats || getRegistryStats(), [serverStats]);
 
   // Save search history to localStorage
   useEffect(() => {
@@ -36,7 +57,7 @@ export function RegistryPage() {
   }, [searchHistory]);
 
   const filteredModules = useMemo(() => {
-    let list = [...REGISTRY_MODULES];
+    let list = [...modules];
 
     // Search
     if (filters.search) {
@@ -86,6 +107,24 @@ export function RegistryPage() {
 
   // When search query changes with results, save to history
   const prevSearchRef = useRef(filters.search);
+
+  // 重新筛选时，如果已有后端数据，尝试从后端精确搜索
+  useEffect(() => {
+    const q = filters.search.trim();
+    if (!q) return;
+    const timer = setTimeout(() => {
+      fetchRegistryList({
+        search: q || undefined,
+        layer: filters.layer || undefined,
+        mcu: filters.mcu || undefined,
+        os: filters.os || undefined,
+        sort: filters.sort,
+      }).then(res => {
+        if (res?.data?.length) setModules(res.data);
+      });
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [filters.search, filters.layer, filters.mcu, filters.os, filters.sort]);
   useEffect(() => {
     const currentSearch = filters.search.trim();
     const prevSearch = prevSearchRef.current.trim();

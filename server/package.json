@@ -9,7 +9,8 @@
     "start": "node dist/index.js",
     "seed": "tsx src/seed.ts",
     "seed:specs": "tsx src/seed-specs.ts",
-    "seed:all": "npm run seed && npm run seed:specs"
+    "seed:registry": "tsx src/seed-registry.ts",
+    "seed:all": "npm run seed && npm run seed:specs && npm run seed:registry"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

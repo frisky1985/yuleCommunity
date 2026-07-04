@@ -566,3 +566,109 @@ export function getRegistryVersionHistory(_moduleId: string) {
     { version: '1.0.0', date: '2024-06-01', notes: '初始版本, 支持 CAN 2.0 通信' },
   ];
 }
+
+// ═══════════════════════════════════════════════
+// 双轨模式: API 优先 + localStorage 降级
+// ═══════════════════════════════════════════════
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+
+export interface RegistryListQuery {
+  search?: string;
+  layer?: string;
+  mcu?: string;
+  os?: string;
+  sort?: 'downloads' | 'rating' | 'newest' | 'name';
+  page?: number;
+  limit?: number;
+}
+
+export interface RegistryListResponse {
+  data: RegistryModule[];
+  pagination?: { page: number; limit: number; total: number; totalPages: number };
+}
+
+/**
+ * 从后端获取模块列表 (API 优先)
+ */
+export async function fetchRegistryList(query: RegistryListQuery = {}): Promise<RegistryListResponse | null> {
+  try {
+    const params = new URLSearchParams();
+    if (query.search) params.set('search', query.search);
+    if (query.layer) params.set('layer', query.layer);
+    if (query.mcu) params.set('mcu', query.mcu);
+    if (query.os) params.set('os', query.os);
+    if (query.sort) params.set('sort', query.sort);
+    if (query.page) params.set('page', String(query.page));
+    if (query.limit) params.set('limit', String(query.limit));
+
+    const res = await fetch(`${API_BASE}/devhub/registry?${params}`, {
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json.success) throw new Error('invalid response');
+    return { data: json.data, pagination: json.pagination };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * 从后端获取模块详情
+ */
+export async function fetchRegistryModule(id: string): Promise<RegistryModule | null> {
+  try {
+    const res = await fetch(`${API_BASE}/devhub/registry/${id}`, {
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json.success) throw new Error('invalid response');
+    return json.data;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * 从后端获取统计信息
+ */
+export async function fetchRegistryStats(): Promise<{
+  totalModules: number;
+  totalDownloads: number;
+  layerCount: number;
+  mcus: string[];
+} | null> {
+  try {
+    const res = await fetch(`${API_BASE}/devhub/registry/stats`, {
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json.success) throw new Error('invalid response');
+    return json.data;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * 从后端提交评价
+ */
+export async function submitReview(moduleId: string, rating: number, content?: string): Promise<boolean> {
+  const token = localStorage.getItem('admin_token') || '';
+  try {
+    const res = await fetch(`${API_BASE}/devhub/registry/${moduleId}/review`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ rating, content }),
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    return json.success;
+  } catch {
+    return false;
+  }
+}

@@ -9,7 +9,7 @@ import {
   GitBranch, AlertCircle, CheckCircle2, ChevronDown, ChevronRight,
   Code, ExternalLink, Tag,
 } from 'lucide-react';
-import { getRegistryModuleById } from '../../data/autosar/registry-samples';
+import { getRegistryModuleById, fetchRegistryModule } from '../../data/autosar/registry-samples';
 import { CompatibilityMatrix } from '../../components/autosar/CompatibilityMatrix';
 import { ImportToConfigurator } from '../../components/autosar/ImportToConfigurator';
 import { REGISTRY_MODULES } from '../../data/autosar/registry-samples';
@@ -64,14 +64,21 @@ export function RegistryDetailPage() {
 
   useEffect(() => {
     setLoading(true);
-    // Simulate brief loading for smooth transitions
-    const timer = setTimeout(() => {
-      if (moduleId) {
-        setModule(getRegistryModuleById(moduleId) || null);
+    const loadModule = async () => {
+      if (!moduleId) { setLoading(false); return; }
+      // 尝试后端
+      const serverMod = await fetchRegistryModule(moduleId);
+      if (serverMod) {
+        setModule(serverMod);
+        setLoading(false);
+        return;
       }
+      // 降级到本地
+      const localMod = getRegistryModuleById(moduleId);
+      setModule(localMod || null);
       setLoading(false);
-    }, 100);
-    return () => clearTimeout(timer);
+    };
+    loadModule();
   }, [moduleId]);
 
   const compatibilityModules = useMemo(() => {
