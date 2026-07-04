@@ -5,8 +5,14 @@ import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import type { AuthPayload } from '../types/index.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'yulecommunity-dev-secret-2026';
+const DEV_FALLBACK = 'yulecommunity-dev-secret-2026';
+const JWT_SECRET = process.env.JWT_SECRET || DEV_FALLBACK;
 const JWT_EXPIRES_IN = '7d';
+
+if (!process.env.JWT_SECRET) {
+  console.warn('⚠️  WARNING: JWT_SECRET not set in environment!');
+  console.warn('   Using insecure development fallback. Set JWT_SECRET in .env for production.');
+}
 
 export function signToken(payload: AuthPayload): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });

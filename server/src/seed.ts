@@ -8,18 +8,30 @@ import pool, { runMigrations } from './services/db.js';
 import { getSeedCategories, getSeedArticles } from './data/seed-content.js';
 
 async function seed() {
+  const checkEmptyOnly = process.argv.includes('--if-empty');
   console.log('🌱 Seeding database...');
   await runMigrations();
 
   // 检查是否已有管理员
   const existing = await pool.query(
-    `SELECT id FROM users WHERE email = $1 LIMIT 1`,
-    ['admin@yuletech.com']
+    'SELECT id FROM users LIMIT 1'
   );
   if (existing.rows.length > 0) {
-    console.log('⚠️ 数据库已有种子数据，跳过创建');
-    await pool.end();
-    return;
+    if (checkEmptyOnly) {
+      console.log('ℹ️  用户表非空，--if-empty 模式下跳过 seed');
+      await pool.end();
+      return;
+    }
+    // 无 --if-empty 时检查管理员是否存在精确匹配
+    const adminExists = await pool.query(
+      'SELECT id FROM users WHERE email = $1 LIMIT 1',
+      ['admin@yuletech.com']
+    );
+    if (adminExists.rows.length > 0) {
+      console.log('⚠️ 数据库已有种子数据，跳过创建');
+      await pool.end();
+      return;
+    }
   }
 
   const adminPassword = await bcrypt.hash('admin123', 10);

@@ -63,7 +63,11 @@ router.get('/', async (req: Request, res: Response) => {
       `SELECT id, module_id, layer_id, name, signature, brief, brief_cn,
               return_type, return_description, version, status,
               example_description, timing,
-              (SELECT json_agg(json_build_object('name', sp_name, 'direction', sp_direction, 'type', sp_type, 'description', sp_description)) FROM jsonb_to_recordset(params) AS sp(name text, direction text, type text, description text)) AS params,
+              COALESCE(
+                (SELECT json_agg(json_build_object('name', sp_name, 'direction', sp_direction, 'type', sp_type, 'description', sp_description))
+                 FROM jsonb_to_recordset(COALESCE(params, '[]'::jsonb)) AS sp(name text, direction text, type text, description text)),
+                '[]'::json
+              ) AS params,
               see_also, example
        FROM api_specs ${where}
        ORDER BY module_id, name

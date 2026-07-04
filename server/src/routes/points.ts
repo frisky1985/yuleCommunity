@@ -117,12 +117,12 @@ router.get('/checkin', async (req, res) => {
 
     let streak = 0;
     const todayDate = todayStart.toISOString().slice(0, 10);
-    const dates = streakResult.rows.map(r => new Date(r.d).toISOString().slice(0, 10));
-    for (let i = 0; i < dates.length; i++) {
+    const dateSet = new Set(streakResult.rows.map(r => new Date(r.d).toISOString().slice(0, 10)));
+    for (let i = 0; i < dateSet.size; i++) {
       const expected = new Date(todayStart);
       expected.setDate(expected.getDate() - i);
       const expectedStr = expected.toISOString().slice(0, 10);
-      if (dates.includes(expectedStr)) {
+      if (dateSet.has(expectedStr)) {
         streak++;
       } else if (i > 0) {
         break; // 不连续了就停

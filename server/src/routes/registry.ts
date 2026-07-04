@@ -28,8 +28,8 @@ router.get('/', async (req: Request, res: Response) => {
     const params: string[] = [];
     let idx = 0;
 
-    // 默认只显示 published
-    if (req.user?.role !== 'admin') {
+    // 默认只显示 published (admin/super_admin 可见全部)
+    if (!req.user?.role || !['admin', 'super_admin'].includes(req.user.role)) {
       idx++;
       conditions.push(`status = $${idx}`);
       params.push('published');
@@ -138,7 +138,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     const module = result.rows[0];
 
     // 如果非 admin 且未发布，拒绝
-    if (module.status !== 'published' && req.user?.role !== 'admin') {
+    if (module.status !== 'published' && (!req.user?.role || !['admin', 'super_admin'].includes(req.user.role))) {
       res.status(404).json({ success: false, message: 'Module not found' });
       return;
     }

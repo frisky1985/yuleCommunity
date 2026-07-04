@@ -142,7 +142,7 @@ router.get('/blogs', async (req, res) => {
     const offset = (pageNum - 1) * limitNum;
 
     const countResult = await pool.query(
-      `SELECT COUNT(*)::int as total FROM blogs b ${where.replace(/b\./g, 'b.')}`,
+      `SELECT COUNT(*)::int as total FROM blogs b ${where}`,
       params
     );
 
@@ -154,7 +154,7 @@ router.get('/blogs', async (req, res) => {
        FROM blogs b
        LEFT JOIN categories c ON c.id = b.category_id
        LEFT JOIN users u ON u.id = b.author_id
-       ${where.replace(/b\./g, 'b.')}
+       ${where}
        ORDER BY b.updated_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
       [...params, limitNum, offset]
     );
