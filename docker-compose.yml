@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: yulecommunity-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: yulecommunity
+      POSTGRES_USER: yulecommunity
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-yulecommunity}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U yulecommunity -d yulecommunity"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: yulecommunity-api
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-3000}:3000"
+    environment:
+      DATABASE_URL: postgresql://yulecommunity:${DB_PASSWORD:-yulecommunity}@db:5432/yulecommunity
+      JWT_SECRET: ${JWT_SECRET}
+      PORT: 3000
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "node dist/seed.js && node dist/seed-specs.js && node dist/seed-registry.js && node dist/index.js"
+
+volumes:
+  pgdata:
