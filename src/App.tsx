@@ -24,6 +24,7 @@ const CommunityPage = lazy(() => import('./pages/CommunityPage').then(m => ({ de
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
 const BlogListPage = lazy(() => import('./pages/BlogListPage').then(m => ({ default: m.BlogListPage })));
 const BlogDetailPage = lazy(() => import('./pages/BlogDetailPage').then(m => ({ default: m.BlogDetailPage })));
+const PointsPage = lazy(() => import('./pages/PointsPage').then(m => ({ default: m.PointsPage })));
 const DocsPage = lazy(() => import('./pages/DocsPage').then(m => ({ default: m.DocsPage })));
 const ForumPage = lazy(() => import('./pages/ForumPage').then(m => ({ default: m.ForumPage })));
 const QAPage = lazy(() => import('./pages/QAPage').then(m => ({ default: m.QAPage })));
@@ -185,6 +186,7 @@ function App() {
                   <Route path="autosar/registry" element={<RegistryPage />} />
                   <Route path="autosar/registry/:moduleId" element={<RegistryDetailPage />} />
                   <Route path="autosar/registry/publish" element={<RegistryPublishPage />} />
+                  <Route path="points" element={<PointsPage />} />
                   <Route path="enterprise" element={<EnterprisePage />} />
                   <Route path="pricing" element={<PricingPage />} />
                   <Route path="*" element={

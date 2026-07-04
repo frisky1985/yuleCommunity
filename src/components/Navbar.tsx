@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation, useNavigationType } from 'react-router-dom';
-import { Menu } from 'lucide-react';
+import { Menu, Trophy } from 'lucide-react';
 import { GlobalSearch } from './GlobalSearch';
 import { ThemeToggle } from './ThemeToggle';
 import { MoreDropdown } from './MoreDropdown';
@@ -81,6 +81,17 @@ export function Navbar() {
                 )}
               </NavLink>
             ))}
+            <NavLink
+              to="/points"
+              className={({ isActive }) =>
+                `flex items-center gap-1 text-sm font-medium transition-colors ${
+                  isActive ? 'text-amber-500' : 'text-muted-foreground hover:text-amber-500'
+                }`
+              }
+            >
+              <Trophy className="w-4 h-4" />
+              积分
+            </NavLink>
             <MoreDropdown />
           </div>
 

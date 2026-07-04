@@ -21,6 +21,18 @@ const POINTS_RULES: Record<string, { points: number; dailyLimit?: number }> = {
   event: { points: 20 },
   daily_visit: { points: 1, dailyLimit: 1 },
   share: { points: 3, dailyLimit: 5 },
+  // 前端积分行为 (与 PointsAction 类型对应)
+  'article.read': { points: 1, dailyLimit: 50 },
+  'article.like': { points: 2, dailyLimit: 20 },
+  'article.bookmark': { points: 3, dailyLimit: 20 },
+  'article.share': { points: 5, dailyLimit: 10 },
+  'article.comment': { points: 5, dailyLimit: 10 },
+  'article.publish': { points: 50 },
+  'build.success': { points: 10, dailyLimit: 20 },
+  'build.share': { points: 5, dailyLimit: 10 },
+  'daily.login': { points: 5, dailyLimit: 1 },
+  'profile.complete': { points: 20 },
+  'invite.user': { points: 30 },
 };
 
 const LEVELS = [
@@ -74,6 +86,60 @@ router.get('/leaderboard', async (_req, res) => {
 
 // 以下需要登录
 router.use(requireAuth);
+
+// GET /api/user/points/checkin — 查询今日签到状态
+router.get('/checkin', async (req, res) => {
+  try {
+    const userId = req.user!.userId;
+    const today = new Date();
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const tomorrowStart = new Date(todayStart);
+    tomorrowStart.setDate(tomorrowStart.getDate() + 1);
+
+    const result = await pool.query(
+      `SELECT COUNT(*)::int as count
+       FROM points_records
+       WHERE user_id = $1 AND action = 'daily.login'
+         AND created_at >= $2 AND created_at < $3`,
+      [userId, todayStart, tomorrowStart]
+    );
+
+    const checkedIn = result.rows[0].count > 0;
+
+    // 获取连续签到天数（基于最近连续记录）
+    const streakResult = await pool.query(
+      `SELECT DISTINCT DATE(created_at) as d
+       FROM points_records
+       WHERE user_id = $1 AND action = 'daily.login'
+       ORDER BY d DESC`,
+      [userId]
+    );
+
+    let streak = 0;
+    const todayDate = todayStart.toISOString().slice(0, 10);
+    const dates = streakResult.rows.map(r => new Date(r.d).toISOString().slice(0, 10));
+    for (let i = 0; i < dates.length; i++) {
+      const expected = new Date(todayStart);
+      expected.setDate(expected.getDate() - i);
+      const expectedStr = expected.toISOString().slice(0, 10);
+      if (dates.includes(expectedStr)) {
+        streak++;
+      } else if (i > 0) {
+        break; // 不连续了就停
+      }
+    }
+
+    res.json({
+      success: true,
+      data: { checkedIn, streak, today: todayDate },
+    });
+  } catch (err) {
+    console.error('[points checkin error]', err);
+    res.status(500).json({ success: false, message: '服务器内部错误' });
+  }
+});
+
+
 
 // GET /api/user/points
 router.get('/', async (req, res) => {
