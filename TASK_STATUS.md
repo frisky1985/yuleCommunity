@@ -338,10 +338,34 @@ c53fb21 fix: remove unused imports in YuleASRPage
 - [x] **前端双轨加载** — `fetchModuleApis()` + `preloadSpecData()` 后台预加载
 - [x] **git push** — 当前提交待推送
 
-### Ralph Loop #4: 模块仓库后端化 🔲
-### Ralph Loop #5: 积分前端集成 🔲
-### Ralph Loop #6: 内容冷启动 🔲
-### Ralph Loop #7: 部署上线 + CI/CD 🔲
+### Ralph Loop #4: 模块仓库后端化 ✅
+- [x] **registry_modules 表** — JSONB (stats/compatibility/dependencies/tags)
+- [x] **registry_versions + registry_reviews 表** — 版本记录 + 社区评价
+- [x] **seed-registry.ts** — 10 个模块从 TS 解析导入 PG
+- [x] **Registry API** — `GET /api/devhub/registry` (搜索/筛选/分页), `GET /:id` (详情+版本+评价), `GET /stats`, `POST /:id/review`
+- [x] **前端双轨** — `fetchRegistryList/fetchRegistryModule/fetchRegistryStats` (API 优先, 本地降级)
+- **Commit:** `380dbc7`
+
+### Ralph Loop #5: 积分前端集成 ✅
+- [x] **签到检测接口** — `GET /api/user/points/checkin` (签到状态 + 连续天数)
+- [x] **后端积分对齐** — 补充 `daily.login`/`article.*`/`build.*` 等 13 种 PointsAction 规则
+- [x] **PointsPage** — `/points` 路由，含签到按钮/等级进度/等级阶梯/排行榜
+- [x] **导航入口** — Navbar 积分 Trophy 图标
+- [x] **userApi** — `getCheckinStatus()`, `earnDailyCheckin()`
+- **Commit:** `a158704`
+
+### Ralph Loop #6: 内容冷启动 ✅
+- [x] **4 篇新增 seed 文章**: DIO 驱动实战、SPI 通信、NvM 解析、PduR 路由
+- [x] **总计 7 篇 seed 文章**，覆盖 5 个分类
+- **Commit:** `b0827f3`
+
+### Ralph Loop #7: 部署上线准备 ✅
+- [x] **prebuild-seed-data.ts** — 构建时预解析 TS 源 → JSON (122 APIs + 10 modules)
+- [x] **seed 脚本双轨加载** — 生产读 JSON，开发读 TS
+- [x] **Dockerfile** — 精简两阶段构建，预置 seed-data
+- [x] **docker-compose.yml** — 根目录，自动 seed + 启动
+- [x] **.env.example + .gitignore** — 部署配置
+- **Commit:** `b0827f3`
 
 ## 🔧 最近提交
 
