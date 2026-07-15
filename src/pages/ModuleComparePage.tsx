@@ -35,7 +35,10 @@ const seedFromId = (id: string, offset: number) => {
 export function ModuleComparePage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const moduleIds = searchParams.get('modules')?.split(',') || [];
+  const moduleIds = useMemo(() => 
+    searchParams.get('modules')?.split(',') || [], 
+    [searchParams]
+  );
   const [showRadar, setShowRadar] = useState(true);
 
   const modules = useMemo(() => {
