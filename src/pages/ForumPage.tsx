@@ -18,7 +18,7 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useUserSystem } from '../hooks/useUserSystem';
 import { useNotifications } from '../hooks/useNotifications';
 import { initialForumPosts, generateId, migrateForumPosts, type ForumPost, type ForumReply } from '../data/communityData';
-import { CodeBlock } from '../components/CodeBlock';
+import { CodeBlock } from '../components/blog/CodeBlock';
 
 function renderRichContent(content: string) {
   const parts: React.ReactNode[] = [];

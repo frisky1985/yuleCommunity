@@ -224,7 +224,7 @@ export function BlogDetailPage() {
       title={article.title}
       description={article.description}
       slug={article.slug}
-      coverImage={article.coverImage || '/images/hero-bg.png'}
+      coverImage={article.coverImage || '/images/hero-bg.webp'}
       author={{
         name: article.author.name,
         url: `https://frisky1985.github.io/yuleCommunity/blog?author=${article.author.id}`,

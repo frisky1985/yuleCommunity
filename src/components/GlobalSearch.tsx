@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Search, X, FileText, MessageSquare, HelpCircle, Calendar, Code, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { initialForumPosts, initialQuestions, initialEvents } from '../data/communityData';
-import { articlesData } from '../pages/BlogPage';
+import { articlesData } from '../data/blog/articles';
 import { searchCode } from '../data/codeSearch';
 import { buildSearchIndex } from '../data/autosar/spec-index';
 import type { ForumPost, Question, CommunityEvent } from '../data/communityData';

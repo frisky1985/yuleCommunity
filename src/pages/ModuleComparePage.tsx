@@ -24,6 +24,14 @@ const layerColors: Record<string, string> = {
   RTE: 'bg-emerald-500/10 text-emerald-500',
 };
 
+// Use module id as seed for stable mock data
+const seedFromId = (id: string, offset: number) => {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = ((hash << 5) - hash) + id.charCodeAt(i);
+  const x = Math.sin((hash + offset) * 0.1) * 10000;
+  return x - Math.floor(x);
+};
+
 export function ModuleComparePage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -36,13 +44,13 @@ export function ModuleComparePage() {
       .filter(Boolean)
       .map(m => ({
         ...m!,
-        // Generate mock metrics for comparison
+        // Generate mock metrics for comparison using stable seed
         metrics: {
-          apis: Math.floor(Math.random() * 30) + 10,
-          complexity: Math.floor(Math.random() * 40) + 20,
-          coverage: Math.floor(Math.random() * 30) + 70,
-          performance: Math.floor(Math.random() * 30) + 70,
-          docs: Math.floor(Math.random() * 40) + 60,
+          apis: Math.floor(seedFromId(m!.id, 1) * 30) + 10,
+          complexity: Math.floor(seedFromId(m!.id, 2) * 40) + 20,
+          coverage: Math.floor(seedFromId(m!.id, 3) * 30) + 70,
+          performance: Math.floor(seedFromId(m!.id, 4) * 30) + 70,
+          docs: Math.floor(seedFromId(m!.id, 5) * 40) + 60,
         },
       }));
   }, [moduleIds]);
