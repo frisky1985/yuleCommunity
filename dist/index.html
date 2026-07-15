@@ -9,12 +9,33 @@
     <link rel="manifest" href="/yuleCommunity/manifest.json" />
     <meta name="theme-color" content="#0f172a" />
     <link rel="apple-touch-icon" href="/yuleCommunity/icon-192x192.svg" />
-    <script type="module" crossorigin src="/yuleCommunity/assets/index-C0eJhz8n.js"></script>
-    <link rel="modulepreload" crossorigin href="/yuleCommunity/assets/react-vendor-BM6UTB8F.js">
-    <link rel="modulepreload" crossorigin href="/yuleCommunity/assets/framer-motion-a-f9TZCU.js">
-    <link rel="modulepreload" crossorigin href="/yuleCommunity/assets/syntax-highlight-Cmb5es0t.js">
-    <link rel="modulepreload" crossorigin href="/yuleCommunity/assets/ui-utils-B9_bTLTI.js">
-    <link rel="stylesheet" crossorigin href="/yuleCommunity/assets/index-ChjiUlH5.css">
+    <script>
+      (function() {
+        var key = 'yule-theme';
+        var theme;
+        try { theme = localStorage.getItem(key); } catch(e) {}
+        if (theme === 'system' || !theme) {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.classList.add(theme);
+        document.documentElement.setAttribute('data-theme', theme);
+        if (theme === 'dark') {
+          document.querySelector('meta[name=theme-color]').content = '#0f172a';
+        }
+        // Restore deep-link after GH Pages 404 redirect
+        var redirect = sessionStorage.getItem('yule-spa-redirect');
+        if (redirect) {
+          sessionStorage.removeItem('yule-spa-redirect');
+          window.history.replaceState(null, '', redirect);
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/yuleCommunity/assets/index-C1eYLxDF.js"></script>
+    <link rel="modulepreload" crossorigin href="/yuleCommunity/assets/react-vendor-CXY_Y9w1.js">
+    <link rel="modulepreload" crossorigin href="/yuleCommunity/assets/framer-motion-OoHpuvfU.js">
+    <link rel="modulepreload" crossorigin href="/yuleCommunity/assets/syntax-highlight-Ck7oNfYw.js">
+    <link rel="modulepreload" crossorigin href="/yuleCommunity/assets/ui-utils-DHI06AS6.js">
+    <link rel="stylesheet" crossorigin href="/yuleCommunity/assets/index-BQfsDkIn.css">
   <script id="vite-plugin-pwa:register-sw" src="/yuleCommunity/registerSW.js"></script></head>
   <body>
     <div id="root"></div>

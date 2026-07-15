@@ -16,10 +16,10 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { usePoints } from '../../hooks/usePoints';
-import { useAuth } from '../../hooks/useAuth';
-import { userApi } from '../../services/userApi';
-import { Progress } from '../../components/ui/progress';
+import { usePoints } from '../hooks/usePoints';
+import { useAuth } from '../hooks/useAuth';
+import { userApi } from '../services/userApi';
+import { Progress } from '../components/ui/progress';
 
 const LEVEL_CONFIG = [
   { level: 1, title: '新手', min: 0, max: 100 },
