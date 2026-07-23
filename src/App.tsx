@@ -1,13 +1,13 @@
-import { useEffect } from 'react';
-import { Suspense, lazy } from 'react';
+import { useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, Link } from 'react-router-dom';
-import { preloadSpecData } from './data/autosar/spec-index';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { BottomTabBar } from './components/BottomTabBar';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { PageLoader } from './components/PageLoader';
 import { InteractiveCLI } from './components/InteractiveCLI';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { ToastContainer } from './components/Toast';
 import { useHotkeys } from './hooks/useHotkeys';
 import { HotkeyHelp } from './components/HotkeyHelp';
 import { useAdminStore } from './admin/stores/adminStore';
@@ -83,16 +83,20 @@ function App() {
       <Routes>
         {/* Admin routes - New implementation */}
         <Route path="/admin/login" element={
+          <ErrorBoundary>
           <Suspense fallback={<PageLoader />}>
             <AdminLogin />
           </Suspense>
+          </ErrorBoundary>
         } />
         <Route path="/admin" element={
+          <ErrorBoundary>
           <Suspense fallback={<PageLoader />}>
             <ProtectedAdminRoute>
               <AdminLayout />
             </ProtectedAdminRoute>
           </Suspense>
+          </ErrorBoundary>
         }>
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={
@@ -148,6 +152,7 @@ function App() {
             <Navbar />
             <main>
               <Suspense fallback={<PageLoader />}>
+                <ErrorBoundary>
                 <Routes>
                   <Route index element={<HomePage />} />
                   <Route path="opensource" element={<OpenSourcePage />} />
@@ -201,11 +206,13 @@ function App() {
                     </div>
                   } />
                 </Routes>
+              </ErrorBoundary>
               </Suspense>
             </main>
             <Footer />
             <BottomTabBar />
             <InteractiveCLI />
+            <ToastContainer />
             
             {/* Phase 4: 组件级代码分割 - 使用 LazyEngagement 实现懒加载 */}
             <Suspense fallback={null}>

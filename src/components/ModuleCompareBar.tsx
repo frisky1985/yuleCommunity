@@ -1,6 +1,7 @@
 import { X, Scale, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { toast } from '../components/Toast';
 import type { CompareModule } from '../hooks/useModuleCompare';
 
 interface ModuleCompareBarProps {
@@ -17,7 +18,7 @@ export function ModuleCompareBar({ modules, onRemove, onClear, maxItems }: Modul
 
   const handleCompare = () => {
     if (modules.length < 2) {
-      alert('请至少选择 2 个模块进行对比');
+      toast('请至少选择 2 个模块进行对比', 'error');
       return;
     }
     const ids = modules.map(m => m.id).join(',');

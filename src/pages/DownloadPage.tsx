@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Search, Wrench, FileText, BookOpen, Code, Download, HardDrive } from 'lucide-react';
+import { toast } from '../components/Toast';
 
 type DownloadCategory = '全部' | '工具链' | '手册' | '笔记' | '代码';
 
@@ -127,7 +128,7 @@ export function DownloadPage() {
   });
 
   const handleDownload = (name: string) => {
-    alert(`开始下载：${name}`);
+    toast(`开始下载：${name}`, 'success');
   };
 
   return (

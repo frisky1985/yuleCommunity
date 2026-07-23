@@ -7,6 +7,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { toast } from '../components/Toast';
 import {
   Calendar,
   Clock,
@@ -159,7 +160,7 @@ export function BlogDetailPage() {
       try {
         await navigator.clipboard.writeText(window.location.href);
         // 可以添加 toast 提示
-        alert('链接已复制到剪贴板');
+        toast('链接已复制到剪贴板', 'success');
       } catch (err) {
         console.error('Failed to copy:', err);
       }
