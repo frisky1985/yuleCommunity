@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Search, X, FileText, ChevronRight } from 'lucide-react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import hljs from 'highlight.js';
 import { 
   searchCode, 
   getTypeIcon, 
@@ -291,27 +290,9 @@ export function CodeSearch() {
 
             {/* 代码 */}
             <div className="max-h-[50vh] overflow-auto">
-              <SyntaxHighlighter
-                language="c"
-                style={isDark ? vscDarkPlus : prism}
-                customStyle={{
-                  margin: 0,
-                  padding: '1rem',
-                  fontSize: '13px',
-                  lineHeight: '1.5',
-                  background: isDark ? '#1e1e1e' : '#fafafa',
-                }}
-                showLineNumbers
-                startingLineNumber={selectedResult.lineNumber}
-                lineNumberStyle={{
-                  minWidth: '3em',
-                  paddingRight: '1em',
-                  color: isDark ? '#6e7681' : '#a0a0a0',
-                  fontSize: '12px',
-                }}
-              >
-                {selectedResult.code}
-              </SyntaxHighlighter>
+              <pre className="hljs" style={{ margin: 0, padding: '1rem', fontSize: '13px', lineHeight: '1.5', background: isDark ? '#1e1e1e' : '#fafafa', overflow: 'auto' }}>
+                <code dangerouslySetInnerHTML={{ __html: hljs.highlightAuto(selectedResult.code).value }} />
+              </pre>
             </div>
 
             {/* 底部 */}

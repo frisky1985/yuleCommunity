@@ -3,11 +3,10 @@
  * @description 增强型代码块，支持复制功能和语法高亮
  */
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Copy, ChevronDown, ChevronUp } from 'lucide-react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus, vs } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import hljs from 'highlight.js';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
 
@@ -159,6 +158,76 @@ export function CopyButton({
   );
 }
 
+/** highlight.js theme token colors — scoped to light/dark wrappers */
+const HIGHLIGHT_THEME_STYLE = `
+  /* ---- light theme (GitHub) ---- */
+  .hljs-light .hljs { color: #24292e; background: transparent; }
+  .hljs-light .hljs-keyword,
+  .hljs-light .hljs-literal,
+  .hljs-light .hljs-symbol,
+  .hljs-light .hljs-name { color: #d73a49; }
+  .hljs-light .hljs-string,
+  .hljs-light .hljs-title,
+  .hljs-light .hljs-section,
+  .hljs-light .hljs-attribute,
+  .hljs-light .hljs-addition,
+  .hljs-light .hljs-variable,
+  .hljs-light .hljs-template-variable,
+  .hljs-light .hljs-bullet { color: #032f62; }
+  .hljs-light .hljs-comment,
+  .hljs-light .hljs-quote,
+  .hljs-light .hljs-deletion { color: #6a737d; }
+  .hljs-light .hljs-number,
+  .hljs-light .hljs-regexp { color: #005cc5; }
+  .hljs-light .hljs-built_in,
+  .hljs-light .hljs-type { color: #e36209; }
+  .hljs-light .hljs-selector-class,
+  .hljs-light .hljs-params { color: #6f42c1; }
+  .hljs-light .hljs-meta,
+  .hljs-light .hljs-meta-string { color: #032f62; }
+  .hljs-light .hljs-doctag { color: #6a737d; }
+
+  /* ---- dark theme (GitHub Dark) ---- */
+  .hljs-dark .hljs { color: #c9d1d9; background: transparent; }
+  .hljs-dark .hljs-keyword,
+  .hljs-dark .hljs-literal,
+  .hljs-dark .hljs-symbol,
+  .hljs-dark .hljs-name { color: #ff7b72; }
+  .hljs-dark .hljs-string,
+  .hljs-dark .hljs-title,
+  .hljs-dark .hljs-section,
+  .hljs-dark .hljs-attribute,
+  .hljs-dark .hljs-addition,
+  .hljs-dark .hljs-variable,
+  .hljs-dark .hljs-template-variable,
+  .hljs-dark .hljs-bullet { color: #a5d6ff; }
+  .hljs-dark .hljs-comment,
+  .hljs-dark .hljs-quote,
+  .hljs-dark .hljs-deletion { color: #8b949e; }
+  .hljs-dark .hljs-number,
+  .hljs-dark .hljs-regexp { color: #79c0ff; }
+  .hljs-dark .hljs-built_in,
+  .hljs-dark .hljs-type { color: #ffa657; }
+  .hljs-dark .hljs-selector-class,
+  .hljs-dark .hljs-params { color: #d2a8ff; }
+  .hljs-dark .hljs-meta,
+  .hljs-dark .hljs-meta-string { color: #a5d6ff; }
+  .hljs-dark .hljs-doctag { color: #8b949e; }
+
+  /* ---- line number styling ---- */
+  .code-line { display: flex; }
+  .line-number {
+    min-width: 2.5em;
+    padding-right: 1em;
+    display: inline-block;
+    font-size: 0.875em;
+    user-select: none;
+    text-align: right;
+    margin-right: 1em;
+    border-right: 1px solid rgba(128,128,128,0.2);
+  }
+`;
+
 /**
  * 代码块组件
  */
@@ -180,6 +249,39 @@ export function CodeBlock({
     setIsExpanded(prev => !prev);
   }, []);
 
+  // 使用 highlight.js 进行语法高亮
+  const highlightedHtml = useMemo(() => {
+    try {
+      if (language && language !== 'text' && hljs.getLanguage(language)) {
+        return hljs.highlight(code, { language }).value;
+      }
+      const result = hljs.highlightAuto(code);
+      return result.value;
+    } catch {
+      // 降级：转义 HTML 并返回纯文本
+      return code
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  }, [code, language]);
+
+  // 添加行号
+  const codeHtml = useMemo(() => {
+    if (!showLineNumbers) return highlightedHtml;
+
+    const lines = highlightedHtml.split('\n');
+    return lines
+      .map((line, index) => {
+        const lineNumber = index + 1;
+        const lineColor = isDark ? '#6e7681' : '#a0a0a0';
+        return `<span class="code-line"><span class="line-number" style="color:${lineColor}">${lineNumber}</span>${line || ' '}</span>`;
+      })
+      .join('\n');
+  }, [highlightedHtml, showLineNumbers, isDark]);
+
   // 确定语言显示名称
   const displayLanguage = language.charAt(0).toUpperCase() + language.slice(1);
 
@@ -191,6 +293,9 @@ export function CodeBlock({
       )}
       data-testid="code-block"
     >
+      {/* highlight.js scoped theme styles */}
+      <style>{HIGHLIGHT_THEME_STYLE}</style>
+
       {/* 标题栏 */}
       <div className="bg-muted-foreground/10 px-4 py-2 text-xs text-muted-foreground font-mono flex items-center justify-between border-b border-border/50">
         <div className="flex items-center gap-2">
@@ -229,21 +334,25 @@ export function CodeBlock({
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <SyntaxHighlighter
-              style={isDark ? vscDarkPlus : vs}
-              language={language || 'text'}
-              PreTag="div"
-              className="!m-0 !rounded-none"
-              showLineNumbers={showLineNumbers}
-              lineNumberStyle={{
-                minWidth: '2.5em',
-                paddingRight: '1em',
-                color: isDark ? '#6e7681' : '#a0a0a0',
-                fontSize: '0.875em',
-              }}
+            <div
+              className={cn(
+                'overflow-x-auto',
+                isDark ? 'hljs-dark' : 'hljs-light'
+              )}
             >
-              {code}
-            </SyntaxHighlighter>
+              <pre
+                className="!m-0 !rounded-none !bg-transparent p-4 text-sm leading-relaxed"
+                style={{
+                  background: isDark ? '#0d1117' : '#ffffff',
+                  color: isDark ? '#c9d1d9' : '#24292e',
+                }}
+              >
+                <code
+                  className={`language-${language}`}
+                  dangerouslySetInnerHTML={{ __html: codeHtml }}
+                />
+              </pre>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

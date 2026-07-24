@@ -85,8 +85,6 @@ export default defineConfig({
           'recharts': ['recharts'],
           // 动画库
           'framer-motion': ['framer-motion'],
-          // 代码高亮
-          'syntax-highlight': ['react-syntax-highlighter'],
           // UI 工具
           'ui-utils': ['lucide-react', 'clsx', 'class-variance-authority', 'tailwind-merge'],
         }

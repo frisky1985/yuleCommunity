@@ -1,5 +1,4 @@
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import hljs from 'highlight.js';
 import type { CSSProperties } from 'react';
 
 interface CodeBlockProps {
@@ -11,16 +10,15 @@ interface CodeBlockProps {
 }
 
 export function CodeBlock({ language, children, showLineNumbers, wrapLongLines, customStyle }: CodeBlockProps) {
+  const code = typeof children === 'string' ? children : String(children);
+  const highlighted = language
+    ? hljs.highlight(code, { language }).value
+    : hljs.highlightAuto(code).value;
+
   return (
-    <SyntaxHighlighter
-      language={language}
-      style={oneDark}
-      customStyle={customStyle}
-      showLineNumbers={showLineNumbers}
-      wrapLongLines={wrapLongLines}
-    >
-      {children}
-    </SyntaxHighlighter>
+    <pre className="hljs" style={{ ...customStyle, overflow: 'auto', margin: 0, padding: '1rem', fontSize: '13px', lineHeight: '1.5', background: '#282c34', color: '#abb2bf', whiteSpace: wrapLongLines ? 'pre-wrap' : 'pre', wordBreak: wrapLongLines ? 'break-word' : 'normal' }}>
+      <code dangerouslySetInnerHTML={{ __html: highlighted }} />
+    </pre>
   );
 }
 

@@ -8,6 +8,7 @@ import { PageLoader } from './components/PageLoader';
 import { InteractiveCLI } from './components/InteractiveCLI';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ToastContainer } from './components/Toast';
+import { PWAInstallPrompt } from './components/PWAInstallPrompt';
 import { useHotkeys } from './hooks/useHotkeys';
 import { HotkeyHelp } from './components/HotkeyHelp';
 import { useAdminStore } from './admin/stores/adminStore';
@@ -213,6 +214,7 @@ function App() {
             <BottomTabBar />
             <InteractiveCLI />
             <ToastContainer />
+            <PWAInstallPrompt />
             
             {/* Phase 4: 组件级代码分割 - 使用 LazyEngagement 实现懒加载 */}
             <Suspense fallback={null}>

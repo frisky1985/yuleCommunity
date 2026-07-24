@@ -29,7 +29,7 @@ console.log(greeting);`;
   it('应该显示代码内容', () => {
     const { container } = render(<CodeBlock code={sampleCode} />);
 
-    // 由于 react-syntax-highlighter 渲染，代码可能被分割成多个节点
+    // 由于 highlight.js 渲染，代码被包含在 pre/code 元素中
     // 我们检查容器内容
     expect(container.textContent).toContain('const greeting');
     expect(container.textContent).toContain('Hello World');

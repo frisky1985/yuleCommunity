@@ -2,8 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import hljs from 'highlight.js';
 import {
   ArrowLeft, Download, Star, Clock, User, Cpu, Layers,
   GitBranch, AlertCircle, CheckCircle2, ChevronDown, ChevronRight,
@@ -307,14 +306,9 @@ export function RegistryDetailPage() {
           </button>
           {showConfig && (
             <div className="mt-2 rounded-xl overflow-hidden border border-border">
-              <SyntaxHighlighter
-                language="json"
-                style={oneDark}
-                customStyle={{ margin: 0, padding: '20px', fontSize: '13px', maxHeight: '480px' }}
-                showLineNumbers
-              >
-                {module.configData}
-              </SyntaxHighlighter>
+              <pre className="hljs" style={{ margin: 0, padding: '20px', fontSize: '13px', maxHeight: '480px', overflow: 'auto', background: '#282c34', color: '#abb2bf' }}>
+                <code dangerouslySetInnerHTML={{ __html: hljs.highlightAuto(typeof module.configData === 'string' ? module.configData : JSON.stringify(module.configData, null, 2)).value }} />
+              </pre>
             </div>
           )}
         </motion.div>

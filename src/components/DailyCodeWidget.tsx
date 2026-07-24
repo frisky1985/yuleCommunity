@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, Code2, Lightbulb, BookOpen } from 'lucide-react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import hljs from 'highlight.js';
 import { getTodaySnippet, getNextSnippet, getPrevSnippet, type DailyCodeSnippet } from '../data/dailyCode';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -115,28 +114,9 @@ export function DailyCodeWidget() {
 
           {/* 代码区域 */}
           <div className="relative">
-            <SyntaxHighlighter
-              language={snippet.language}
-              style={isDark ? vscDarkPlus : prism}
-              customStyle={{
-                margin: 0,
-                padding: '1.25rem',
-                fontSize: '13px',
-                lineHeight: '1.6',
-                background: isDark ? '#1e1e1e' : '#fafafa',
-                maxHeight: '200px',
-                overflow: 'auto',
-              }}
-              showLineNumbers
-              lineNumberStyle={{
-                minWidth: '2.5em',
-                paddingRight: '1em',
-                color: isDark ? '#6e7681' : '#a0a0a0',
-                fontSize: '12px',
-              }}
-            >
-              {snippet.code.trim()}
-            </SyntaxHighlighter>
+            <pre className="hljs" style={{ margin: 0, padding: '1.25rem', fontSize: '13px', lineHeight: '1.6', background: isDark ? '#1e1e1e' : '#fafafa', maxHeight: '200px', overflow: 'auto' }}>
+              <code dangerouslySetInnerHTML={{ __html: hljs.highlightAuto(snippet.code.trim()).value }} />
+            </pre>
           </div>
 
           {/* 解释区域 */}
