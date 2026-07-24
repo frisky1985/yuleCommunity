@@ -7,6 +7,7 @@ import { OfflineIndicator } from './components/OfflineIndicator';
 import { PageLoader } from './components/PageLoader';
 import { InteractiveCLI } from './components/InteractiveCLI';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { preloadSpecData } from './data/autosar/spec-index';
 import { ToastContainer } from './components/Toast';
 import { PWAInstallPrompt } from './components/PWAInstallPrompt';
 import { useHotkeys } from './hooks/useHotkeys';
