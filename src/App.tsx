@@ -47,6 +47,7 @@ const YuleASRPage = lazy(() => import('./pages/YuleASRPage').then(m => ({ defaul
 const YuleASREditorPage = lazy(() => import('./pages/YuleASREditorPage').then(m => ({ default: m.YuleASREditorPage })));
 const EnterprisePage = lazy(() => import('./pages/EnterprisePage').then(m => ({ default: m.EnterprisePage })));
 const PricingPage = lazy(() => import('./pages/PricingPage').then(m => ({ default: m.PricingPage })));
+const JoinPage = lazy(() => import('./pages/JoinPage').then(m => ({ default: m.JoinPage })));
 
 // AutoSAR DevHub pages
 const DevHubPage = lazy(() => import('./pages/autosar/DevHubPage').then(m => ({ default: m.DevHubPage })));
@@ -166,6 +167,7 @@ function App() {
                   <Route path="organization" element={<OrganizationPage />} />
                   <Route path="workspace" element={<WorkspacePage />} />
                   <Route path="sso" element={<SSOPage />} />
+                  <Route path="join" element={<JoinPage />} />
                   <Route path="analytics" element={<AnalyticsPage />} />
                   <Route path="toolchain" element={<ToolchainPage />} />
                   <Route path="learning" element={<LearningPage />} />
