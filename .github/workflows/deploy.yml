@@ -3,10 +3,11 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [master]
+    tags: ['v*', 'master-v*']
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -73,3 +74,27 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: ./dist
+
+      - name: Create Release Archive
+        run: |
+          cd ./dist
+          tar -czf /tmp/yulecommunity-dist.tar.gz .
+          echo "archive=/tmp/yulecommunity-dist.tar.gz" >> $GITHUB_ENV
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: /tmp/yulecommunity-dist.tar.gz
+          generate_release_notes: true
+          make_latest: true
