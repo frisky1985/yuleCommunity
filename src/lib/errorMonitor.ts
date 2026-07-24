@@ -1,11 +1,37 @@
 /**
  * 全局错误监控
- * 捕获未处理的 JS 错误和 Promise rejection
+ * 集成 Sentry + 基础 window.onerror + unhandledrejection
  */
+import { config } from './monitorConfig';
+
+let sentryInit: (() => void) | null = null;
+
+// 动态加载 Sentry（仅当配置了 DSN）
+async function initSentry() {
+  if (!config.sentryDsn) return;
+  try {
+    const Sentry = await import('@sentry/react');
+    Sentry.init({
+      dsn: config.sentryDsn,
+      environment: config.environment,
+      release: config.release,
+      integrations: [Sentry.browserTracingIntegration()],
+      tracesSampleRate: 0.1,
+    });
+    sentryInit = () => {};
+    console.log('[Monitor] Sentry initialized');
+  } catch (e) {
+    console.warn('[Monitor] Sentry init failed:', e);
+  }
+}
+
 export function setupErrorMonitoring(): void {
   if (typeof window === 'undefined') return;
 
-  // 收集错误日志到 sessionStorage（可被 Sentry/GA 替代）
+  // Init Sentry (async, non-blocking)
+  initSentry();
+
+  // 收集错误日志到 sessionStorage
   const logError = (message: string, source?: string) => {
     try {
       const logs = JSON.parse(sessionStorage.getItem('yule-error-log') || '[]');
@@ -23,7 +49,6 @@ export function setupErrorMonitoring(): void {
   window.onerror = (message, source, lineno, colno, error) => {
     const msg = typeof message === 'string' ? message : 'Unknown error';
     logError(msg, source || 'unknown');
-    // Don't prevent default browser error handling
     return false;
   };
 
