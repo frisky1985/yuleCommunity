@@ -20,12 +20,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout yuleCommunity
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: ./yuleCommunity
 
       - name: Checkout yuleASR-Configurator
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: frisky1985/yuleASR-Configurator
           token: ${{ secrets.GITHUB_TOKEN }}
