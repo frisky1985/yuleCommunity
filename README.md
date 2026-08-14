@@ -73,11 +73,8 @@ npm run test
 
 ```
 yulecommunity/
-├── public/
-│   ├── images/           # WebP + PNG 图片
-│   ├── 404.html          # SPA 回退（GitHub Pages 深链支持）
-│   └── offline.html      # PWA 离线页面
-├── src/
+├── public/               # 静态资源（WebP 图片、404.html、offline.html）
+├── src/                  # 前端主应用（React 19 + TS）
 │   ├── admin/            # 管理后台（懒加载）
 │   ├── components/       # 共享组件（Navbar, Footer, ErrorBoundary, Toast...）
 │   ├── contexts/         # React 上下文（ThemeContext）
@@ -86,10 +83,19 @@ yulecommunity/
 │   ├── lib/              # 工具函数（cn, safeGet, errorMonitor...）
 │   ├── pages/            # 页面组件（全部懒加载）
 │   └── services/         # API 服务（GitHub, User, Blog...）
-├── dist/                 # 生产构建产物
+├── server/               # 后端 API（Express + PostgreSQL，独立部署）
+├── docs/                 # 架构/设计/复盘/历史文档
+│   └── history/          # 历史版本日志与报告
+├── scripts/              # 构建脚本（sitemap、OG 图片、图片优化）
+├── e2e/                  # Playwright 端到端测试
+├── dist/                 # 生产构建产物（gitignored）
 ├── .github/workflows/    # CI/CD 部署流水线
 └── vite.config.ts        # Vite + PWA 配置
 ```
+
+> **包管理器**：统一使用 **npm**（`npm install` / `npm ci`），勿混用 pnpm。
+
+> **历史归档**：旧 monorepo 微前端结构（apps/）与早期源码备份（archive/、backup/）已于 `refactor/cleanup-project-structure` 移除，如需找回可 `git log` 回溯对应 commit。
 
 ## 版本历史
 
